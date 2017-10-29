@@ -1,4 +1,4 @@
-const getAnimate = (entity, { frames, delay, handleFrames = (frames) => {} }) => {
+const getAnimate = (entity, { frames = [[0, 0, 30, 30]], delay = 1, handleFrames = (frames) => {} }) => {
     let delta = 0;
     let frame = 0;
     return ({ timeScl }) => {

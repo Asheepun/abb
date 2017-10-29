@@ -1,11 +1,14 @@
 import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
-import { checkCol } from "/js/colission.js";
+import { obstacle, box } from "/js/obstacles.js";
+import helper from "/js/helper.js";
 import entity from "/js/entity.js";
 import player from "/js/player.js";
+import getAnimate from "/js/animate.js";
 
-const createLevel = (map) => new Promise((resolve, reject) => {
+const createLevel = ({ map, help }) => new Promise((resolve, reject) => {
     const level = {
         obstacles: [],
+        helpers: matrix("checkCol", "drawText", "animate"),
         box,
         player,
     }
@@ -15,41 +18,20 @@ const createLevel = (map) => new Promise((resolve, reject) => {
         if(tile === "@") level.player = player(pos);
         if(tile === "B") level.box = box(pos);
         if(tile === "#") level.obstacles.push(obstacle(pos, map));
+        if(tile === "h") level.helpers.entities.push(helper(pos, help));
     }));
     resolve(level);
 });
 
-const obstacle = (pos, map) => {
-    const obstacle = entity({
-        pos,
-        img: "obstacle",
+const matrix = (...funcs) => {
+    const matrix = {
+        entities: [],
+    };
+    funcs.forEach(func => {
+        matrix[func] = (WORLD) => matrix.entities.forEach(e => e[func](WORLD));
     });
-    const mapPos = div(pos, 30);
-    if(map[mapPos.y-1][mapPos.x] !== "#") obstacle.img = "grass";
 
-    return obstacle;
-}
-
-const box = (pos) => {
-    const box = entity({
-        pos, 
-        img: "box",
-    });
-    box.update = ({ pointer, obstacles }) => {
-        let col = false;
-        for(let i = 0; i < obstacles.length; i++){
-            if(pointer.pos.x >= obstacles[i].pos.x
-            && pointer.pos.x <= obstacles[i].pos.x + obstacles[i].size.x
-            && pointer.pos.y >= obstacles[i].pos.y
-            && pointer.pos.y <= obstacles[i].pos.y + obstacles[i].size.y) col = true;
-        }
-        if(pointer.down && !col){
-            box.pos.x = align(pointer.pos.x, 30);
-            box.pos.y = align(pointer.pos.y, 30);
-            box.center = add(box.pos, half(box.size));
-        }
-    }
-    return box;
+    return matrix;
 }
 
 const strEach = (str, func) => {

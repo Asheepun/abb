@@ -4,16 +4,21 @@ export const loadSprites = (...urls) => new Promise((resolve, reject) => {
         sprite.src = `/assets/sprites/${url}.png`;
         sprites[url] = sprite;
         return sprites;
-    }, {})
+    }, {});
     resolve(sprites);
 });
 
-export const loadAudio = (...urls) => urls.reduce((arr, url) => {
-    const audio = new Audio(`/assets/audio/${url}.wav`);
-    audio.volume = 0.5;
-    arr.push(audio);
-    return arr;
-}, []);/*
+export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject) => {
+    const audio = urls.reduce((audio, url) => {
+        const a = new Audio(`/assets/audio/${url}.wav`);
+        a.volume = volume;
+        audio[url] = a;
+        return audio;
+    }, {});
+    resolve(audio);
+});
+
+/*
 const loadJson = (...urls) => new Promise((resolve, reject) => {
     const json = [];
     urls.forEach(url => {

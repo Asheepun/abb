@@ -14,36 +14,39 @@ const player = (pos = v(30, 300)) => {
     player.move = getMove(player, {});
 
     player.animate = getAnimate(player, {
-        frames: [[0, 0, 30, 30]],
         delay: 4,
         handleFrames: (frames) => {
             if(player.grounded){ 
                 player.img = "player";
                 frames = [
-                    [32, 0, 30, 30],
-                    [64, 0, 30, 30],
-                    [96, 0, 30, 30],
-                    [128, 0, 30, 30],
-                    [160, 0, 30, 30],
-                    [192, 0, 30, 30],
+                    [32, frames[0][1], 30, 30],
+                    [64, frames[0][1], 30, 30],
+                    [96, frames[0][1], 30, 30],
+                    [128, frames[0][1], 30, 30],
+                    [160, frames[0][1], 30, 30],
+                    [192, frames[0][1], 30, 30],
                 ];
             }
             else{ 
                 player.img = "player-jump";
                 frames = [
-                    [32, 0, 30, 30],
-                    [64, 0, 30, 30],
+                    [32, frames[0][1], 30, 30],
+                    [64, frames[0][1], 30, 30],
                 ];
             }
             if(player.dir.x < 0) frames.forEach(f => f[1] = 32);
-            if(player.dir.x === 0) frames = [[0, frames[0][1], 30, 30]];
+            else if(player.dir.x > 0) frames.forEach(f => f[1] = 0);
+            else frames = [[0, frames[0][1], 30, 30]];
             return frames;
         }
     });
 
-    player.jump = (down) => {
-        if(down && player.grounded) player.velocity.y = -0.8;
-        else if(player.velocity.y < 0) player.velocity.y = 0;
+    player.jump = (down, sound) => {
+        if(down && player.grounded){ 
+            sound.load();
+            sound.play();
+            player.velocity.y = -0.8
+        }else if(player.velocity.y < 0) player.velocity.y = 0;
     }
 
     player.handleColissionX = (object) => {

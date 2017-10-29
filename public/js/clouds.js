@@ -32,6 +32,8 @@ const getClouds = (amount = 25) => {
             cloud.pos.y = 0;
             if(Math.random() < 0.4) cloud.pos.y = 30;
             if(Math.random() < 0.2) cloud.pos.y = 60;
+            if(Math.random() < 0.3 && cloud.speed <= 0.05) cloud.speed *= 0.8;
+            if(Math.random() < 0.3 && cloud.speed >= 0.05) cloud.speed *= 1.2;
         }
 
         clouds.entities.push(cloud);

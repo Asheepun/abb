@@ -12,7 +12,7 @@ export const checkCol = (obj, objects) => {
             const ob = objects[i];
             if(cc(obj, ob)) return ob;
         }
-    }else if(cc(obj, ob)) return objects;
+    }else if(cc(obj, objects)) return objects;
     return false;
 }
 

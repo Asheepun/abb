@@ -1,18 +1,18 @@
 import { sub, abs } from "/js/vector.js";
 
 export const checkCol = (obj, objects) => {
+    const cc = (o1, o2) => {
+        if(o1.pos.x + o1.size.x > o2.pos.x
+        && o1.pos.x < o2.pos.x + o2.size.x
+        && o1.pos.y + o1.size.y > o2.pos.y
+        && o1.pos.y < o2.pos.y + o2.size.y) return true;
+    }
     if(objects.constructor === Array){
         for(let i = 0; i < objects.length; i++){
             const ob = objects[i];
-            if(obj.pos.x + obj.size.x > ob.pos.x
-            && obj.pos.x < ob.pos.x + ob.size.x
-            && obj.pos.y + obj.size.y > ob.pos.y
-            && obj.pos.y < ob.pos.y + ob.size.y) return ob;
+            if(cc(obj, ob)) return ob;
         }
-    }else if(obj.pos.x + obj.size.x > objects.pos.x
-    && obj.pos.x < objects.pos.x + objects.size.x
-    && obj.pos.y + obj.size.t > objects.pos.y
-    && obj.pos.y < objects.pos.y + objects.size.y) return objects;
+    }else if(cc(obj, ob)) return objects;
     return false;
 }
 

@@ -28,6 +28,8 @@ export const abs = (vec) => v(Math.abs(vec.x), Math.abs(vec.y));
 
 export const floor = (vec) => v(Math.floor(vec.x), Math.floor(vec.y)); 
 
+export const round = (vec) => v(Math.round(vec.x), Math.round(vec.y)); 
+
 export const align = (cord, scl) => {
     if(Math.floor(cord) % scl === 0) return Math.floor(cord);
     else return align(cord-1, scl);

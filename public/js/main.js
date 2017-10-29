@@ -48,24 +48,24 @@ promiseAll(
     loadSprites(
         "background1",
         "player",
+        "player-jump",
         "obstacle",
         "grass",
         "box",
         "cloud",
     ),
-).then(([ { c, ctx }, { tiles, box, player }, sprites ]) => {
-    
+).then(([ { c, ctx }, { obstacles, box, player }, sprites ]) => {
+    console.log(sprites["player"].width);
     //initialize
     const WORLD = {
         timeScl: 16,
         lastTime: 0,
         player,
         box,
-        tiles,
+        obstacles,
         clouds: getClouds(),
         pointer: getPointer(c),
     };
-    console.log(WORLD.clouds.update);
 
     const drawAll = makeDrawAll(ctx, sprites);
 
@@ -89,15 +89,15 @@ promiseAll(
         //update logic
         WORLD.box.update(WORLD);
         WORLD.player.move(WORLD);
-        WORLD.player.checkBoxCol(WORLD.box);
         WORLD.player.update();
         WORLD.clouds.update(WORLD);
+        WORLD.player.animate(WORLD);
     
         //draw
         ctx.drawImage(sprites.background1, 0, 0, c.width, c.height);
         drawAll(
             WORLD.box,
-            WORLD.tiles,
+            WORLD.obstacles,
             WORLD.player,
             WORLD.clouds.entities,
         );

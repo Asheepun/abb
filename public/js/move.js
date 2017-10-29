@@ -10,7 +10,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
     const maxFallSpeed = 0.4;
     let col, oub;
 
-    return ({ timeScl, tiles}) => {
+    return ({ timeScl, obstacles, box }) => {
 
         entity.velocity.x = entity.dir.x*entity.speed;
 
@@ -20,17 +20,18 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
 
         //moveY
         entity.pos.y += entity.velocity.y * timeScl;
-        col = checkCol(entity, tiles);
+        col = checkCol(entity, obstacles);
         oub = checkOub(entity, ...oubArea);
         if(col && entity.handleColissionY){
             entity.handleColissionY(col);
             entity.grounded = true;
         }else entity.grounded = false;
+        if(entity.checkBoxCol) entity.checkBoxCol(box);
         if(oub && entity.handleOubY) entity.handleOubY();
 
         //moveX
         entity.pos.x += entity.velocity.x * timeScl;
-        col = checkCol(entity, tiles);
+        col = checkCol(entity, obstacles);
         oub = checkOub(entity, ...oubArea);
         if(col && entity.handleColissionX) entity.handleColissionX(col);
         if(oub && entity.handleOubX) entity.handleOubX();

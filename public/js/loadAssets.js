@@ -13,4 +13,21 @@ export const loadAudio = (...urls) => urls.reduce((arr, url) => {
     audio.volume = 0.5;
     arr.push(audio);
     return arr;
-}, []);
+}, []);/*
+const loadJson = (...urls) => new Promise((resolve, reject) => {
+    const json = [];
+    urls.forEach(url => {
+        const req = new XMLHttpRequest();
+        req.onreadystatechange = () => {
+            if(req.responseText){
+                console.log("CHECK");
+                if(urls.indexOf(url) < json.length) json.push(JSON.parse(req.responseText));
+                if(json.length === urls.length) resolve(json);
+            }
+        }
+        req.open("GET", "/assets/json/" + url + ".json", true);
+        req.send();
+    });
+});
+loadJson("player").then((json) => console.log());
+*/

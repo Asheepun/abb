@@ -1,5 +1,5 @@
 import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
-import { obstacle, box } from "/js/obstacles.js";
+import { obstacle,  box } from "/js/obstacles.js";
 import { checkProx } from "/js/colission.js";
 import helper from "/js/helper.js";
 import entity from "/js/entity.js";
@@ -9,6 +9,7 @@ import getAnimate from "/js/animate.js";
 const createLevel = ({ map, help }, offsetX = 0) => {
     const level = {
         obstacles: [],
+        grass: [],
         helpers: matrix("checkCol", "drawText", "animate", "update"),
         points: matrix("checkCol"),
         box,
@@ -22,6 +23,9 @@ const createLevel = ({ map, help }, offsetX = 0) => {
         if(tile === "#") level.obstacles.push(obstacle(pos, map, -offsetX));
         if(tile === "H") level.helpers.entities.push(helper(pos, help));
         if(tile === "P") level.points.entities.push(point(v(pos.x + 5, pos.y + 5)));
+        if(y !== map.length-1
+        && map[y+1][x] === "#" 
+        && tile !== "#") level.grass.push(grass(pos));
     }));
     
     return level;
@@ -43,6 +47,16 @@ const point = (pos) => {
     }
 
     return point;
+}
+
+const grass = (pos) => {
+    const grass = entity({
+        pos,
+        img: "grass",
+    });
+    if(Math.random() < 0.5) grass.imgPos[0] += 30;
+    if(Math.random() < 0.5) grass.imgPos[0] += 30;
+    return grass;
 }
 
 const matrix = (...funcs) => {

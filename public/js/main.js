@@ -27,17 +27,19 @@ promiseAll(
         "player",
         "player-jump",
         "obstacle",
-        "grass",
+        "obstacle-grass",
         "box",
         "cloud",
         "helper",
         "point",
+        "grass",
     ),
     loadAudio(
-        0.5,
+        0.3,
         "jump",
         "talk",
         "point",
+        "main",
     ),
 ).then(([ { c, ctx }, sprites, audio ]) => {
 
@@ -60,6 +62,10 @@ promiseAll(
 
     const keyboardBindings = keyboardBinder();
 
+    audio.main.volume = 1;
+    audio.main.loop = true;
+    audio.main.play();
+
     const setup = () => {
         keyboardBindings.removeAll();
 
@@ -70,6 +76,7 @@ promiseAll(
         WORLD.obstacles = newLevel.obstacles;
         WORLD.helpers = newLevel.helpers;
         WORLD.points = newLevel.points;
+        WORLD.grass = newLevel.grass;
         WORLD.clouds = getClouds();
         //add keybindings
         keyboardBindings.add("a", down => {
@@ -120,6 +127,7 @@ promiseAll(
             WORLD.helpers.entities,
             WORLD.points.entities,
             WORLD.player,
+            WORLD.grass,
             WORLD.clouds.entities,
         );
         WORLD.helpers.drawText(ctx);
@@ -141,9 +149,10 @@ promiseAll(
             WORLD.currentLevel++;
             //initialize level switch
             const newLevel = createLevel(levelTeplates[WORLD.currentLevel], 900);
-            WORLD.obstacles = WORLD.obstacles.concat(newLevel.obstacles);
-            WORLD.helpers.entities = WORLD.helpers.entities.concat(newLevel.helpers.entities);
-            WORLD.points.entities = WORLD.points.entities.concat(newLevel.points.entities);
+            newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
+            newLevel.grass.forEach(p => WORLD.grass.push(p));
+            newLevel.helpers.entities.forEach(h => WORLD.helpers.entities.push(h));
+            newLevel.points.entities.forEach(p => WORLD.points.entities.push(p));
             WORLD.newSpawn = newLevel.player.pos;
         }
 

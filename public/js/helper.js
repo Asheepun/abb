@@ -5,6 +5,7 @@ import getAnimate from "/js/animate.js";
 
 const helper = (pos, text) => {
     const helper = entity({ pos, img: "helper" });
+    helper.dirX = -1;
     helper.text = text;
     helper.talking = false;
     helper.textPos = v(helper.pos.x - (text.length / 2) * 12.5 - 15, helper.pos.y-15);
@@ -29,6 +30,8 @@ const helper = (pos, text) => {
                 [210, 0, 30, 30],
             ];
             else frames = [[0, 0, 30, 30]];
+            if(helper.dirX > 0) frames.forEach(f => f[1] = 30);
+            if(helper.dirX < 0) frames.forEach(f => f[1] = 0);
             return frames;
         }
     });
@@ -50,6 +53,10 @@ const helper = (pos, text) => {
             ctx.font = "25px Arial";
             ctx.fillText(helper.text, helper.textPos.x, helper.textPos.y);
         }
+    }
+    helper.update = ({ player }) => {
+        if(player.pos.x > helper.pos.x + helper.size.x) helper.dirX = 1;
+        if(player.pos.x + player.size.x < helper.pos.x) helper.dirX = -1;
     }
 
     return helper;

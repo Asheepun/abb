@@ -2,13 +2,13 @@ import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
 import entity from "/js/entity.js";
 import getAnimate from "/js/animate.js";
 
-export const obstacle = (pos, map) => {
+export const obstacle = (pos, map, offset = 0) => {
     const obstacle = entity({
         pos,
         img: "obstacle",
     });
     const mapPos = div(pos, 30);
-    if(map[mapPos.y-1][mapPos.x] !== "#") obstacle.img = "grass";
+    if(map[mapPos.y-1][mapPos.x+offset/30] !== "#") obstacle.img = "grass";
 
     return obstacle;
 }

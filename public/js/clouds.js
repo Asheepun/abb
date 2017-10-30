@@ -2,12 +2,12 @@ import { v, add, half, mul, div, sub, pipe, floor } from "/js/vector.js";
 import getMove from "/js/move.js";
 import entity from "/js/entity.js";
 
-const getClouds = (amount = 25) => {
+const getClouds = (amount = 50) => {
     const clouds = {
         entities: [],
     };
     //add clouds
-    const dist = 900/amount;
+    const dist = 1800/amount;
     for(let i = 0; i < amount; i++){
         const cloud = entity({
             pos: v(dist*i + Math.random()*60, 0),
@@ -21,7 +21,7 @@ const getClouds = (amount = 25) => {
             dir: v(1, 0),
             gravity: 0,
             speed: 0.03,
-            oubArea: [-60, 0, 1080, 600]
+            oubArea: [-60, 0, 1980, 600]
         });
         if(Math.random() < 0.5) cloud.dir.x = -1;
         if(Math.random() < 0.3) cloud.speed *= 0.8;

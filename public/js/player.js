@@ -10,8 +10,9 @@ const player = (pos = v(30, 300)) => {
         img: "player",
     });
     player.grounded = false;
+    player.dead = false;
     
-    player.move = getMove(player, {});
+    player.move = getMove(player, {oubArea: [0, 0, 900, 700]});
 
     player.animate = getAnimate(player, {
         delay: 4,
@@ -65,7 +66,7 @@ const player = (pos = v(30, 300)) => {
         else player.pos.x = 0;
     }
     player.handleOubY = () => {
-        if(player.velocity.y > 0) player.pos.y = 570;
+        if(player.velocity.y > 0) player.dead = true;
         else player.pos.y = 0;
         player.velocity.y = 0;
     }

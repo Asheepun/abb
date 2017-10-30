@@ -1,4 +1,4 @@
-const getKeyboardBinder = () => {
+const keyboardBinder = () => {
     const bindings = [];
     document.addEventListener("keydown", e => {
         for(let i = 0; i < bindings.length; i++){
@@ -19,13 +19,18 @@ const getKeyboardBinder = () => {
             }
         }
     });
-    return (key, func) => {
-        bindings.push({
-            key,
-            func,
-            down: false,
-        });
-    }
+    return {
+        add(key, func){
+            bindings.push({
+                key,
+                func,
+                down: false,
+            });
+        },
+        removeAll(){
+            bindings.splice(0, bindings.length);
+        }
+    };
 }
 
-export default getKeyboardBinder;
+export default keyboardBinder;

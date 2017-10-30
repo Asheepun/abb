@@ -1,13 +1,14 @@
-import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
+import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import { makeDrawAll } from "/js/loopAll.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
-import getKeyboardBinder from "/js/keyboardBinder.js";
+import keyboardBinder from "/js/keyboardBinder.js";
 import getPointer from "/js/pointer.js";
 import getClouds from "/js/clouds.js";
 import player from "/js/player.js";
 import entity from "/js/entity.js";
 import createCanvas from "/js/canvas.js";
 import createLevel from "/js/level.js";
+import levelTeplates from "/js/levelTemplates.js";
 
 const promiseAll = (...promises) => {
     return new Promise((resolve, reject) => {
@@ -19,37 +20,8 @@ const promiseAll = (...promises) => {
     });
 }
 
-const map = [
-    "..............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    "......................########",
-    "....................##########",
-    "....................##########",
-    "....................##########",
-    "@...................##########",
-    "...............B....##########",
-    ".....................#########",
-    "....................h#########",
-    "##................############",
-    "##...........#################",
-    "##...........#################",
-    "##...........#################",
-    "###.........##################",
-    "####.......###################",
-    "##############################",
-    "##############################",
-];
-
-const template = {
-    map,
-    help: "Click to move the box",
-};
-
 promiseAll(
     createCanvas(900, 600),
-    createLevel(template),
     loadSprites(
         "background1",
         "player",
@@ -59,70 +31,156 @@ promiseAll(
         "box",
         "cloud",
         "helper",
+        "point",
     ),
     loadAudio(
         0.5,
         "jump",
-        "talk"
+        "talk",
+        "point",
     ),
-).then(([ { c, ctx }, { obstacles, helpers, box, player }, sprites, audio ]) => {
+).then(([ { c, ctx }, sprites, audio ]) => {
 
     //initialize
     const WORLD = {
+        width: c.width,
+        height: c.height,
         timeScl: 16,
         lastTime: 0,
+        currentLevel: 0,
+        offset: v(0, 0),
+        state: undefined,
+        newSpawn: undefined,
         sprites,
         audio,
-        player,
-        box,
-        obstacles,
-        helpers,
-        clouds: getClouds(),
         pointer: getPointer(c),
     };
 
-    const drawAll = makeDrawAll(ctx, sprites);
+    WORLD.drawAll = makeDrawAll(ctx, sprites);
 
-    //add keyboard bindings
-    const addKeyboardBinding = getKeyboardBinder();
+    const keyboardBindings = keyboardBinder();
 
-    addKeyboardBinding("a", down => {
-        if(down) WORLD.player.dir.x-= 1;
-        else WORLD.player.dir.x += 1;
-    });
-    addKeyboardBinding("d", down => {
-        if(down) WORLD.player.dir.x += 1;
-        else WORLD.player.dir.x -= 1;
-    });
-    addKeyboardBinding("w", (down) => WORLD.player.jump(down, audio.jump));
+    const setup = () => {
+        keyboardBindings.removeAll();
+
+        //initialize level
+        const newLevel = createLevel(levelTeplates[WORLD.currentLevel]);
+        WORLD.player = newLevel.player;
+        WORLD.box = newLevel.box;
+        WORLD.obstacles = newLevel.obstacles;
+        WORLD.helpers = newLevel.helpers;
+        WORLD.points = newLevel.points;
+        WORLD.clouds = getClouds();
+        //add keybindings
+        keyboardBindings.add("a", down => {
+            if(down) WORLD.player.dir.x -= 1;
+            else WORLD.player.dir.x += 1;
+        });
+        keyboardBindings.add("d", down => {
+            if(down) WORLD.player.dir.x += 1;
+            else WORLD.player.dir.x -= 1;
+        });
+        keyboardBindings.add("w", (down) => WORLD.player.jump(down, WORLD.audio.jump));
+        
+        WORLD.startingAlpha = 1;
+        WORLD.offset = v(0, 0);
+        WORLD.state = game;
+    }
+
+    WORLD.state = setup;
     
-    const loop = (time = 0) => {
-        WORLD.timeScl = time - WORLD.lastTime;
-        WORLD.lastTime = time;
-    
+    const game = () => {
+        
         //update logic
         WORLD.box.update(WORLD);
         WORLD.player.move(WORLD);
-        WORLD.player.update();
         WORLD.helpers.checkCol(WORLD);
+        WORLD.points.checkCol(WORLD);
+        WORLD.player.update();
         WORLD.clouds.update(WORLD);
+        WORLD.helpers.update(WORLD);
         WORLD.player.animate(WORLD);
         WORLD.helpers.animate(WORLD);
     
-        //draw
-        ctx.drawImage(sprites.background1, 0, 0, c.width, c.height);
-        drawAll(
+        //check level end states
+        if(WORLD.points.entities.length <= 0) WORLD.state = switchLevel;
+        if(WORLD.player.dead) WORLD.state = setup;
+    
+        draw();
+    }
+
+    const draw = () => {
+        ctx.save();
+        ctx.translate(WORLD.offset.x, WORLD.offset.y);
+        ctx.drawImage(WORLD.sprites.background1, 0, 0, WORLD.width, WORLD.height);
+        ctx.drawImage(WORLD.sprites.background1, 900, 0, WORLD.width, WORLD.height);
+        WORLD.drawAll(
             WORLD.box,
             WORLD.obstacles,
             WORLD.helpers.entities,
+            WORLD.points.entities,
             WORLD.player,
             WORLD.clouds.entities,
         );
         WORLD.helpers.drawText(ctx);
+        ctx.restore();
+
+        //make shade in beginning of level
+        if(WORLD.startingAlpha > 0){
+            ctx.fillStyle = "black";
+            ctx.globalAlpha = WORLD.startingAlpha;
+            ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+            ctx.globalAlpha = 1;
+            WORLD.startingAlpha -= 0.05;
+        }
+    }
     
+    const switchLevel = () => {
+    
+        if(WORLD.offset.x === 0){
+            WORLD.currentLevel++;
+            //initialize level switch
+            const newLevel = createLevel(levelTeplates[WORLD.currentLevel], 900);
+            WORLD.obstacles = WORLD.obstacles.concat(newLevel.obstacles);
+            WORLD.helpers.entities = WORLD.helpers.entities.concat(newLevel.helpers.entities);
+            WORLD.points.entities = WORLD.points.entities.concat(newLevel.points.entities);
+            WORLD.newSpawn = newLevel.player.pos;
+        }
+
+        //level switch logic
+        WORLD.offset.x -= 5;
+        if(WORLD.player.pos.x < WORLD.newSpawn.x){
+            const dir = pipe(
+                sub(WORLD.player.pos, WORLD.newSpawn),
+                normalize,
+                reverse,
+                x => mul(x, 3),
+            );
+            WORLD.player.pos = add(WORLD.player.pos, dir);
+            WORLD.player.update();
+        }
+        WORLD.clouds.update(WORLD);
+    
+        if(WORLD.offset.x <= -900){
+            WORLD.state = setup;
+        }
+    
+        draw();
+        //make player more visible
+        ctx.save();
+        ctx.translate(WORLD.offset.x, WORLD.offset.y);
+        WORLD.player.draw(ctx, sprites);
+        ctx.restore();
+    
+    };
+
+    const loop = (time = 0) => {
+        WORLD.timeScl = time - WORLD.lastTime;
+        WORLD.lastTime = time;
+        WORLD.state();
         requestAnimationFrame(loop);
-    
     }
     
     loop();
 });
+

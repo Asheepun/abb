@@ -42,12 +42,12 @@ const player = (pos = v(30, 300)) => {
         }
     });
 
-    player.jump = (down, sound) => {
-        if(down && player.grounded){ 
+    player.jump = (sound) => {
+        if(player.grounded){ 
             sound.load();
             sound.play();
             player.velocity.y = -0.8
-        }else if(player.velocity.y < 0) player.velocity.y = 0;
+        }
     }
 
     player.handleColissionX = (object) => {

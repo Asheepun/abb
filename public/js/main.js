@@ -1,8 +1,7 @@
 import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import { makeDrawAll } from "/js/loopAll.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
-import keyboardBinder from "/js/keyboardBinder.js";
-import getPointer from "/js/pointer.js";
+import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
 import player from "/js/player.js";
 import entity from "/js/entity.js";
@@ -22,6 +21,16 @@ const promiseAll = (...promises) => {
 
 promiseAll(
     createCanvas(900, 600),
+    createKeys(
+        "w",
+        "a",
+        "s",
+        "d",
+        "W",
+        "A",
+        "S",
+        "D",
+    ),
     loadSprites(
         "background1",
         "player",
@@ -41,33 +50,33 @@ promiseAll(
         "point",
         "main",
     ),
-).then(([ { c, ctx }, sprites, audio ]) => {
+).then(([ { c, ctx, scale, pointer }, keys, sprites, audio  ]) => {
 
     //initialize
     const WORLD = {
-        width: c.width,
-        height: c.height,
+        width: 900,
+        height: 600,
+        scale,
+        pointer,
+        keys,
+        sprites,
+        audio,
         timeScl: 16,
         lastTime: 0,
         currentLevel: 0,
         offset: v(0, 0),
         state: undefined,
         newSpawn: undefined,
-        sprites,
-        audio,
-        pointer: getPointer(c),
+        nextLevelCounter: 0,
     };
 
     WORLD.drawAll = makeDrawAll(ctx, sprites);
-
-    const keyboardBindings = keyboardBinder();
 
     audio.main.volume = 1;
     audio.main.loop = true;
     audio.main.play();
 
     const setup = () => {
-        keyboardBindings.removeAll();
 
         //initialize level
         const newLevel = createLevel(levelTeplates[WORLD.currentLevel]);
@@ -78,25 +87,25 @@ promiseAll(
         WORLD.points = newLevel.points;
         WORLD.grass = newLevel.grass;
         WORLD.clouds = getClouds();
-        //add keybindings
-        keyboardBindings.add("a", down => {
-            if(down) WORLD.player.dir.x -= 1;
-            else WORLD.player.dir.x += 1;
-        });
-        keyboardBindings.add("d", down => {
-            if(down) WORLD.player.dir.x += 1;
-            else WORLD.player.dir.x -= 1;
-        });
-        keyboardBindings.add("w", (down) => WORLD.player.jump(down, WORLD.audio.jump));
         
         WORLD.startingAlpha = 1;
         WORLD.offset = v(0, 0);
         WORLD.state = game;
+
     }
 
     WORLD.state = setup;
     
     const game = () => {
+
+        //check keys
+        if(keys.a.down) WORLD.player.dir.x = -1;
+        if(keys.d.down) WORLD.player.dir.x = 1;
+        if(keys.a.down && keys.d.down
+        || !keys.a.down && !keys.d.down) WORLD.player.dir.x = 0;
+        if(keys.w.pressed){
+            WORLD.player.jump(WORLD.audio.jump);
+        }else if(keys.w.upped && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
         
         //update logic
         WORLD.box.update(WORLD);
@@ -110,7 +119,18 @@ promiseAll(
         WORLD.helpers.animate(WORLD);
     
         //check level end states
-        if(WORLD.points.entities.length <= 0) WORLD.state = switchLevel;
+        if(WORLD.points.entities.length <= 0 && WORLD.nextLevelCounter <= 0){
+            WORLD.nextLevelCounter = 4;
+            const count = () => {
+                WORLD.nextLevelCounter--;
+                if(WORLD.nextLevelCounter <= 0){
+                    WORLD.state = switchLevel;
+                    return;
+                }
+                setTimeout(count, 1000);
+            }
+            count();
+        }
         if(WORLD.player.dead) WORLD.state = setup;
     
         draw();
@@ -118,6 +138,7 @@ promiseAll(
 
     const draw = () => {
         ctx.save();
+        ctx.scale(WORLD.scale, WORLD.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
         ctx.drawImage(WORLD.sprites.background1, 0, 0, WORLD.width, WORLD.height);
         ctx.drawImage(WORLD.sprites.background1, 900, 0, WORLD.width, WORLD.height);
@@ -131,7 +152,11 @@ promiseAll(
             WORLD.clouds.entities,
         );
         WORLD.helpers.drawText(ctx);
-        ctx.restore();
+        if(WORLD.nextLevelCounter){
+            ctx.fillStyle = "red";
+            ctx.font = "25px Arial";
+            ctx.fillText(WORLD.nextLevelCounter, WORLD.player.center.x - 7.5, WORLD.player.pos.y-5);
+        }
 
         //make shade in beginning of level
         if(WORLD.startingAlpha > 0){
@@ -141,6 +166,8 @@ promiseAll(
             ctx.globalAlpha = 1;
             WORLD.startingAlpha -= 0.05;
         }
+
+        ctx.restore();
     }
     
     const switchLevel = () => {
@@ -157,26 +184,27 @@ promiseAll(
         }
 
         //level switch logic
-        WORLD.offset.x -= 5;
+        WORLD.offset.x -= 7;
         if(WORLD.player.pos.x < WORLD.newSpawn.x){
             const dir = pipe(
                 sub(WORLD.player.pos, WORLD.newSpawn),
                 normalize,
                 reverse,
-                x => mul(x, 3),
+                x => mul(x, 5),
             );
             WORLD.player.pos = add(WORLD.player.pos, dir);
             WORLD.player.update();
         }
         WORLD.clouds.update(WORLD);
     
-        if(WORLD.offset.x <= -900){
+        if(WORLD.offset.x <= -WORLD.width){
             WORLD.state = setup;
         }
     
         draw();
         //make player more visible
         ctx.save();
+        ctx.scale(WORLD.scale, WORLD.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
         WORLD.player.draw(ctx, sprites);
         ctx.restore();
@@ -187,6 +215,8 @@ promiseAll(
         WORLD.timeScl = time - WORLD.lastTime;
         WORLD.lastTime = time;
         WORLD.state();
+        WORLD.pointer.pressed = false;
+        WORLD.keys.reset();
         requestAnimationFrame(loop);
     }
     

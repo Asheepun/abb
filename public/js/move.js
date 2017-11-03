@@ -5,6 +5,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
     entity.dir = dir;
     entity.speed = speed;
     entity.gravity = gravity;
+    entity.oubArea = oubArea;
     entity.velocity = v(0, 0);
     entity.grounded = false;
     const maxFallSpeed = 0.4;
@@ -21,7 +22,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
         //moveY
         entity.pos.y += entity.velocity.y * timeScl;
         col = checkCol(entity, obstacles);
-        oub = checkOub(entity, ...oubArea);
+        oub = checkOub(entity, ...entity.oubArea);
         if(col && entity.handleColissionY){
             entity.handleColissionY(col);
             entity.grounded = true;
@@ -32,7 +33,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
         //moveX
         entity.pos.x += entity.velocity.x * timeScl;
         col = checkCol(entity, obstacles);
-        oub = checkOub(entity, ...oubArea);
+        oub = checkOub(entity, ...entity.oubArea);
         if(col && entity.handleColissionX) entity.handleColissionX(col);
         if(oub && entity.handleOubX) entity.handleOubX();
     }

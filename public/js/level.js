@@ -6,23 +6,29 @@ import entity from "/js/entity.js";
 import player from "/js/player.js";
 import getAnimate from "/js/animate.js";
 
-const createLevel = ({ map, help }, offsetX = 0) => {
+const createLevel = ({ map, help, enemies }, offsetX = 0) => {
     const level = {
-        obstacles: [],
-        grass: [],
-        helpers: matrix("checkCol", "drawText", "animate", "update"),
-        points: matrix("checkCol"),
+        obstacles: set(),
+        grass: set(),
+        points: set(),
+        enemies: set(),
         box,
         player,
+        helper,
     }
+    let enemy = 0;
     let pos;
     map.forEach((row, y) => strEach(row, (tile, x) => {
         pos = v(x*30 + offsetX, y*30);
         if(tile === "@") level.player = player(pos);
         if(tile === "B") level.box = box(pos);
         if(tile === "#") level.obstacles.push(obstacle(pos, map, -offsetX));
-        if(tile === "H") level.helpers.entities.push(helper(pos, help));
-        if(tile === "P") level.points.entities.push(point(v(pos.x + 5, pos.y + 5)));
+        if(tile === "H") level.helper = helper(pos, help);
+        if(tile === "P") level.points.push(point(v(pos.x + 5, pos.y + 5)));
+        if(tile === "E"){
+            level.enemies.push(enemies[enemy](pos));
+            enemy++;
+        }
         if(y !== map.length-1
         && map[y+1][x] === "#" 
         && tile !== "#") level.grass.push(grass(pos));
@@ -42,9 +48,10 @@ const point = (pos) => {
         if(checkProx(point.center, [player.center], 30)){
             audio.point.load();
             audio.point.play();
-            points.entities.splice(points.entities.indexOf(point), 1);
+            points.splice(points.indexOf(point), 1);
         }
     }
+    point.update = point.makeUpdate("checkCol");
 
     return point;
 }
@@ -59,15 +66,20 @@ const grass = (pos) => {
     return grass;
 }
 
-const matrix = (...funcs) => {
-    const matrix = {
-        entities: [],
-    };
-    funcs.forEach(func => {
-        matrix[func] = (WORLD) => matrix.entities.forEach(e => e[func](WORLD));
-    });
+export const set = () => {
+    const set = [];
 
-    return matrix;
+    set.update = (WORLD) => {
+        for(let i = 0; i < set.length; i++){
+            set[i].update(WORLD);
+        }
+    }
+    set.draw = (ctx) => {
+        for(let i = 0; i < set.length; i++){
+            set[i].update(ctx);
+        }
+    }
+    return set;
 }
 
 const strEach = (str, func) => {

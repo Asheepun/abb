@@ -1,5 +1,5 @@
 import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
-import { makeDrawAll } from "/js/loopAll.js";
+import { makeDrawAll, makeUpdateAll } from "/js/loopAll.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
@@ -42,6 +42,7 @@ promiseAll(
         "helper",
         "point",
         "grass",
+        "enemy",
     ),
     loadAudio(
         0.3,
@@ -63,7 +64,7 @@ promiseAll(
         audio,
         timeScl: 16,
         lastTime: 0,
-        currentLevel: 0,
+        currentLevel: 4,
         offset: v(0, 0),
         state: undefined,
         newSpawn: undefined,
@@ -71,6 +72,7 @@ promiseAll(
     };
 
     WORLD.drawAll = makeDrawAll(ctx, sprites);
+    WORLD.updateAll = makeUpdateAll(WORLD);
 
     audio.main.volume = 1;
     audio.main.loop = true;
@@ -83,7 +85,8 @@ promiseAll(
         WORLD.player = newLevel.player;
         WORLD.box = newLevel.box;
         WORLD.obstacles = newLevel.obstacles;
-        WORLD.helpers = newLevel.helpers;
+        WORLD.helper = newLevel.helper;
+        WORLD.enemies = newLevel.enemies;
         WORLD.points = newLevel.points;
         WORLD.grass = newLevel.grass;
         WORLD.clouds = getClouds();
@@ -108,18 +111,17 @@ promiseAll(
         }else if(keys.w.upped && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
         
         //update logic
-        WORLD.box.update(WORLD);
-        WORLD.player.move(WORLD);
-        WORLD.helpers.checkCol(WORLD);
-        WORLD.points.checkCol(WORLD);
-        WORLD.player.update();
-        WORLD.clouds.update(WORLD);
-        WORLD.helpers.update(WORLD);
-        WORLD.player.animate(WORLD);
-        WORLD.helpers.animate(WORLD);
+        WORLD.updateAll(
+            WORLD.box,
+            WORLD.enemies,
+            WORLD.player,
+            WORLD.helper,
+            WORLD.points,
+            WORLD.clouds,
+        );
     
         //check level end states
-        if(WORLD.points.entities.length <= 0 && WORLD.nextLevelCounter <= 0){
+        if(WORLD.points.length <= 0 && WORLD.nextLevelCounter <= 0){
             WORLD.nextLevelCounter = 4;
             const count = () => {
                 WORLD.nextLevelCounter--;
@@ -145,16 +147,17 @@ promiseAll(
         WORLD.drawAll(
             WORLD.box,
             WORLD.obstacles,
-            WORLD.helpers.entities,
-            WORLD.points.entities,
+            WORLD.helper,
+            WORLD.points,
             WORLD.player,
+            WORLD.enemies,
             WORLD.grass,
-            WORLD.clouds.entities,
+            WORLD.clouds,
         );
-        WORLD.helpers.drawText(ctx);
+        WORLD.helper.drawText(ctx);
         if(WORLD.nextLevelCounter){
             ctx.fillStyle = "red";
-            ctx.font = "25px Arial";
+            ctx.font = "25px game";
             ctx.fillText(WORLD.nextLevelCounter, WORLD.player.center.x - 7.5, WORLD.player.pos.y-5);
         }
 
@@ -176,10 +179,10 @@ promiseAll(
             WORLD.currentLevel++;
             //initialize level switch
             const newLevel = createLevel(levelTeplates[WORLD.currentLevel], 900);
+            WORLD.helper = newLevel.helper;
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
             newLevel.grass.forEach(p => WORLD.grass.push(p));
-            newLevel.helpers.entities.forEach(h => WORLD.helpers.entities.push(h));
-            newLevel.points.entities.forEach(p => WORLD.points.entities.push(p));
+            newLevel.points.forEach(p => WORLD.points.push(p));
             WORLD.newSpawn = newLevel.player.pos;
         }
 
@@ -193,7 +196,7 @@ promiseAll(
                 x => mul(x, 5),
             );
             WORLD.player.pos = add(WORLD.player.pos, dir);
-            WORLD.player.update();
+            WORLD.player.fixCenter();
         }
         WORLD.clouds.update(WORLD);
     

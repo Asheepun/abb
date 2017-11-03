@@ -28,8 +28,14 @@ const entity = ({ pos = v(0, 0), size = v(30, 30), img = "obstacle", alpha = 1, 
         ctx.restore();
     }
 
-    entity.update = () => {
+    entity.fixCenter = () => {
         entity.center = add(entity.pos, half(entity.size));
+    }
+
+    entity.makeUpdate = (...methods) => (WORLD) => {
+        for(let i = 0; i < methods.length; i++){
+            entity[methods[i]](WORLD);
+        }
     }
 
     return entity;

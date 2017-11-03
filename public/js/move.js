@@ -1,5 +1,5 @@
 import { v, add, half, mul, div, sub, pipe } from "/js/vector.js";
-import { checkCol, checkOub } from "/js/colission.js";
+import { checkCol, checkOub, checkPlatCol } from "/js/colission.js";
 
 const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea = [0, 0, 900, 600] }) => {
     entity.dir = dir;
@@ -9,7 +9,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
     entity.velocity = v(0, 0);
     entity.grounded = false;
     const maxFallSpeed = 0.4;
-    let col, oub;
+    let col, oub, platCol;
 
     return ({ timeScl, obstacles, box }) => {
 
@@ -23,11 +23,11 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
         entity.pos.y += entity.velocity.y * timeScl;
         col = checkCol(entity, obstacles);
         oub = checkOub(entity, ...entity.oubArea);
+        platCol = checkPlatCol(entity, box);
         if(col && entity.handleColissionY){
             entity.handleColissionY(col);
-            entity.grounded = true;
         }else entity.grounded = false;
-        if(entity.checkBoxCol) entity.checkBoxCol(box);
+        if(platCol && entity.handlePlatCol) entity.handlePlatCol(box);
         if(oub && entity.handleOubY) entity.handleOubY();
 
         //moveX

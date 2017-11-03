@@ -30,3 +30,21 @@ export const checkProx = (vec, vecs, length) => {
     }
     return false;
 }
+
+export const checkPlatCol = (obj, objects) => {
+    const cc = (o1, o2) => {
+        if(o1.pos.x < o2.pos.x + o2.size.x
+        && o1.pos.x + o1.size.x > o2.pos.x
+        && o1.pos.y + o1.size.y >= o2.pos.y
+        && o1.pos.y + o1.size.y < o2.pos.y + 10){
+            return true;
+        }
+    }
+    if(objects.constructor === Array){
+        for(let i = 0; i < objects.length; i++){
+            const ob = objects[i];
+            if(cc(obj, ob)) return ob;
+        }
+    }else if(cc(obj, objects)) return objects;
+    return false;
+}

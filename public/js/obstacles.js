@@ -29,7 +29,7 @@ export const box = (pos) => {
         if(pointer.down && !col){
             box.pos.x = align(pointer.pos.x, 30);
             box.pos.y = align(pointer.pos.y, 30);
-            box.center = add(box.pos, half(box.size));
+            box.fixCenter();
         }
     }
     return box;

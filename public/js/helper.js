@@ -9,7 +9,7 @@ const helper = (pos, text) => {
     helper.text = text;
     helper.talking = false;
     helper.textPos = v(helper.pos.x - (text.length / 2) * 12.5 - 15, helper.pos.y-15);
-    while(helper.textPos.x + helper.text.length*12.5 > 900){
+    while(helper.textPos.x + helper.text.length*10 > 900){
         helper.textPos.x -= 1;
     }
     while(helper.textPos.x < 15){
@@ -35,7 +35,6 @@ const helper = (pos, text) => {
             return frames;
         }
     });
-
     let col;
     helper.checkCol = ({ player, audio }) => {
         col = checkCol(helper, player);
@@ -47,17 +46,21 @@ const helper = (pos, text) => {
             }
         }else helper.talking = false;
     }
-    helper.drawText = (ctx) => {
-        if(helper.talking){
-            ctx.fillStyle = "white";
-            ctx.font = "25px Arial";
-            ctx.fillText(helper.text, helper.textPos.x, helper.textPos.y);
-        }
-    }
-    helper.update = ({ player }) => {
+    helper.look = ({ player }) => {
         if(player.pos.x > helper.pos.x + helper.size.x) helper.dirX = 1;
         if(player.pos.x + player.size.x < helper.pos.x) helper.dirX = -1;
     }
+
+    helper.update = helper.makeUpdate("checkCol", "look", "animate");
+
+    helper.drawText = (ctx) => {
+        if(helper.talking){
+            ctx.fillStyle = "white";
+            ctx.font = "20px game";
+            ctx.fillText(helper.text, helper.textPos.x, helper.textPos.y);
+        }
+    }
+
 
     return helper;
 }

@@ -1,11 +1,10 @@
 import { v, add, half, mul, div, sub, pipe, floor } from "/js/vector.js";
 import getMove from "/js/move.js";
 import entity from "/js/entity.js";
+import { set } from "/js/level.js";
 
 const getClouds = (amount = 50) => {
-    const clouds = {
-        entities: [],
-    };
+    const clouds = set();
     //add clouds
     const dist = 1800/amount;
     for(let i = 0; i < amount; i++){
@@ -39,15 +38,9 @@ const getClouds = (amount = 50) => {
             else cloud.pos.x = 1860;
             cloud.init();
         }
+        cloud.update = cloud.makeUpdate("move", "fixCenter");
 
-        clouds.entities.push(cloud);
-    }
-
-    clouds.update = (WORLD) => {
-        for(let i = 0; i < clouds.entities.length; i++){
-            clouds.entities[i].move(WORLD);
-            clouds.entities[i].update();
-        }
+        clouds.push(cloud);
     }
     return clouds; 
 }

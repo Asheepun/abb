@@ -2,6 +2,7 @@ import { v, add, half, mul, div, sub, pipe, round } from "/js/vector.js";
 import getMove from "/js/move.js";
 import entity from "/js/entity.js";
 import getAnimate from "/js/animate.js";
+import { checkCol } from "/js/colission.js";
 
 const player = (pos = v(30, 300)) => {
     const player = entity({
@@ -56,6 +57,7 @@ const player = (pos = v(30, 300)) => {
     }
     player.handleColissionY = (object) => {
         if(player.velocity.y > 0){
+            player.grounded = true;
             player.pos.y = object.pos.y - player.size.y;
             player.pos = round(player.pos);
         }else player.pos.y = object.pos.y + object.size.y;
@@ -70,18 +72,20 @@ const player = (pos = v(30, 300)) => {
         else player.pos.y = 0;
         player.velocity.y = 0;
     }
-    player.checkBoxCol = (box) => {
-        if(player.pos.x < box.pos.x + box.size.x
-        && player.pos.x + player.size.x > box.pos.x
-        && player.pos.y + player.size.y >= box.pos.y
-        && player.pos.y + player.size.y < box.pos.y + 10
-        && player.velocity.y > 0){
-            player.pos.y = box.pos.y - player.size.y;
+    player.handlePlatCol = (object) => {
+        if(player.velocity.y > 0){
+            player.pos.y = object.pos.y - player.size.y;
             player.grounded = true;
             player.velocity.y = 0;
             player.pos = round(player.pos);
         }
     }
+    player.checkHit = ({ enemies }) => {
+        if(checkCol(player, enemies)){
+            player.dead = true;
+        }
+    }
+    player.update = player.makeUpdate("move", "checkHit", "fixCenter", "animate");
 
     return player;
 }

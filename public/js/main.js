@@ -3,6 +3,7 @@ import { makeDrawAll, makeUpdateAll } from "/js/loopAll.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
+import getMove from "/js/move.js";
 import player from "/js/player.js";
 import entity from "/js/entity.js";
 import createCanvas from "/js/canvas.js";
@@ -42,6 +43,7 @@ promiseAll(
         "helper",
         "point",
         "grass",
+        "grass-particle",
         "enemy",
     ),
     loadAudio(
@@ -64,11 +66,9 @@ promiseAll(
         audio,
         timeScl: 16,
         lastTime: 0,
-        currentLevel: 4,
-        offset: v(0, 0),
+        currentLevel: 0,
         state: undefined,
         newSpawn: undefined,
-        nextLevelCounter: 0,
     };
 
     WORLD.drawAll = makeDrawAll(ctx, sprites);
@@ -92,6 +92,7 @@ promiseAll(
         WORLD.clouds = getClouds();
         
         WORLD.startingAlpha = 1;
+        WORLD.nextLevelCounter = undefined;
         WORLD.offset = v(0, 0);
         WORLD.state = game;
 
@@ -107,7 +108,7 @@ promiseAll(
         if(keys.a.down && keys.d.down
         || !keys.a.down && !keys.d.down) WORLD.player.dir.x = 0;
         if(keys.w.pressed){
-            WORLD.player.jump(WORLD.audio.jump);
+            WORLD.player.jump(WORLD.audio.jump, WORLD);
         }else if(keys.w.upped && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
         
         //update logic
@@ -118,22 +119,22 @@ promiseAll(
             WORLD.helper,
             WORLD.points,
             WORLD.clouds,
+            WORLD.grass,
         );
     
         //check level end states
-        if(WORLD.points.length <= 0 && WORLD.nextLevelCounter <= 0){
+        if(WORLD.points.length <= 0 && WORLD.nextLevelCounter === undefined)
             WORLD.nextLevelCounter = 4;
-            const count = () => {
-                WORLD.nextLevelCounter--;
-                if(WORLD.nextLevelCounter <= 0){
-                    WORLD.state = switchLevel;
-                    return;
-                }
-                setTimeout(count, 1000);
-            }
-            count();
+        if(WORLD.nextLevelCounter > 0){
+            let sub = Math.round(WORLD.timeScl*100)
+            WORLD.nextLevelCounter -= sub/100000;
+        }
+        if(WORLD.points.length <= 0 && WORLD.nextLevelCounter <= 1){
+            WORLD.currentLevel++;
+            WORLD.state = switchLevel;
         }
         if(WORLD.player.dead) WORLD.state = setup;
+            
     
         draw();
     }
@@ -158,7 +159,7 @@ promiseAll(
         if(WORLD.nextLevelCounter){
             ctx.fillStyle = "red";
             ctx.font = "25px game";
-            ctx.fillText(WORLD.nextLevelCounter, WORLD.player.center.x - 7.5, WORLD.player.pos.y-5);
+            ctx.fillText(Math.floor(WORLD.nextLevelCounter), WORLD.player.center.x - 7.5, WORLD.player.pos.y-5);
         }
 
         //make shade in beginning of level

@@ -71,7 +71,7 @@ export const set = () => {
 
     set.update = (WORLD) => {
         for(let i = 0; i < set.length; i++){
-            set[i].update(WORLD);
+            if(set[i].update) set[i].update(WORLD);
         }
     }
     set.draw = (ctx) => {

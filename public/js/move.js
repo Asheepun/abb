@@ -1,5 +1,6 @@
 import { v, add, half, mul, div, sub, pipe } from "/js/vector.js";
 import { checkCol, checkOub, checkPlatCol } from "/js/colission.js";
+import entity from "/js/entity.js";
 
 const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea = [0, 0, 900, 600] }) => {
     entity.dir = dir;
@@ -11,7 +12,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
     const maxFallSpeed = 0.4;
     let col, oub, platCol;
 
-    return ({ timeScl, obstacles, box }) => {
+    return ({ timeScl, obstacles, box, grass }) => {
 
         entity.velocity.x = entity.dir.x*entity.speed;
 
@@ -25,6 +26,9 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
         oub = checkOub(entity, ...entity.oubArea);
         platCol = checkPlatCol(entity, box);
         if(col && entity.handleColissionY){
+            if(!entity.grounded && entity.velocity.y > 0){
+                pixelEffect(grass, entity);
+            }
             entity.handleColissionY(col);
         }else entity.grounded = false;
         if(platCol && entity.handlePlatCol) entity.handlePlatCol(box);
@@ -36,6 +40,36 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
         oub = checkOub(entity, ...entity.oubArea);
         if(col && entity.handleColissionX) entity.handleColissionX(col);
         if(oub && entity.handleOubX) entity.handleOubX();
+    }
+}
+
+const pixelEffect = (array, object) => {
+    //pixel effect
+    for(let i = 0; i < 15; i++){
+        const pixel = entity({
+            pos: v(object.pos.x + Math.random()*(object.size.x-10) + 5, object.pos.y + object.size.y),
+            img: "grass-particle",
+            size: v(5, 5),
+            imgPos: [0, 0, 5, 5]
+        });
+        if(Math.random() < 0.4) pixel.img = "player";
+        pixel.move = getMove(pixel, {
+            gravity: 0.02,
+        });
+        pixel.velocity.y = -Math.random()*0.2 - 0.1;
+        if(pixel.pos.x > object.center.x) pixel.dir.x = 1;
+        else pixel.dir.x = -1;
+        pixel.speed = Math.random()*0.1;
+        let fade = 0.005;
+        pixel.fade = () => {
+            fade *= 1.2;
+            pixel.alpha -= fade;
+            if(pixel.alpha <= 0) pixel.remove();
+        }
+        pixel.remove = () => array.splice(array.indexOf(pixel), 1);
+            
+        pixel.update = pixel.makeUpdate("move", "fixCenter", "fade");
+        array.push(pixel);
     }
 }
 

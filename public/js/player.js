@@ -2,7 +2,7 @@ import { v, add, half, mul, div, sub, pipe, round } from "/js/vector.js";
 import getMove from "/js/move.js";
 import entity from "/js/entity.js";
 import getAnimate from "/js/animate.js";
-import { checkCol } from "/js/colission.js";
+import { checkCol, checkProx } from "/js/colission.js";
 
 const player = (pos = v(30, 300)) => {
     const player = entity({
@@ -43,7 +43,7 @@ const player = (pos = v(30, 300)) => {
         }
     });
 
-    player.jump = (sound) => {
+    player.jump = (sound, WORLD) => {
         if(player.grounded){ 
             sound.load();
             sound.play();
@@ -81,7 +81,7 @@ const player = (pos = v(30, 300)) => {
         }
     }
     player.checkHit = ({ enemies }) => {
-        if(checkCol(player, enemies)){
+        if(checkProx(player.center, enemies.map(e => e.center), 15 + 25)){
             player.dead = true;
         }
     }

@@ -8,7 +8,7 @@ export const obstacle = (pos, map, offset = 0) => {
         img: "obstacle",
     });
     const mapPos = div(pos, 30);
-    if(map[mapPos.y-1][mapPos.x+offset/30] !== "#") obstacle.img = "obstacle-grass";
+    if(mapPos.y !== 0 && map[mapPos.y-1][mapPos.x+offset/30] !== "#") obstacle.img = "obstacle-grass";
 
     return obstacle;
 }

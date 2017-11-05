@@ -1,14 +1,16 @@
 import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
-import { makeDrawAll, makeUpdateAll } from "/js/loopAll.js";
+import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
 import getMove from "/js/move.js";
 import player from "/js/player.js";
 import entity from "/js/entity.js";
+import button from "/js/button.js";
 import createCanvas from "/js/canvas.js";
-import createLevel from "/js/level.js";
+import createLevel, { strEach, set } from "/js/level.js";
 import levelTeplates from "/js/levelTemplates.js";
+import { setupHome } from "/js/home.js";
 
 const promiseAll = (...promises) => {
     return new Promise((resolve, reject) => {
@@ -31,6 +33,7 @@ promiseAll(
         "A",
         "S",
         "D",
+        "h",
     ),
     loadSprites(
         "background1",
@@ -45,6 +48,10 @@ promiseAll(
         "grass",
         "grass-particle",
         "enemy",
+        "planks",
+        "arrow-right",
+        "arrow-left",
+        "play-btn",
     ),
     loadAudio(
         0.3,
@@ -52,6 +59,8 @@ promiseAll(
         "talk",
         "point",
         "main",
+        "yes-btn",
+        "not-btn",
     ),
 ).then(([ { c, ctx, scale, pointer }, keys, sprites, audio  ]) => {
 
@@ -67,8 +76,14 @@ promiseAll(
         timeScl: 16,
         lastTime: 0,
         currentLevel: 0,
+        furtestLevel: 0,
         state: undefined,
         newSpawn: undefined,
+        buttons: [],
+        states: {
+            setupHome,
+        },
+        spliceAll,
     };
 
     WORLD.drawAll = makeDrawAll(ctx, sprites);
@@ -78,7 +93,7 @@ promiseAll(
     audio.main.loop = true;
     audio.main.play();
 
-    const setup = () => {
+    WORLD.states.setup = () => {
 
         //initialize level
         const newLevel = createLevel(levelTeplates[WORLD.currentLevel]);
@@ -93,16 +108,15 @@ promiseAll(
         
         WORLD.startingAlpha = 1;
         WORLD.nextLevelCounter = undefined;
+        if(WORLD.currentLevel > WORLD.furtestLevel) WORLD.furtestLevel = WORLD.currentLevel;
         WORLD.offset = v(0, 0);
-        WORLD.state = game;
+        WORLD.state = WORLD.states.game;
 
     }
 
-    WORLD.state = setup;
-    
-    const game = () => {
+    WORLD.state = WORLD.states.setup;
 
-        //check keys
+    WORLD.controlPlayerKeys = () => {
         if(keys.a.down) WORLD.player.dir.x = -1;
         if(keys.d.down) WORLD.player.dir.x = 1;
         if(keys.a.down && keys.d.down
@@ -110,7 +124,16 @@ promiseAll(
         if(keys.w.pressed){
             WORLD.player.jump(WORLD.audio.jump, WORLD);
         }else if(keys.w.upped && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
-        
+    }
+    
+    WORLD.states.game = () => {
+
+        //check keys
+        WORLD.controlPlayerKeys();
+        if(keys.h.down){
+            WORLD.state = WORLD.states.setupHome;
+        }
+
         //update logic
         WORLD.updateAll(
             WORLD.box,
@@ -130,21 +153,24 @@ promiseAll(
             WORLD.nextLevelCounter -= sub/100000;
         }
         if(WORLD.points.length <= 0 && WORLD.nextLevelCounter <= 1){
-            WORLD.currentLevel++;
-            WORLD.state = switchLevel;
+            WORLD.state = WORLD.states.switchLevel;
         }
-        if(WORLD.player.dead) WORLD.state = setup;
+        if(WORLD.player.dead){
+            WORLD.state = WORLD.states.setup;
+        }
             
     
-        draw();
+        WORLD.draw();
     }
 
-    const draw = () => {
+    WORLD.draw = () => {
         ctx.save();
         ctx.scale(WORLD.scale, WORLD.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
         ctx.drawImage(WORLD.sprites.background1, 0, 0, WORLD.width, WORLD.height);
         ctx.drawImage(WORLD.sprites.background1, 900, 0, WORLD.width, WORLD.height);
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 600, 900, 600);
         WORLD.drawAll(
             WORLD.box,
             WORLD.obstacles,
@@ -174,7 +200,7 @@ promiseAll(
         ctx.restore();
     }
     
-    const switchLevel = () => {
+    WORLD.states.switchLevel = () => {
     
         if(WORLD.offset.x === 0){
             WORLD.currentLevel++;
@@ -202,10 +228,10 @@ promiseAll(
         WORLD.clouds.update(WORLD);
     
         if(WORLD.offset.x <= -WORLD.width){
-            WORLD.state = setup;
+            WORLD.state = WORLD.states.setup;
         }
     
-        draw();
+        WORLD.draw();
         //make player more visible
         ctx.save();
         ctx.scale(WORLD.scale, WORLD.scale);
@@ -213,12 +239,13 @@ promiseAll(
         WORLD.player.draw(ctx, sprites);
         ctx.restore();
     
-    };
+    }
+
 
     const loop = (time = 0) => {
         WORLD.timeScl = time - WORLD.lastTime;
         WORLD.lastTime = time;
-        WORLD.state();
+        WORLD.state(WORLD, ctx);
         WORLD.pointer.pressed = false;
         WORLD.keys.reset();
         requestAnimationFrame(loop);
@@ -226,4 +253,3 @@ promiseAll(
     
     loop();
 });
-

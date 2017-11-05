@@ -12,9 +12,9 @@ const createLevel = ({ map, help, enemies }, offsetX = 0) => {
         grass: set(),
         points: set(),
         enemies: set(),
-        box,
+        box: box(),
         player,
-        helper,
+        helper: helper(),
     }
     let enemy = 0;
     let pos;
@@ -82,7 +82,7 @@ export const set = () => {
     return set;
 }
 
-const strEach = (str, func) => {
+export const strEach = (str, func) => {
     for(let i = 0; i < str.length; i++){
         func(str[i], i);
     }

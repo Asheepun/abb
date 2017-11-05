@@ -27,7 +27,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
         platCol = checkPlatCol(entity, box);
         if(col && entity.handleColissionY){
             if(!entity.grounded && entity.velocity.y > 0){
-                pixelEffect(grass, entity);
+                hitGroundParticleEffect(grass, entity);
             }
             entity.handleColissionY(col);
         }else entity.grounded = false;
@@ -43,9 +43,9 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
     }
 }
 
-const pixelEffect = (array, object) => {
+const hitGroundParticleEffect = (array, object) => {
     //pixel effect
-    for(let i = 0; i < 15; i++){
+    for(let i = 0; i <   Math.random()*15; i++){
         const pixel = entity({
             pos: v(object.pos.x + Math.random()*(object.size.x-10) + 5, object.pos.y + object.size.y),
             img: "grass-particle",

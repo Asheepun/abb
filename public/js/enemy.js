@@ -2,7 +2,7 @@ import { v } from "/js/vector.js";
 import entity from "/js/entity.js";
 import getMove from "/js/move.js";
 
-const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 30, 30], frame2 = [32, 0, 30, 30] }) => {
+const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210, 210], frame2 = [224, 0, 210, 210] }) => {
     const enemy = entity({
         pos,
         size,
@@ -61,9 +61,6 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 30, 
 export const bouncer = (pos) => enemy({
     pos,
     size: v(50, 50),
-    img: "enemy_50x",
-    frame1: [0, 0, 50, 50],
-    frame2: [54, 0, 50, 50]
 });
 
 export const jumper = (pos) => {
@@ -71,15 +68,12 @@ export const jumper = (pos) => {
         pos,
         size: v(60, 60),
         jumpSpeed: 0.4,
-        img: "enemy",
-        frame1: [0, 0, 120, 60],
-        frame2: [66, 0, 60, 60],
     });
     jumper.speed = 0;
 
     jumper.look = ({ player }) => {
-        if(player.pos.x > jumper.pos.x + jumper.size.x) jumper.imgPos = [32, 0, 30, 30];
-        if(player.pos.x + player.size.x < jumper.pos.x) jumper.imgPos = [0, 0, 30, 30];
+        if(player.pos.x > jumper.pos.x + jumper.size.x) jumper.imgPos = [224, 0, 210, 210];
+        if(player.pos.x + player.size.x < jumper.pos.x) jumper.imgPos = [0, 0, 210, 210];
     }
     jumper.update = jumper.makeUpdate("move", "jump", "fixCenter", "look");
     return jumper;

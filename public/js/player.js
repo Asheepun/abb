@@ -81,8 +81,10 @@ const player = (pos = v(30, 300)) => {
         }
     }
     player.checkHit = ({ enemies }) => {
-        if(checkProx(player.center, enemies.map(e => e.center), 15 + 25)){
-            player.dead = true;
+        for(let i = 0; i < enemies.length; i++){
+            if(sub(player.center, enemies[i].center).mag < player.size.x/2 + enemies[i].size.x/2){
+                player.dead = true;
+            }
         }
     }
     player.update = player.makeUpdate("move", "checkHit", "fixCenter", "animate");

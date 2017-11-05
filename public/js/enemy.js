@@ -2,13 +2,14 @@ import { v } from "/js/vector.js";
 import entity from "/js/entity.js";
 import getMove from "/js/move.js";
 
-const enemy = ({ pos, size, jumpSpeed = 0.2 }) => {
+const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 30, 30], frame2 = [32, 0, 30, 30] }) => {
     const enemy = entity({
         pos,
         size,
-        imgPos: [0, 0, 30, 30],
-        img: "enemy",
+        imgPos: frame1,
+        img,
     });
+    enemy.jumpSpeed = jumpSpeed;
 
     enemy.move = getMove(enemy, {
         speed: 0.1,
@@ -36,8 +37,8 @@ const enemy = ({ pos, size, jumpSpeed = 0.2 }) => {
         enemy.dir.x *= -1;
         enemy.pos.x += 4*enemy.dir.x;
         //animate
-        if(enemy.dir.x > 0) enemy.imgPos = [32, 0, 30, 30];
-        else enemy.imgPos = [0, 0, 30, 30];
+        if(enemy.dir.x > 0) enemy.imgPos = frame2;
+        else enemy.imgPos = frame1;
     }
     enemy.handlePlatCol = (object) => {
         if(enemy.velocity.y > 0){
@@ -48,7 +49,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2 }) => {
     }
     enemy.jump = () => {
         if(enemy.grounded){
-            enemy.velocity.y = -jumpSpeed;
+            enemy.velocity.y = -enemy.jumpSpeed;
         }
     }
 
@@ -60,6 +61,9 @@ const enemy = ({ pos, size, jumpSpeed = 0.2 }) => {
 export const bouncer = (pos) => enemy({
     pos,
     size: v(50, 50),
+    img: "enemy_50x",
+    frame1: [0, 0, 50, 50],
+    frame2: [54, 0, 50, 50]
 });
 
 export const jumper = (pos) => {
@@ -67,6 +71,9 @@ export const jumper = (pos) => {
         pos,
         size: v(60, 60),
         jumpSpeed: 0.4,
+        img: "enemy",
+        frame1: [0, 0, 120, 60],
+        frame2: [66, 0, 60, 60],
     });
     jumper.speed = 0;
 
@@ -76,6 +83,36 @@ export const jumper = (pos) => {
     }
     jumper.update = jumper.makeUpdate("move", "jump", "fixCenter", "look");
     return jumper;
+}
+
+export const giantJumper = (pos) => {
+    const gj = jumper(pos);
+    gj.size = v(210, 210);
+    gj.jumpSpeed = 0.5;
+
+    return gj;
+}
+
+export const spawner = (pos) => {
+    const spawner = bouncer(pos);
+    spawner.spawn = v(spawner.pos.x, spawner.pos.y);
+    spawner.oubArea = [0, 0, 900, 660];
+    spawner.alpha = 0;
+
+    spawner.handleOubY = () => {
+        if(spawner.velocity.y > 0){
+            spawner.pos = v(spawner.spawn.x, spawner.spawn.y);
+            spawner.alpha = 0;
+        }
+    }
+    spawner.reSpawn = () => {
+        if(spawner.alpha === 1) return;
+        spawner.alpha += 0.05;
+        if(spawner.alpha > 1) spawner.alpha = 1;
+    }
+    spawner.update = spawner.makeUpdate("move", "jump", "fixCenter", "reSpawn");
+
+    return spawner;
 }
 
 export default enemy;

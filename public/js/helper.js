@@ -3,7 +3,7 @@ import { checkCol } from "/js/colission.js";
 import entity from "/js/entity.js";
 import getAnimate from "/js/animate.js";
 
-const helper = (pos, text = "Hello!") => {
+const helper = (pos = v(-30, -30), text = "Hello!") => {
     const helper = entity({ pos, img: "helper" });
     helper.dirX = -1;
     helper.text = text;

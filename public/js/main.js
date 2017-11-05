@@ -48,6 +48,9 @@ promiseAll(
         "grass",
         "grass-particle",
         "enemy",
+        "enemy_50x",
+        "enemy_60x",
+        "enemy_210x",
         "planks",
         "arrow-right",
         "arrow-left",
@@ -75,7 +78,7 @@ promiseAll(
         audio,
         timeScl: 16,
         lastTime: 0,
-        currentLevel: 0,
+        currentLevel: 8,
         furtestLevel: 0,
         state: undefined,
         newSpawn: undefined,
@@ -91,7 +94,7 @@ promiseAll(
 
     audio.main.volume = 1;
     audio.main.loop = true;
-    audio.main.play();
+    //audio.main.play();
 
     WORLD.states.setup = () => {
 

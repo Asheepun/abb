@@ -48,7 +48,6 @@ promiseAll(
         "grass",
         "grass-particle",
         "enemy",
-        "enemy_210x",
         "planks",
         "arrow-right",
         "arrow-left",
@@ -77,7 +76,6 @@ promiseAll(
         timeScl: 16,
         lastTime: 0,
         currentLevel: 0,
-        furtestLevel: 0,
         state: undefined,
         newSpawn: undefined,
         buttons: [],
@@ -86,6 +84,7 @@ promiseAll(
         },
         spliceAll,
     };
+    if(localStorage.furtestLevel === undefined) localStorage.furtestLevel = 0;
 
     WORLD.drawAll = makeDrawAll(ctx, sprites);
     WORLD.updateAll = makeUpdateAll(WORLD);
@@ -109,7 +108,7 @@ promiseAll(
         
         WORLD.startingAlpha = 1;
         WORLD.nextLevelCounter = undefined;
-        if(WORLD.currentLevel > WORLD.furtestLevel) WORLD.furtestLevel = WORLD.currentLevel;
+        if(WORLD.currentLevel > localStorage.furtestLevel) localStorage.furtestLevel = WORLD.currentLevel;
         WORLD.offset = v(0, 0);
         WORLD.state = WORLD.states.game;
 
@@ -154,6 +153,7 @@ promiseAll(
             WORLD.nextLevelCounter -= sub/100000;
         }
         if(WORLD.points.length <= 0 && WORLD.nextLevelCounter <= 1){
+            WORLD.nextLevelCounter = undefined;
             WORLD.state = WORLD.states.switchLevel;
         }
         if(WORLD.player.dead){

@@ -87,7 +87,7 @@ const player = (pos = v(30, 300)) => {
             }
         }
     }
-    player.update = player.makeUpdate("move", "checkHit", "fixCenter", "animate");
+    player.update = player.makeUpdate("move", "checkHit", "animate");
 
     return player;
 }

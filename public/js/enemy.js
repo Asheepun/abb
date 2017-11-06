@@ -53,7 +53,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         }
     }
 
-    enemy.update = enemy.makeUpdate("move", "jump", "fixCenter");
+    enemy.update = enemy.makeUpdate("move", "jump");
 
     return enemy;
 }
@@ -75,7 +75,7 @@ export const jumper = (pos) => {
         if(player.pos.x > jumper.pos.x + jumper.size.x) jumper.imgPos = [224, 0, 210, 210];
         if(player.pos.x + player.size.x < jumper.pos.x) jumper.imgPos = [0, 0, 210, 210];
     }
-    jumper.update = jumper.makeUpdate("move", "jump", "fixCenter", "look");
+    jumper.update = jumper.makeUpdate("move", "jump", "look");
     return jumper;
 }
 
@@ -104,7 +104,7 @@ export const spawner = (pos) => {
         spawner.alpha += 0.05;
         if(spawner.alpha > 1) spawner.alpha = 1;
     }
-    spawner.update = spawner.makeUpdate("move", "jump", "fixCenter", "reSpawn");
+    spawner.update = spawner.makeUpdate("move", "jump", "reSpawn");
 
     return spawner;
 }

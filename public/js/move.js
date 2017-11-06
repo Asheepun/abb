@@ -40,6 +40,8 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
         oub = checkOub(entity, ...entity.oubArea);
         if(col && entity.handleColissionX) entity.handleColissionX(col);
         if(oub && entity.handleOubX) entity.handleOubX();
+        
+        entity.fixCenter();
     }
 }
 
@@ -50,7 +52,8 @@ const hitGroundParticleEffect = (array, object) => {
             pos: v(object.pos.x + Math.random()*(object.size.x-10) + 5, object.pos.y + object.size.y),
             img: "grass-particle",
             size: v(5, 5),
-            imgPos: [0, 0, 5, 5]
+            imgPos: [0, 0, 5, 5],
+            rotation: Math.random()*360,
         });
         if(Math.random() < 0.4) pixel.img = "player";
         pixel.move = getMove(pixel, {
@@ -68,7 +71,7 @@ const hitGroundParticleEffect = (array, object) => {
         }
         pixel.remove = () => array.splice(array.indexOf(pixel), 1);
             
-        pixel.update = pixel.makeUpdate("move", "fixCenter", "fade");
+        pixel.update = pixel.makeUpdate("move", "fade");
         array.push(pixel);
     }
 }

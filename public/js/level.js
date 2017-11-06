@@ -1,4 +1,5 @@
 import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
+import { bouncer, jumper, spawner, giantJumper } from "/js/enemy.js";
 import { obstacle,  box } from "/js/obstacles.js";
 import { checkProx } from "/js/colission.js";
 import helper from "/js/helper.js";
@@ -25,10 +26,10 @@ const createLevel = ({ map, help, enemies }, offsetX = 0) => {
         if(tile === "#") level.obstacles.push(obstacle(pos, map, -offsetX));
         if(tile === "H") level.helper = helper(pos, help);
         if(tile === "P") level.points.push(point(v(pos.x + 5, pos.y + 5)));
-        if(tile === "E"){
-            level.enemies.push(enemies[enemy](pos));
-            enemy++;
-        }
+        if(tile === "1") level.enemies.push(bouncer(pos));
+        if(tile === "2") level.enemies.push(jumper(pos));
+        if(tile === "3") level.enemies.push(spawner(pos));
+        if(tile === "4") level.enemies.push(giantJumper(pos));
         if(y !== map.length-1
         && map[y+1][x] === "#" 
         && tile !== "#") level.grass.push(grass(pos));
@@ -61,8 +62,21 @@ const grass = (pos) => {
         pos,
         img: "grass",
     });
-    if(Math.random() < 0.5) grass.imgPos[0] += 30;
-    if(Math.random() < 0.5) grass.imgPos[0] += 30;
+
+    grass.animate = getAnimate(grass, { 
+        delay: 6, 
+        frames: [
+            [0, 0, 30, 30],
+            [32, 0, 30, 30],
+            [64, 0, 30, 30],
+            [96, 0, 30, 30],
+            [64, 0, 30, 30],
+            [32, 0, 30, 30],
+        ] 
+    });
+
+    grass.update = grass.makeUpdate("animate");
+
     return grass;
 }
 

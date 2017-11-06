@@ -16,7 +16,7 @@ export const setupHome = (WORLD) => {
         }));
         WORLD.player.pos = v(780, 330);
         WORLD.buttons.push(button({ pos: v(840, 300), img: "arrow-right", size: v(30, 30), action: () => {
-            if(WORLD.currentLevel < WORLD.furtestLevel){
+            if(WORLD.currentLevel < localStorage.furtestLevel){
                 WORLD.currentLevel++;
                 WORLD.audio["yes-btn"].load();
                 WORLD.audio["yes-btn"].play();

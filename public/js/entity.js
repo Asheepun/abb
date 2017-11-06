@@ -1,18 +1,20 @@
 import { v, add, half, mul, div, sub, pipe } from "/js/vector.js";
 
-const entity = ({ pos = v(0, 0), size = v(30, 30), img = "obstacle", alpha = 1, imgPos = [0, 0, size.x, size.y] }) => {
+const entity = ({ pos = v(0, 0), size = v(30, 30), img = "obstacle", alpha = 1, imgPos = [0, 0, size.x, size.y], rotation = 0 }) => {
     let entity = {
         pos,
         size,
         img,
         imgPos,
         alpha,
+        rotation,
     };
     entity.center = add(entity.pos, half(entity.size));
 
     entity.draw = (ctx, sprites) => {
         ctx.save();
         ctx.translate(entity.center.x, entity.center.y);
+        ctx.rotate(entity.rotation);
         ctx.globalAlpha = entity.alpha;
         if(entity.imgPos[0] + entity.imgPos[2] <= sprites[entity.img].width) ctx.drawImage(
             sprites[entity.img],

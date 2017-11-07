@@ -18,9 +18,9 @@ const getClouds = (amount = 50) => {
             dir: v(1, 0),
             gravity: 0,
             speed: 0.03,
-            oubArea: [-60, 0, 1980, 600],
+            oubArea: [-60, -120, 1980, 600],
         });
-        if(Math.random() < 0.5) cloud.dir.x = -1;
+        //if(Math.random() < 0.5) cloud.dir.x = -1;
         if(Math.random() < 0.5) cloud.imgPos[0] += 60;
 
         cloud.init = () => {
@@ -38,7 +38,10 @@ const getClouds = (amount = 50) => {
             else cloud.pos.x = 1860;
             cloud.init();
         }
-        cloud.update = cloud.makeUpdate("move", "fixCenter");
+        cloud.sineWave = () => {
+            cloud.velocity.y += Math.sin(cloud.pos.x/2)/2000;
+        }
+        cloud.update = cloud.makeUpdate("sineWave", "move", "fixCenter");
 
         clouds.push(cloud);
     }

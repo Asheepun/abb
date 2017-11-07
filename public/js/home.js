@@ -1,5 +1,6 @@
 import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import entity from "/js/entity.js";
+import player from "/js/player.js";
 import button from "/js/button.js";
 import levelTeplates from "/js/levelTemplates.js";
 import { strEach, set } from "/js/level.js";
@@ -14,7 +15,7 @@ export const setupHome = (WORLD) => {
         homeTemplate.forEach((row, y) => strEach(row, (tile, x) => {
             if(tile === "#") WORLD.obstacles.push(entity({pos: v(x*30, y*30), img: "planks"}));
         }));
-        WORLD.player.pos = v(780, 330);
+        WORLD.player = player(v(780, 330));
         WORLD.buttons.push(button({ pos: v(840, 300), img: "arrow-right", size: v(30, 30), action: () => {
             if(WORLD.currentLevel < localStorage.furtestLevel){
                 WORLD.currentLevel++;
@@ -79,14 +80,14 @@ const homeTemplate = [
     "##..........................##",
     "..............................",
     "..............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    "........................######",
-    "........................######",
-    "........................######",
+    ".......................#......",
+    ".......................#......",
+    ".......................#......",
+    ".......................#......",
+    ".......................#......",
+    ".......................#######",
+    ".......................#######",
+    ".......................#######",
     "##############################",
     "##############################",
     "##############################",

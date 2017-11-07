@@ -73,8 +73,7 @@ promiseAll(
         keys,
         sprites,
         audio,
-        timeScl: 16,
-        lastTime: 0,
+        timeScl: (1/60)*1000,
         currentLevel: 0,
         state: undefined,
         newSpawn: undefined,
@@ -226,7 +225,10 @@ promiseAll(
             WORLD.player.pos = add(WORLD.player.pos, dir);
             WORLD.player.fixCenter();
         }
-        WORLD.clouds.update(WORLD);
+        WORLD.updateAll(
+            WORLD.clouds,
+            WORLD.grass,
+        );
     
         if(WORLD.offset.x <= -WORLD.width){
             WORLD.state = WORLD.states.setup;
@@ -242,13 +244,18 @@ promiseAll(
     
     }
 
+    let lastTime = 0;
+    let accTime = 0;
 
     const loop = (time = 0) => {
-        WORLD.timeScl = time - WORLD.lastTime;
-        WORLD.lastTime = time;
-        WORLD.state(WORLD, ctx);
-        WORLD.pointer.pressed = false;
-        WORLD.keys.reset();
+        accTime += time - lastTime;
+        lastTime = time;
+        while(accTime > WORLD.timeScl){
+            WORLD.state(WORLD, ctx);
+            WORLD.pointer.pressed = false;
+            WORLD.keys.reset();
+            accTime -= WORLD.timeScl;
+        }
         requestAnimationFrame(loop);
     }
     

@@ -53,13 +53,15 @@ const helper = (pos = v(-30, -30), text = "Hello!") => {
 
     helper.update = helper.makeUpdate("checkCol", "look", "animate");
 
-    helper.drawText = (ctx) => {
-        if(helper.talking){
-            ctx.fillStyle = "white";
-            ctx.font = "20px game";
-            ctx.fillText(helper.text, helper.textPos.x, helper.textPos.y);
+    helper.addDrawingAction(
+        (ctx) => {
+            if(helper.talking){
+                ctx.fillStyle = "white";
+                ctx.font = "20px game";
+                ctx.fillText(helper.text, helper.textPos.x, helper.textPos.y);
+            }
         }
-    }
+    );
 
 
     return helper;

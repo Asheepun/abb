@@ -52,6 +52,7 @@ promiseAll(
         "arrow-right",
         "arrow-left",
         "play-btn",
+        "death-counter",
     ),
     loadAudio(
         0.3,
@@ -82,6 +83,7 @@ promiseAll(
             setupHome,
         },
         spliceAll,
+        deaths: 0,
     };
     if(localStorage.furtestLevel === undefined) localStorage.furtestLevel = 0;
 
@@ -103,6 +105,8 @@ promiseAll(
         WORLD.enemies = newLevel.enemies;
         WORLD.points = newLevel.points;
         WORLD.grass = newLevel.grass;
+        WORLD.deathCounter = newLevel.deathCounter;
+        WORLD.deathCounter.deaths = WORLD.deaths;
         WORLD.clouds = getClouds();
         
         WORLD.startingAlpha = 1;
@@ -153,10 +157,11 @@ promiseAll(
         }
         if(WORLD.points.length <= 0 && WORLD.nextLevelCounter <= 1){
             WORLD.nextLevelCounter = undefined;
-            WORLD.state = WORLD.states.switchLevel;
+            WORLD.state = WORLD.states.setupSwitchLevel;
         }
         if(WORLD.player.dead){
             WORLD.state = WORLD.states.setup;
+            WORLD.deaths++;
         }
             
     
@@ -175,13 +180,14 @@ promiseAll(
             WORLD.box,
             WORLD.obstacles,
             WORLD.helper,
+            WORLD.deathCounter,
             WORLD.points,
             WORLD.player,
             WORLD.enemies,
             WORLD.grass,
             WORLD.clouds,
         );
-        WORLD.helper.drawText(ctx);
+        //draw nextLevelCounter
         if(WORLD.nextLevelCounter){
             ctx.fillStyle = "red";
             ctx.font = "25px game";
@@ -199,19 +205,28 @@ promiseAll(
 
         ctx.restore();
     }
-    
-    WORLD.states.switchLevel = () => {
-    
-        if(WORLD.offset.x === 0){
-            WORLD.currentLevel++;
-            //initialize level switch
+
+    WORLD.states.setupSwitchLevel = () => {
+        WORLD.currentLevel++;
+
+        if(WORLD.currentLevel >= levelTeplates.length){
+            WORLD.currentLevel--;
+            WORLD.state = WORLD.states.setupHome;
+        }else {
             const newLevel = createLevel(levelTeplates[WORLD.currentLevel], 900);
             WORLD.helper = newLevel.helper;
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
             newLevel.grass.forEach(p => WORLD.grass.push(p));
             newLevel.points.forEach(p => WORLD.points.push(p));
             WORLD.newSpawn = newLevel.player.pos;
+            
+            WORLD.state = WORLD.states.switchLevel;
         }
+    }
+    
+    WORLD.states.switchLevel = () => {
+
+        if(WORLD.player.alpha > 0.2) WORLD.player.alpha -= 0.05;
 
         //level switch logic
         WORLD.offset.x -= 7;
@@ -225,10 +240,6 @@ promiseAll(
             WORLD.player.pos = add(WORLD.player.pos, dir);
             WORLD.player.fixCenter();
         }
-        WORLD.updateAll(
-            WORLD.clouds,
-            WORLD.grass,
-        );
     
         if(WORLD.offset.x <= -WORLD.width){
             WORLD.state = WORLD.states.setup;

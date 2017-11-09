@@ -7,7 +7,7 @@ import { checkCol, checkProx } from "/js/colission.js";
 const player = (pos = v(30, 300)) => {
     const player = entity({
         pos,
-        size: v(30, 30),
+        size: v(28, 30),
         img: "player",
     });
     player.grounded = false;
@@ -82,7 +82,7 @@ const player = (pos = v(30, 300)) => {
     }
     player.checkHit = ({ enemies }) => {
         for(let i = 0; i < enemies.length; i++){
-            if(sub(player.center, enemies[i].center).mag < player.size.x/2 + enemies[i].size.x/2){
+            if(sub(player.center, enemies[i].center).mag < player.size.x/4 + enemies[i].size.x/2){
                 player.dead = true;
             }
         }

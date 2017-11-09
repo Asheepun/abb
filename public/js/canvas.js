@@ -3,6 +3,8 @@ import { v, div, sub } from "/js/vector.js";
 const createCanvas = (width = 800, height = 600, element = document.body) => new Promise((resolve, reject) => {
     const c = document.createElement("canvas");
     const ctx = c.getContext("2d");
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;    
 
     //fix canvas size
     const dif = height/width;

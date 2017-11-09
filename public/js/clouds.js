@@ -3,7 +3,7 @@ import getMove from "/js/move.js";
 import entity from "/js/entity.js";
 import { set } from "/js/level.js";
 
-const getClouds = (amount = 50) => {
+const getClouds = (amount = 40) => {
     const clouds = set();
     //add clouds
     const dist = 1800/amount;
@@ -20,13 +20,10 @@ const getClouds = (amount = 50) => {
             speed: 0.03,
             oubArea: [-60, -120, 1980, 600],
         });
-        //if(Math.random() < 0.5) cloud.dir.x = -1;
         if(Math.random() < 0.5) cloud.imgPos[0] += 60;
 
         cloud.init = () => {
-            cloud.pos.y = 0;
-            if(Math.random() < 0.4) cloud.pos.y = 30;
-            if(Math.random() < 0.2) cloud.pos.y = 60;
+            cloud.pos.y = Math.floor(Math.random()*60);
             cloud.speed = 0.05;
             if(Math.random() < 0.3) cloud.speed *= 0.8;
             if(Math.random() < 0.3) cloud.speed *= 1.2;

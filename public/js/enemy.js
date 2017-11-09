@@ -109,4 +109,30 @@ export const spawner = (pos) => {
     return spawner;
 }
 
+export const ghost = (pos) => {
+    const ghost = jumper(pos);
+    ghost.alpha = 0.8;
+    ghost.gravity = 0;
+    ghost.dir.x = 0;
+    ghost.velocity.y = 0.2;
+    ghost.oubArea = [0, 0, 900, 600];
+
+    ghost.handleOubY = () => {
+        ghost.velocity.y *= -1;
+    }
+    ghost.handleColissionY = undefined;
+    ghost.handleColissionX = undefined;
+    ghost.handlePlatCol = undefined;
+
+    return ghost;
+}
+
+export const giantGhost = (pos) => {
+    const jg = ghost(pos);
+    jg.size = v(210, 210);
+    jg.velocity.y = 0.2;
+
+    return jg;
+}
+
 export default enemy;

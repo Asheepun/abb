@@ -8,6 +8,7 @@ const entity = ({ pos = v(0, 0), size = v(30, 30), img = "obstacle", alpha = 1, 
         imgPos,
         alpha,
         rotation,
+        drawingActions: [],
     };
     entity.center = add(entity.pos, half(entity.size));
 
@@ -28,6 +29,11 @@ const entity = ({ pos = v(0, 0), size = v(30, 30), img = "obstacle", alpha = 1, 
         );
         ctx.globalAlpha = 1;
         ctx.restore();
+        if(entity.drawingActions.length > 0){
+            for(let i = 0; i < entity.drawingActions.length; i++){
+                entity.drawingActions[i](ctx, sprites);
+            }
+        }
     }
 
     entity.fixCenter = () => {
@@ -37,6 +43,12 @@ const entity = ({ pos = v(0, 0), size = v(30, 30), img = "obstacle", alpha = 1, 
     entity.makeUpdate = (...methods) => (WORLD) => {
         for(let i = 0; i < methods.length; i++){
             entity[methods[i]](WORLD);
+        }
+    }
+
+    entity.addDrawingAction = (...funcs) => {
+        for(let i = 0; i < funcs.length; i++){
+            entity.drawingActions.push(funcs[i]);
         }
     }
 

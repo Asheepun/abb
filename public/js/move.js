@@ -2,7 +2,7 @@ import { v, add, half, mul, div, sub, pipe } from "/js/vector.js";
 import { checkCol, checkOub, checkPlatCol } from "/js/colission.js";
 import entity from "/js/entity.js";
 
-const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea = [0, 0, 900, 600] }) => {
+const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 900, 600] }) => {
     entity.dir = dir;
     entity.speed = speed;
     entity.gravity = gravity;
@@ -14,7 +14,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = v(0, 0), oubArea =
 
     return ({ timeScl, obstacles, box, grass }) => {
 
-        entity.velocity.x = entity.dir.x*entity.speed;
+        entity.velocity.x = entity.dir * entity.speed;
 
         //handlePhysics
         entity.velocity.y += entity.gravity;
@@ -60,8 +60,8 @@ const hitGroundParticleEffect = (array, object) => {
             gravity: 0.02,
         });
         pixel.velocity.y = -Math.random()*0.2 - 0.1;
-        if(pixel.pos.x > object.center.x) pixel.dir.x = 1;
-        else pixel.dir.x = -1;
+        if(pixel.pos.x > object.center.x) pixel.dir = 1;
+        else pixel.dir = -1;
         pixel.speed = Math.random()*0.1;
         let fade = 0.005;
         pixel.fade = () => {

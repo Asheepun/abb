@@ -7,18 +7,18 @@ import entity from "/js/entity.js";
 import player from "/js/player.js";
 import getAnimate from "/js/animate.js";
 
-const createLevel = ({ map, help }, offsetX = 0) => {
+const createLevel = ({ map, helps }, offsetX = 0) => {
     const level = {
         obstacles: set(),
         grass: set(),
         points: set(),
         enemies: set(),
+        helpers: set(),
         box: box(),
-        helper: helper(),
         player: undefined,
         deathCounter: undefined,
     }
-    let enemy = 0;
+    let help = 0;
     let pos;
     map.forEach((row, y) => strEach(row, (tile, x) => {
         pos = v(x*30 + offsetX, y*30);
@@ -26,7 +26,10 @@ const createLevel = ({ map, help }, offsetX = 0) => {
         if(tile === "§") level.deathCounter = deathCounter(pos);
         if(tile === "B") level.box = box(pos);
         if(tile === "#") level.obstacles.push(obstacle(pos, map, -offsetX));
-        if(tile === "H") level.helper = helper(pos, help);
+        if(tile === "H"){
+            level.helpers.push(helper(pos, helps[help]));
+            help ++;
+        }
         if(tile === "P") level.points.push(point(v(pos.x + 5, pos.y + 5)));
         if(tile === "1") level.enemies.push(bouncer(pos));
         if(tile === "2") level.enemies.push(jumper(pos));
@@ -67,19 +70,8 @@ const grass = (pos) => {
         img: "grass",
     });
 
-    grass.animate = getAnimate(grass, { 
-        delay: 12, 
-        frames: [
-            /*[0, 0, 30, 30],
-            [32, 0, 30, 30],
-            [64, 0, 30, 30],
-            //[96, 0, 30, 30],
-            //[64, 0, 30, 30],
-            [32, 0, 30, 30],
-        */]
-    });
-
-    grass.update = grass.makeUpdate("animate");
+    if(Math.random() < 0.01 
+    && Math.random() < 0.01) grass.img = "rare-grass";
 
     return grass;
 }
@@ -88,20 +80,18 @@ const deathCounter = (pos) => {
     const deathCounter = entity({ pos, img: "death-counter" });
     deathCounter.deaths = 0;
 
-    deathCounter.addDrawingAction(
-        (ctx) => {
-            ctx.fillStyle = "#5c3434";
-            ctx.font = "12px game";
-            if(deathCounter.deaths < 10) ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 13, deathCounter.pos.y + 18);
-            else if(deathCounter.deaths < 100){
-                ctx.font = "10px game";
-                ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 10, deathCounter.pos.y + 18);
-            }else {
-                ctx.font = "8px game";
-                ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 8, deathCounter.pos.y + 18);
-            }
+    deathCounter.addDrawingAction(ctx => {
+        ctx.fillStyle = "#5c3434";
+        ctx.font = "12px game";
+        if(deathCounter.deaths < 10) ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 13, deathCounter.pos.y + 18);
+        else if(deathCounter.deaths < 100){
+            ctx.font = "10px game";
+            ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 10, deathCounter.pos.y + 18);
+        }else {
+            ctx.font = "8px game";
+            ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 8, deathCounter.pos.y + 18);
         }
-    );
+    });
 
     return deathCounter;
 }
@@ -116,7 +106,7 @@ export const set = () => {
     }
     set.draw = (ctx) => {
         for(let i = 0; i < set.length; i++){
-            set[i].update(ctx);
+            if(set[i].draw) set[i].draw(ctx);
         }
     }
     return set;

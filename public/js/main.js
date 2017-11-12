@@ -1,6 +1,7 @@
 import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
+import loadJSON from "/js/loadJSON.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
 import getMove from "/js/move.js";
@@ -16,9 +17,11 @@ const promiseAll = (...promises) => {
     return new Promise((resolve, reject) => {
         const results = [];
         promises.forEach(promise => {
-            promise.then(arg => results.push(arg));
+            promise.then(arg => {
+                results.push(arg)
+                if(results.length === promises.length) resolve(results);
+            });
         });
-        resolve(results);
     });
 }
 
@@ -46,6 +49,7 @@ promiseAll(
         "helper",
         "point",
         "grass",
+        "rare-grass",
         "grass-particle",
         "enemy",
         "planks",
@@ -62,8 +66,13 @@ promiseAll(
         "main",
         "yes-btn",
         "not-btn",
+        "enemy",
     ),
-).then(([ { c, ctx, scale, pointer }, keys, sprites, audio  ]) => {
+    loadJSON(
+        "playerFrames",
+        "helperFrames",
+    ),
+).then(([ { c, ctx, scale, pointer }, keys, sprites, audio, resJSON  ]) => {
 
     //initialize
     const WORLD = {
@@ -74,6 +83,7 @@ promiseAll(
         keys,
         sprites,
         audio,
+        JSON: resJSON,
         timeScl: (1/60)*1000,
         currentLevel: 0,
         state: undefined,
@@ -101,7 +111,7 @@ promiseAll(
         WORLD.player = newLevel.player;
         WORLD.box = newLevel.box;
         WORLD.obstacles = newLevel.obstacles;
-        WORLD.helper = newLevel.helper;
+        WORLD.helpers = newLevel.helpers;
         WORLD.enemies = newLevel.enemies;
         WORLD.points = newLevel.points;
         WORLD.grass = newLevel.grass;
@@ -120,10 +130,10 @@ promiseAll(
     WORLD.state = WORLD.states.setup;
 
     WORLD.controlPlayerKeys = () => {
-        if(keys.a.down) WORLD.player.dir.x = -1;
-        if(keys.d.down) WORLD.player.dir.x = 1;
+        if(keys.a.down) WORLD.player.dir = -1;
+        if(keys.d.down) WORLD.player.dir = 1;
         if(keys.a.down && keys.d.down
-        || !keys.a.down && !keys.d.down) WORLD.player.dir.x = 0;
+        || !keys.a.down && !keys.d.down) WORLD.player.dir = 0;
         if(keys.w.pressed){
             WORLD.player.jump(WORLD.audio.jump, WORLD);
         }else if(keys.w.upped && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
@@ -142,7 +152,7 @@ promiseAll(
             WORLD.box,
             WORLD.enemies,
             WORLD.player,
-            WORLD.helper,
+            WORLD.helpers,
             WORLD.points,
             WORLD.clouds,
             WORLD.grass,
@@ -179,7 +189,7 @@ promiseAll(
         WORLD.drawAll(
             WORLD.box,
             WORLD.obstacles,
-            WORLD.helper,
+            WORLD.helpers,
             WORLD.deathCounter,
             WORLD.points,
             WORLD.player,
@@ -218,6 +228,7 @@ promiseAll(
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
             newLevel.grass.forEach(p => WORLD.grass.push(p));
             newLevel.points.forEach(p => WORLD.points.push(p));
+            getClouds(15, 900).forEach(c => WORLD.clouds.push(c));
             WORLD.newSpawn = newLevel.player.pos;
             
             WORLD.state = WORLD.states.switchLevel;

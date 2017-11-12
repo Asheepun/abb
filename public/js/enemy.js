@@ -1,4 +1,4 @@
-import { v } from "/js/vector.js";
+import { v, sub } from "/js/vector.js";
 import entity from "/js/entity.js";
 import getMove from "/js/move.js";
 
@@ -13,7 +13,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
 
     enemy.move = getMove(enemy, {
         speed: 0.1,
-        dir: v(-1, 0),
+        dir: -1,
         gravity: 0.01,
     });
     enemy.handleColissionY = (object) => {
@@ -34,10 +34,10 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         }
     }
     enemy.handleColissionX = enemy.handleOubX = () => {
-        enemy.dir.x *= -1;
-        enemy.pos.x += 4*enemy.dir.x;
+        enemy.dir *= -1;
+        enemy.pos.x += 4*enemy.dir;
         //animate
-        if(enemy.dir.x > 0) enemy.imgPos = frame2;
+        if(enemy.dir > 0) enemy.imgPos = frame2;
         else enemy.imgPos = frame1;
     }
     enemy.handlePlatCol = (object) => {
@@ -52,8 +52,40 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
             enemy.velocity.y = -enemy.jumpSpeed;
         }
     }
+    //make talking engine
+    enemy.lines = [
+        "Lil bugger!",
+        "Come'ere you!",
+        "You scared boy?",
+        "I dare you!",
+        "Twerp!",
+    ];
+    enemy.line = false;
+    enemy.talking = false;
+    enemy.talked = 0;
+    enemy.talk = ({ player, audio }) => {
+        if(enemy.talking && enemy.line){
+            enemy.talked++;
+            if(enemy.talked > 60) enemy.line = false;
+        }
+        if(sub(player.center, enemy.center).mag < enemy.size.x/2 + 100){
+            if(!enemy.talking){
+                enemy.talking = true
+                enemy.talked = 0;
+                enemy.line = enemy.lines[Math.floor(Math.random()*enemy.lines.length)];
+            }
+        }else enemy.talking = false;
+    }
+    enemy.addDrawingAction(ctx => {
+        if(enemy.talking && enemy.line){
+            ctx.fillStyle = "white";
+            ctx.font = "20px game";
+            if(enemy.size.x === 210) ctx.font = "30px game";
+            ctx.fillText(enemy.line, enemy.center.x-(enemy.line.length/2)*10-15, enemy.pos.y - 10);
+        }
+    });
 
-    enemy.update = enemy.makeUpdate("move", "jump");
+    enemy.update = enemy.makeUpdate("move", "jump", "talk");
 
     return enemy;
 }
@@ -69,13 +101,14 @@ export const jumper = (pos) => {
         size: v(60, 60),
         jumpSpeed: 0.4,
     });
-    jumper.speed = 0;
+    jumper.dir = 0;
+    jumper.lines.push("Don't run away!", "Stay here!");
 
     jumper.look = ({ player }) => {
         if(player.pos.x > jumper.pos.x + jumper.size.x) jumper.imgPos = [224, 0, 210, 210];
         if(player.pos.x + player.size.x < jumper.pos.x) jumper.imgPos = [0, 0, 210, 210];
     }
-    jumper.update = jumper.makeUpdate("move", "jump", "look");
+    jumper.update = jumper.makeUpdate("move", "jump", "look", "talk");
     return jumper;
 }
 
@@ -104,7 +137,7 @@ export const spawner = (pos) => {
         spawner.alpha += 0.05;
         if(spawner.alpha > 1) spawner.alpha = 1;
     }
-    spawner.update = spawner.makeUpdate("move", "jump", "reSpawn");
+    spawner.update = spawner.makeUpdate("move", "jump", "reSpawn", "talk");
 
     return spawner;
 }

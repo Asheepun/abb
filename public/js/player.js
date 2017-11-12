@@ -10,6 +10,8 @@ const player = (pos = v(30, 300)) => {
         size: v(28, 30),
         img: "player",
     });
+    player.state = "still";
+    player.imgDir = "left"
     player.grounded = false;
     player.dead = false;
     
@@ -17,29 +19,18 @@ const player = (pos = v(30, 300)) => {
 
     player.animate = getAnimate(player, {
         delay: 4,
-        handleFrames: (frames) => {
+        handleFrames: ({ playerFrames }) => {
             if(player.grounded){ 
                 player.img = "player";
-                frames = [
-                    [32, frames[0][1], 30, 30],
-                    [64, frames[0][1], 30, 30],
-                    [96, frames[0][1], 30, 30],
-                    [128, frames[0][1], 30, 30],
-                    [160, frames[0][1], 30, 30],
-                    [192, frames[0][1], 30, 30],
-                ];
+                player.state = player.dir === 0 ? "still" : "moving";
             }
             else{ 
                 player.img = "player-jump";
-                frames = [
-                    [32, frames[0][1], 30, 30],
-                    [64, frames[0][1], 30, 30],
-                ];
+                player.state = "jumping";
             }
-            if(player.dir.x < 0) frames.forEach(f => f[1] = 32);
-            else if(player.dir.x > 0) frames.forEach(f => f[1] = 0);
-            else frames = [[0, frames[0][1], 30, 30]];
-            return frames;
+            if(player.dir < 0) player.imgDir = "left";
+            if(player.dir > 0) player.imgDir = "right";
+            return playerFrames[player.state][player.imgDir];
         }
     });
 

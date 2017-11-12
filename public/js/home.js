@@ -62,6 +62,12 @@ export const setupHome = (WORLD) => {
         ctx.fillStyle = "white";
         ctx.font = "30px game";
         ctx.fillText("Level " + (WORLD.currentLevel+1), 755, 290);
+        //draw info
+        ctx.font = "20px game";
+        ctx.fillText("This game is work in progress.", 200, 150);
+        ctx.fillText("More content is comming in the future!", 200, 180);
+        ctx.fillText("Programming by Gustav Almstrom.", 200, 210);
+        ctx.fillText('Music by "The soft toffts".', 200, 240);
         WORLD.drawAll(
             WORLD.buttons,
             WORLD.player,

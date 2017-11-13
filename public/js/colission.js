@@ -1,5 +1,21 @@
 import { sub, abs } from "/js/vector.js";
 
+export const checkHover = (pos, objects) => {
+    const cc = (o2) => {
+        if(pos.x >= o2.pos.x
+        && pos.x <= o2.pos.x + o2.size.x
+        && pos.y >= o2.pos.y
+        && pos.y <= o2.pos.y + o2.size.y) return true;
+    }
+    if(objects.constructor === Array){
+        for(let i = 0; i < objects.length; i++){
+            const ob = objects[i];
+            if(cc(ob)) return ob;
+        }
+    }else if(cc(objects)) return objects;
+    return false;
+}
+
 export const checkCol = (obj, objects) => {
     const cc = (o1, o2) => {
         if(o1.pos.x + o1.size.x > o2.pos.x

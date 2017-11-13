@@ -1,6 +1,6 @@
 import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
 import { bouncer, jumper, spawner, giantJumper, ghost, giantGhost } from "/js/enemy.js";
-import { obstacle,  box } from "/js/obstacles.js";
+import { obstacle,  box, grass } from "/js/obstacles.js";
 import { checkProx } from "/js/colission.js";
 import helper from "/js/helper.js";
 import entity from "/js/entity.js";
@@ -9,6 +9,7 @@ import getAnimate from "/js/animate.js";
 
 const createLevel = ({ map, helps }, offsetX = 0) => {
     const level = {
+        walls: set(),
         obstacles: set(),
         grass: set(),
         points: set(),
@@ -30,7 +31,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
             level.helpers.push(helper(pos, helps[help]));
             help ++;
         }
-        if(tile === "P") level.points.push(point(v(pos.x + 5, pos.y + 5)));
+        if(tile === "P" || tile === "p") level.points.push(point(v(pos.x + 5, pos.y + 5)));
         if(tile === "1") level.enemies.push(bouncer(pos));
         if(tile === "2") level.enemies.push(jumper(pos));
         if(tile === "3") level.enemies.push(spawner(pos));
@@ -40,6 +41,8 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(y !== map.length-1
         && map[y+1][x] === "#" 
         && tile !== "#") level.grass.push(grass(pos));
+        if(tile === ","
+        || tile === "p") level.walls.push(entity({pos, img: "wall"}));
     }));
     
     return level;
@@ -62,18 +65,6 @@ const point = (pos) => {
     point.update = point.makeUpdate("checkCol");
 
     return point;
-}
-
-const grass = (pos) => {
-    const grass = entity({
-        pos,
-        img: "grass",
-    });
-
-    if(Math.random() < 0.01 
-    && Math.random() < 0.01) grass.img = "rare-grass";
-
-    return grass;
 }
 
 const deathCounter = (pos) => {

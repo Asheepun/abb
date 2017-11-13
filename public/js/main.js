@@ -44,7 +44,9 @@ promiseAll(
         "player-jump",
         "obstacle",
         "obstacle-grass",
+        "wall",
         "box",
+        "box-particle",
         "cloud",
         "helper",
         "point",
@@ -111,6 +113,7 @@ promiseAll(
         WORLD.player = newLevel.player;
         WORLD.box = newLevel.box;
         WORLD.obstacles = newLevel.obstacles;
+        WORLD.walls = newLevel.walls;
         WORLD.helpers = newLevel.helpers;
         WORLD.enemies = newLevel.enemies;
         WORLD.points = newLevel.points;
@@ -156,6 +159,7 @@ promiseAll(
             WORLD.points,
             WORLD.clouds,
             WORLD.grass,
+            WORLD.walls,
         );
     
         //check level end states
@@ -187,6 +191,7 @@ promiseAll(
         ctx.fillStyle = "black";
         ctx.fillRect(0, 600, 900, 600);
         WORLD.drawAll(
+            WORLD.walls,
             WORLD.box,
             WORLD.obstacles,
             WORLD.helpers,
@@ -226,6 +231,7 @@ promiseAll(
             const newLevel = createLevel(levelTeplates[WORLD.currentLevel], 900);
             WORLD.helper = newLevel.helper;
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
+            newLevel.walls.forEach(w => WORLD.walls.push(w));
             newLevel.grass.forEach(p => WORLD.grass.push(p));
             newLevel.points.forEach(p => WORLD.points.push(p));
             getClouds(15, 900).forEach(c => WORLD.clouds.push(c));

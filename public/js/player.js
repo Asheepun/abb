@@ -11,7 +11,7 @@ const player = (pos = v(30, 300)) => {
         img: "player",
     });
     player.state = "still";
-    player.imgDir = "left"
+    player.imgDir = "right"
     player.grounded = false;
     player.dead = false;
     

@@ -176,7 +176,6 @@ promiseAll(
             WORLD.points,
             WORLD.clouds,
             WORLD.grass,
-            WORLD.walls,
         );
     
         //check level end states

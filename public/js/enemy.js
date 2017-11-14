@@ -76,12 +76,17 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
             }
         }else enemy.talking = false;
     }
+    let drawPosX = enemy.center.x-(enemy.line.length/2)*10-15;
     enemy.addDrawingAction(ctx => {
         if(enemy.talking && enemy.line){
             ctx.fillStyle = "white";
             ctx.font = "20px game";
             if(enemy.size.x === 210) ctx.font = "30px game";
-            ctx.fillText(enemy.line, enemy.center.x-(enemy.line.length/2)*10-15, enemy.pos.y - 10);
+            drawPosX = enemy.center.x-(enemy.line.length/2)*10-15;
+            while(drawPosX < 10){
+                drawPosX += 10;
+            }
+            ctx.fillText(enemy.line, drawPosX, enemy.pos.y - 10);
         }
     });
 
@@ -101,12 +106,18 @@ export const jumper = (pos) => {
         size: v(60, 60),
         jumpSpeed: 0.4,
     });
-    jumper.dir = 0;
+    jumper.speed = 0;
     jumper.lines.push("Don't run away!", "Stay here!");
 
-    jumper.look = ({ player }) => {
-        if(player.pos.x > jumper.pos.x + jumper.size.x) jumper.imgPos = [224, 0, 210, 210];
-        if(player.pos.x + player.size.x < jumper.pos.x) jumper.imgPos = [0, 0, 210, 210];
+    jumper.look = ({ player, sprites }) => {
+        if(player.pos.x > jumper.pos.x + jumper.size.x){
+            jumper.dir = 1;
+            jumper.imgPos = [224, 0, 210, 210];
+        }
+        if(player.pos.x + player.size.x < jumper.pos.x){
+            jumper.dir = -1;
+            jumper.imgPos = [0, 0, 210, 210];
+        }
     }
     jumper.update = jumper.makeUpdate("move", "jump", "look", "talk");
     return jumper;
@@ -141,7 +152,7 @@ export const spawner = (pos) => {
 
     return spawner;
 }
-
+/*
 export const ghost = (pos) => {
     const ghost = jumper(pos);
     ghost.alpha = 0.8;
@@ -166,6 +177,6 @@ export const giantGhost = (pos) => {
     jg.velocity.y = 0.2;
 
     return jg;
-}
+}*/
 
 export default enemy;

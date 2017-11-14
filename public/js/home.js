@@ -1,6 +1,7 @@
 import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import entity from "/js/entity.js";
 import player from "/js/player.js";
+import helper from "/js/helper.js";
 import button from "/js/button.js";
 import levelTeplates from "/js/levelTemplates.js";
 import { strEach, set } from "/js/level.js";
@@ -18,6 +19,7 @@ export const setupHome = (WORLD) => {
             if(tile === "#") WORLD.obstacles.push(entity({pos: v(x*30, y*30), img: "planks"}));
         }));
         WORLD.player = player(v(780, 330));
+        WORLD.helpers.push(helper(v(0, 480), "Welcome home!"));
         //switch world buttons
         WORLD.buttons.push(button({ pos: v(748, 200), img: "start-world", size: v(60, 45), action(){
             WORLD.currentWorld = "start";
@@ -68,6 +70,7 @@ export const setupHome = (WORLD) => {
         WORLD.updateAll(
             WORLD.player,
             WORLD.buttons,
+            WORLD.helpers,
         );
         
         //draw home
@@ -92,6 +95,7 @@ export const setupHome = (WORLD) => {
         ctx.fillText('to return here.', 200, 335);
         WORLD.drawAll(
             WORLD.buttons,
+            WORLD.helpers,
             WORLD.player,
         );
         ctx.restore();
@@ -115,7 +119,7 @@ const homeTemplate = [
     "..............................",
     ".......................#######",
     ".......................#######",
-    ".......................#######",
+    "......................H#######",
     "##############################",
     "##############################",
     "##############################",

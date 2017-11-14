@@ -9,7 +9,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0
     entity.oubArea = oubArea;
     entity.velocity = v(0, 0);
     entity.grounded = false;
-    const maxFallSpeed = 0.4;
+    entity.maxFallSpeed = 0.4;
     let col, oub, platCol;
 
     return ({ timeScl, obstacles, box, grass }) => {
@@ -18,7 +18,7 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0
 
         //handlePhysics
         entity.velocity.y += entity.gravity;
-        if(entity.velocity.y > maxFallSpeed) entity.velocity.y = maxFallSpeed;
+        if(entity.velocity.y > entity.maxFallSpeed) entity.velocity.y = entity.maxFallSpeed;
 
         //moveY
         entity.pos.y += entity.velocity.y * timeScl;
@@ -46,7 +46,6 @@ const getMove = (entity, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0
 }
 
 const hitGroundParticleEffect = (array, object) => {
-    //pixel effect
     for(let i = 0; i <   Math.random()*15; i++){
         const pixel = entity({
             pos: v(object.pos.x + Math.random()*(object.size.x-10) + 5, object.pos.y + object.size.y),

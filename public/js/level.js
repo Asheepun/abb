@@ -15,7 +15,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         points: set(),
         enemies: set(),
         helpers: set(),
-        box: box(),
+        box: box(v(-30, -30)),
         player: undefined,
         deathCounter: undefined,
     }
@@ -42,7 +42,15 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         && map[y+1][x] === "#" 
         && tile !== "#") level.grass.push(grass(pos));
         if(tile === ","
-        || tile === "p") level.walls.push(entity({pos, img: "wall"}));
+        || tile === "p"
+        ||((tile === "1"
+        || tile === "2"
+        || tile === "3"
+        || tile === "4"
+        || tile === "5"
+        || tile === "6"
+        ) && map[y+1][x] === ",")) level.walls.push(entity({pos, img: "wall"}));
+
     }));
     
     return level;

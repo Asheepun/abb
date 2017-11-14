@@ -1,6 +1,8 @@
 import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
+import { startWorldTemplates, caveWorldTemplates } from "/js/levelTemplates.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
+import { setupHome } from "/js/home.js";
 import loadJSON from "/js/loadJSON.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
@@ -10,8 +12,6 @@ import entity from "/js/entity.js";
 import button from "/js/button.js";
 import createCanvas from "/js/canvas.js";
 import createLevel, { strEach, set } from "/js/level.js";
-import levelTeplates from "/js/levelTemplates.js";
-import { setupHome } from "/js/home.js";
 
 const promiseAll = (...promises) => {
     return new Promise((resolve, reject) => {
@@ -59,6 +59,8 @@ promiseAll(
         "arrow-left",
         "play-btn",
         "death-counter",
+        "start-world",
+        "cave-world",
     ),
     loadAudio(
         0.3,
@@ -90,14 +92,29 @@ promiseAll(
         currentLevel: 0,
         state: undefined,
         newSpawn: undefined,
+        spliceAll,
+        deaths: 0,
         buttons: [],
         states: {
             setupHome,
         },
-        spliceAll,
-        deaths: 0,
+        worlds: {
+            start: {
+                templates: startWorldTemplates,
+                currentLevel: 0,
+            },
+            cave: {
+                templates: caveWorldTemplates,
+                currentLevel: 0,
+            }
+        },
+        currentWorld: "start",
     };
-    if(localStorage.furtestLevel === undefined) localStorage.furtestLevel = 0;
+    WORLD.returnCurrentLevel = () => WORLD.worlds[WORLD.currentWorld].templates[WORLD.worlds[WORLD.currentWorld].currentLevel];
+    WORLD.returnProgress = () => localStorage[WORLD.currentWorld + "Progress"];
+
+    if(localStorage.startProgress === undefined) localStorage.startProgress = 0;
+    if(localStorage.caveProgress === undefined) localStorage.caveProgress = 0;
 
     WORLD.drawAll = makeDrawAll(ctx, sprites);
     WORLD.updateAll = makeUpdateAll(WORLD);
@@ -109,7 +126,7 @@ promiseAll(
     WORLD.states.setup = () => {
 
         //initialize level
-        const newLevel = createLevel(levelTeplates[WORLD.currentLevel]);
+        const newLevel = createLevel(WORLD.returnCurrentLevel());
         WORLD.player = newLevel.player;
         WORLD.box = newLevel.box;
         WORLD.obstacles = newLevel.obstacles;
@@ -124,8 +141,8 @@ promiseAll(
         
         WORLD.startingAlpha = 1;
         WORLD.nextLevelCounter = undefined;
-        if(WORLD.currentLevel > localStorage.furtestLevel) localStorage.furtestLevel = WORLD.currentLevel;
         WORLD.offset = v(0, 0);
+
         WORLD.state = WORLD.states.game;
 
     }
@@ -222,13 +239,19 @@ promiseAll(
     }
 
     WORLD.states.setupSwitchLevel = () => {
-        WORLD.currentLevel++;
-
-        if(WORLD.currentLevel >= levelTeplates.length){
-            WORLD.currentLevel--;
+        WORLD.worlds[WORLD.currentWorld].currentLevel++;
+        if(WORLD.worlds[WORLD.currentWorld].currentLevel >= WORLD.worlds[WORLD.currentWorld].templates.length){
             WORLD.state = WORLD.states.setupHome;
+            WORLD.worlds[WORLD.currentWorld].currentLevel--;
         }else {
-            const newLevel = createLevel(levelTeplates[WORLD.currentLevel], 900);
+            //save level progress
+            if(WORLD.worlds[WORLD.currentWorld].currentLevel > WORLD.returnProgress()){
+                localStorage[WORLD.currentWorld + "Progress"] = WORLD.worlds[WORLD.currentWorld].currentLevel;
+                console.log(WORLD.returnProgress());
+            }
+
+            //make mock world for switching animation
+            const newLevel = createLevel(WORLD.returnCurrentLevel(), 900);
             WORLD.helper = newLevel.helper;
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
             newLevel.walls.forEach(w => WORLD.walls.push(w));

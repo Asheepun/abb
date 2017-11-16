@@ -1,4 +1,4 @@
-import { v } from "/js/vector.js";
+import vec from "/js/vector.js";
 import entity from "/js/entity.js";
 
 const button = ({ pos, img, size, action = () => {} }) => {

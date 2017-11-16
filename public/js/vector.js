@@ -1,34 +1,97 @@
-export const v = (x, y) => ({
-    x,
-    y,
-    mag: Math.sqrt(x*x + y*y),
-    set: (x, y) => {
-        this.x = x;
-        this.y = y;
+const vec = (x, y) => {
+    const that = {
+        x, 
+        y,
+        mag: Math.sqrt(x*x + y*y),
+    }; 
+
+    //cascading mutation methods
+    that.set = (x, y) => {
+        that.x = x;
+        that.y = y;
+        that.mag = Math.sqrt(x*x + y*y);
     }
-});
+    that.add = (v) => {
+        if(typeof v === "number") 
+            that.set(that.x + v, that.y + v);
+        else that.set(that.x + v.x, that.y + v.y);
+        return that;  
+    }
+    that.sub = (v) => {
+        if(typeof v === "number") 
+            that.set(that.x - v, that.y - v);
+        else that.set(that.x - v.x, that.y - v.y);
+        return that;  
+    }
+    that.mul = (v) => {
+        if(typeof v === "number") 
+            that.set(that.x * v, that.y * v);
+        else that.set(that.x * v.x, that.y * v.y);
+        return that;  
+    }
+    that.div = (v) => {
+        if(typeof v === "number") 
+            that.set(that.x * v, that.y * v);
+        else that.set(that.x * v.x, that.y * v.y);
+        return that;  
+    }
+    that.reverse = () => {
+        that.set(-that.x, -that.y);
+        return that;
+    }
+    that.normalize = () => {
+        that.set(that.x/that.mag, that.y/that.mag);
+        return that
+    }
+    //return methods
+    that.copy = () => vec(that.x, that.y);
 
-export const add = (vec1, vec2) => v(vec1.x+vec2.x, vec1.y+vec2.y); 
+    return that;
+}
 
-export const sub = (vec1, vec2) => v(vec1.x-vec2.x, vec1.y-vec2.y); 
+vec.add = (vec1, vec2) => vec(vec1.x+vec2.x, vec1.y+vec2.y); 
 
-export const div = (vec, x) => v(vec.x/x, vec.y/x); 
+vec.sub = (vec1, vec2) => vec(vec1.x-vec2.x, vec1.y-vec2.y); 
 
-export const mul = (vec, x) => v(vec.x*x, vec.y*x);
+vec.div = (v, x) => vec(v.x/x, v.y/x); 
 
-export const dub = (vec) => mul(vec, 2);
+vec.mul = (v, x) => vec(v.x*x, v.y*x);
 
-export const half = (vec) => div(vec, 2);
+vec.dub = (v) => mul(v, 2);
 
-export const reverse = (vec) => v(-vec.x, -vec.y);
+vec.half = (v) => div(v, 2);
 
-export const normalize = (vec) => div(vec, vec.mag);
+vec.reverse = (v) => vec(-v.x, -v.y);
 
-export const abs = (vec) => v(Math.abs(vec.x), Math.abs(vec.y));
+vec.normalize = (v) => div(v, v.mag);
 
-export const floor = (vec) => v(Math.floor(vec.x), Math.floor(vec.y)); 
+vec.abs = (v) => vec(Math.abs(v.x), Math.abs(v.y));
 
-export const round = (vec) => v(Math.round(vec.x), Math.round(vec.y)); 
+vec.floor = (v) => vec(Math.floor(v.x), Math.floor(v.y)); 
+
+vec.round = (v) => vec(Math.round(v.x), Math.round(v.y)); 
+
+export const add = (vec1, vec2) => vec(vec1.x+vec2.x, vec1.y+vec2.y); 
+
+export const sub = (vec1, vec2) => vec(vec1.x-vec2.x, vec1.y-vec2.y); 
+
+export const div = (v, x) => vec(v.x/x, v.y/x); 
+
+export const mul = (v, x) => vec(v.x*x, v.y*x);
+
+export const dub = (v) => mul(v, 2);
+
+export const half = (v) => div(v, 2);
+
+export const reverse = (v) => vec(-v.x, -v.y);
+
+export const normalize = (v) => div(v, v.mag);
+
+export const abs = (v) => vec(Math.abs(v.x), Math.abs(v.y));
+
+export const floor = (v) => vec(Math.floor(v.x), Math.floor(v.y)); 
+
+export const round = (v) => vec(Math.round(v.x), Math.round(v.y)); 
 
 export const align = (cord, scl) => {
     if(Math.floor(cord) % scl === 0) return Math.floor(cord);
@@ -37,4 +100,7 @@ export const align = (cord, scl) => {
 
 export const angle = (vec1, vec2) => -Math.atan2(vec1.x - vec2.x, vec1.y - vec2.y);
 
-export const pipe = (x, ...funcs) => funcs.reduce((x, func) => func(x), x) 
+export const pipe = (x, ...funcs) => funcs.reduce((x, func) => func(x), x);
+
+
+export default vec;

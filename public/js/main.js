@@ -1,4 +1,4 @@
-import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
+import vec, { add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
 import { startWorldTemplates, caveWorldTemplates } from "/js/levelTemplates.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
@@ -13,19 +13,7 @@ import button from "/js/button.js";
 import createCanvas from "/js/canvas.js";
 import createLevel, { strEach, set } from "/js/level.js";
 
-const promiseAll = (...promises) => {
-    return new Promise((resolve, reject) => {
-        const results = [];
-        promises.forEach(promise => {
-            promise.then(arg => {
-                results.push(arg)
-                if(results.length === promises.length) resolve(results);
-            });
-        });
-    });
-}
-
-promiseAll(
+Promise.all([
     createCanvas(900, 600),
     createKeys(
         "w",
@@ -76,7 +64,7 @@ promiseAll(
         "playerFrames",
         "helperFrames",
     ),
-).then(([ { c, ctx, scale, pointer }, keys, sprites, audio, resJSON  ]) => {
+]).then(([ { c, ctx, scale, pointer }, keys, sprites, audio, resJSON  ]) => {
 
     //initialize
     const WORLD = {
@@ -105,10 +93,10 @@ promiseAll(
             },
             cave: {
                 templates: caveWorldTemplates,
-                currentLevel: 0,
+                currentLevel: 1,
             }
         },
-        currentWorld: "start",
+        currentWorld: "cave",
     };
     WORLD.returnCurrentLevel = () => WORLD.worlds[WORLD.currentWorld].templates[WORLD.worlds[WORLD.currentWorld].currentLevel];
     WORLD.returnProgress = () => localStorage[WORLD.currentWorld + "Progress"];
@@ -141,7 +129,7 @@ promiseAll(
         
         WORLD.startingAlpha = 1;
         WORLD.nextLevelCounter = undefined;
-        WORLD.offset = v(0, 0);
+        WORLD.offset = vec(0, 0);
 
         WORLD.state = WORLD.states.game;
 
@@ -270,13 +258,17 @@ promiseAll(
         //level switch logic
         WORLD.offset.x -= 7;
         if(WORLD.player.pos.x < WORLD.newSpawn.x){
-            const dir = pipe(
+            /*const dir = pipe(
                 sub(WORLD.player.pos, WORLD.newSpawn),
                 normalize,
                 reverse,
                 x => mul(x, 5),
-            );
-            WORLD.player.pos = add(WORLD.player.pos, dir);
+            );*/
+            const dir = sub(WORLD.player.pos, WORLD.newSpawn)
+            .normalize()
+            .reverse()
+            .mul(5);
+            WORLD.player.pos.add(dir);
             WORLD.player.fixCenter();
         }
     

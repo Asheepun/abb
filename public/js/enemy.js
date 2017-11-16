@@ -1,4 +1,4 @@
-import { v, sub } from "/js/vector.js";
+import vec, { sub } from "/js/vector.js";
 import entity from "/js/entity.js";
 import getMove from "/js/move.js";
 
@@ -97,13 +97,13 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
 
 export const bouncer = (pos) => enemy({
     pos,
-    size: v(50, 50),
+    size: vec(50, 50),
 });
 
 export const jumper = (pos) => {
     const jumper = enemy({
         pos,
-        size: v(60, 60),
+        size: vec(60, 60),
         jumpSpeed: 0.4,
     });
     jumper.speed = 0;
@@ -125,7 +125,7 @@ export const jumper = (pos) => {
 
 export const giantJumper = (pos) => {
     const gj = jumper(pos);
-    gj.size = v(210, 210);
+    gj.size = vec(210, 210);
     gj.jumpSpeed = 0.5;
 
     return gj;
@@ -133,13 +133,13 @@ export const giantJumper = (pos) => {
 
 export const spawner = (pos) => {
     const spawner = bouncer(pos);
-    spawner.spawn = v(spawner.pos.x, spawner.pos.y);
+    spawner.spawn = vec(spawner.pos.x, spawner.pos.y);
     spawner.oubArea = [0, 0, 900, 660];
     spawner.alpha = 0;
 
     spawner.handleOubY = () => {
         if(spawner.velocity.y > 0){
-            spawner.pos = v(spawner.spawn.x, spawner.spawn.y);
+            spawner.pos = vec(spawner.spawn.x, spawner.spawn.y);
             spawner.alpha = 0;
         }
     }

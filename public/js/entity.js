@@ -1,7 +1,7 @@
-import { v, add, half, mul, div, sub, pipe } from "/js/vector.js";
+import vec from "/js/vector.js";
 
-const entity = ({ pos = v(0, 0), size = v(30, 30), img = "obstacle", alpha = 1, imgPos = [0, 0, size.x, size.y], rotation = 0 }) => {
-    let entity = {
+const entity = ({ pos = vec(0, 0), size = vec(30, 30), img = "obstacle", alpha = 1, imgPos = [0, 0, size.x, size.y], rotation = 0 }) => {
+    let that = {
         pos,
         size,
         img,
@@ -10,48 +10,46 @@ const entity = ({ pos = v(0, 0), size = v(30, 30), img = "obstacle", alpha = 1, 
         rotation,
         drawingActions: [],
     };
-    entity.center = add(entity.pos, half(entity.size));
+    that.center = vec.add(that.pos, vec.half(that.size));
 
-    entity.draw = (ctx, sprites) => {
+    that.draw = (ctx, sprites) => {
         ctx.save();
-        ctx.translate(entity.center.x, entity.center.y);
-        ctx.rotate(entity.rotation);
-        ctx.globalAlpha = entity.alpha;
-        if(entity.imgPos[0] + entity.imgPos[2] <= sprites[entity.img].width) ctx.drawImage(
-            sprites[entity.img],
-            entity.imgPos[0], entity.imgPos[1], entity.imgPos[2], entity.imgPos[3],
-            -entity.size.x/2, -entity.size.y/2, entity.size.x, entity.size.y
+        ctx.translate(that.center.x, that.center.y);
+        ctx.rotate(that.rotation);
+        ctx.globalAlpha = that.alpha;
+        if(that.imgPos[0] + that.imgPos[2] <= sprites[that.img].width) ctx.drawImage(
+            sprites[that.img],
+            that.imgPos[0], that.imgPos[1], that.imgPos[2], that.imgPos[3],
+            -that.size.x/2, -that.size.y/2, that.size.x, that.size.y
         );
         else ctx.drawImage(
-            sprites[entity.img],
-            0, entity.imgPos[1], entity.imgPos[2], entity.imgPos[3],
-            -entity.size.x/2, -entity.size.y/2, entity.size.x, entity.size.y
+            sprites[that.img],
+            0, that.imgPos[1], that.imgPos[2], that.imgPos[3],
+            -that.size.x/2, -that.size.y/2, that.size.x, that.size.y
         );
         ctx.globalAlpha = 1;
         ctx.restore();
-        if(entity.drawingActions.length > 0){
-            for(let i = 0; i < entity.drawingActions.length; i++){
-                entity.drawingActions[i](ctx, sprites);
+        if(that.drawingActions.length > 0){
+            for(let i = 0; i < that.drawingActions.length; i++){
+                that.drawingActions[i](ctx, sprites);
             }
         }
     }
 
-    entity.fixCenter = () => {
-        entity.center = add(entity.pos, half(entity.size));
-    }
+    that.fixCenter = () => that.center = vec.add(that.pos, vec.half(that.size));
 
-    entity.makeUpdate = (...methods) => (WORLD) => {
+    that.makeUpdate = (...methods) => (WORLD) => {
         for(let i = 0; i < methods.length; i++){
-            entity[methods[i]](WORLD);
+            that[methods[i]](WORLD);
         }
     }
 
-    entity.addDrawingAction = (...funcs) => {
+    that.addDrawingAction = (...funcs) => {
         for(let i = 0; i < funcs.length; i++){
-            entity.drawingActions.push(funcs[i]);
+            that.drawingActions.push(funcs[i]);
         }
     }
 
-    return entity;
+    return that;
 }
 export default entity;

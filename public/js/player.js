@@ -1,86 +1,85 @@
-import { v, add, half, mul, div, sub, pipe, round } from "/js/vector.js";
+import vec, { add, half, mul, div, sub, pipe, round } from "/js/vector.js";
 import getMove from "/js/move.js";
 import entity from "/js/entity.js";
 import getAnimate from "/js/animate.js";
 import { checkCol, checkProx } from "/js/colission.js";
 
-const player = (pos = v(30, 300)) => {
-    const player = entity({
+const player = (pos) => {
+    const that = entity({
         pos,
-        size: v(28, 30),
+        size: vec(28, 30),
         img: "player",
     });
-    player.state = "still";
-    player.imgDir = "right"
-    player.grounded = false;
-    player.dead = false;
+    that.state = "still";
+    that.imgDir = "right";
+    that.grounded = false;
+    that.dead = false;
     
-    player.move = getMove(player, {oubArea: [0, 0, 900, 700]});
+    that.move = getMove(that, {oubArea: [0, 0, 900, 700]});
 
-    player.animate = getAnimate(player, {
+    that.animate = getAnimate(that, {
         delay: 4,
         handleFrames: ({ playerFrames }) => {
-            if(player.grounded){ 
-                player.img = "player";
-                player.state = player.dir === 0 ? "still" : "moving";
+            if(that.grounded){ 
+                that.img = "player";
+                that.state = that.dir === 0 ? "still" : "moving";
             }
             else{ 
-                player.img = "player-jump";
-                player.state = "jumping";
+                that.img = "player-jump";
+                that.state = "jumping";
             }
-            if(player.dir < 0) player.imgDir = "left";
-            if(player.dir > 0) player.imgDir = "right";
-            return playerFrames[player.state][player.imgDir];
+            if(that.dir < 0) that.imgDir = "left";
+            if(that.dir > 0) that.imgDir = "right";
+            return playerFrames[that.state][that.imgDir];
         }
     });
 
-    player.jump = (sound, WORLD) => {
-        if(player.grounded){ 
+    that.jump = (sound, WORLD) => {
+        if(that.grounded){ 
             sound.load();
             sound.play();
-            player.velocity.y = -0.8
+            that.velocity.y = -0.8
         }
     }
-
-    player.handleColissionX = (object) => {
-        if(player.velocity.x > 0) player.pos.x = object.pos.x - player.size.x;
-        else player.pos.x = object.pos.x + object.size.x;
+    that.handleColissionX = (object) => {
+        if(that.velocity.x > 0) that.pos.x = object.pos.x - that.size.x;
+        else that.pos.x = object.pos.x + object.size.x;
     }
-    player.handleColissionY = (object) => {
-        if(player.velocity.y > 0){
-            player.grounded = true;
-            player.pos.y = object.pos.y - player.size.y;
-            player.pos = round(player.pos);
-        }else player.pos.y = object.pos.y + object.size.y;
-        player.velocity.y = 0;
+    that.handleColissionY = (object) => {
+        if(that.velocity.y > 0){
+            that.grounded = true;
+            that.pos.y = object.pos.y - that.size.y;
+            that.pos = round(that.pos);
+        }else that.pos.y = object.pos.y + object.size.y;
+        that.velocity.y = 0;
     }
-    player.handleOubX = () => {
-        if(player.velocity.x > 0) player.pos.x = 870;
-        else player.pos.x = 0;
+    that.handleOubX = () => {
+        if(that.velocity.x > 0) that.pos.x = 870;
+        else that.pos.x = 0;
     }
-    player.handleOubY = () => {
-        if(player.velocity.y > 0) player.dead = true;
-        else player.pos.y = 0;
-        player.velocity.y = 0;
+    that.handleOubY = () => {
+        if(that.velocity.y > 0) that.dead = true;
+        else that.pos.y = 0;
+        that.velocity.y = 0;
     }
-    player.handlePlatCol = (object) => {
-        if(player.velocity.y > 0){
-            player.pos.y = object.pos.y - player.size.y;
-            player.grounded = true;
-            player.velocity.y = 0;
-            player.pos = round(player.pos);
+    that.handlePlatCol = (object) => {
+        if(that.velocity.y > 0){
+            that.pos.y = object.pos.y - that.size.y;
+            that.grounded = true;
+            that.velocity.y = 0;
+            that.pos = round(that.pos);
         }
     }
-    player.checkHit = ({ enemies }) => {
+    that.checkHit = ({ enemies }) => {
         for(let i = 0; i < enemies.length; i++){
-            if(sub(player.center, enemies[i].center).mag < player.size.x/4 + enemies[i].size.x/2){
-                player.dead = true;
+            if(sub(that.center, enemies[i].center).mag < that.size.x/4 + enemies[i].size.x/2){
+                that.dead = true;
             }
         }
     }
-    player.update = player.makeUpdate("move", "checkHit", "animate");
+    that.update = that.makeUpdate("move", "checkHit", "animate");
 
-    return player;
+    return that;
 }
 
 

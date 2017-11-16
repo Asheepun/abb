@@ -1,4 +1,4 @@
-import { v, div, sub } from "/js/vector.js";
+import vec, { div, sub } from "/js/vector.js";
 
 const createCanvas = (width = 800, height = 600, element = document.body) => new Promise((resolve, reject) => {
     const c = document.createElement("canvas");
@@ -18,7 +18,7 @@ const createCanvas = (width = 800, height = 600, element = document.body) => new
     const scale = c.width/width;
 
     const pointer = {
-        pos: v(0, 0),
+        pos: vec(0, 0),
         down: false,
         pressed: false,
     };
@@ -31,8 +31,8 @@ const createCanvas = (width = 800, height = 600, element = document.body) => new
         pointer.down = false;
     });
     c.addEventListener("mousemove", e => {
-        const offset = v(c.offsetLeft, c.offsetTop);
-        pointer.pos = div(sub(v(e.pageX, e.pageY), offset), scale);
+        const offset = vec(c.offsetLeft, c.offsetTop);
+        pointer.pos = div(sub(vec(e.pageX, e.pageY), offset), scale);
     });
 
     element.appendChild(c);

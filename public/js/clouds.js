@@ -1,4 +1,4 @@
-import { v, add, half, mul, div, sub, pipe, floor } from "/js/vector.js";
+import vec from "/js/vector.js";
 import getMove from "/js/move.js";
 import entity from "/js/entity.js";
 import { set } from "/js/level.js";
@@ -9,8 +9,8 @@ const getClouds = (amount = 20, offset = 0) => {
     const dist = 900/amount;
     for(let i = 0; i < amount; i++){
         const cloud = entity({
-            pos: v(dist*i + Math.random()*60 + offset, Math.floor(Math.random()*60)),
-            size: v(60, 30),
+            pos: vec(dist*i + Math.random()*60 + offset, Math.floor(Math.random()*60)),
+            size: vec(60, 30),
             alpha: 0.8,
             img: "cloud",
         });

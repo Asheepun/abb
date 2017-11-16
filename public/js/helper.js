@@ -1,14 +1,14 @@
-import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
+import vec, { add, half, mul, div, sub, pipe, align } from "/js/vector.js";
 import { checkCol } from "/js/colission.js";
 import entity from "/js/entity.js";
 import getAnimate from "/js/animate.js";
 
-const helper = (pos = v(-30, -30), text = "Hello!") => {
+const helper = (pos = vec(-30, -30), text = "Hello!") => {
     const helper = entity({ pos, img: "helper" });
     helper.state = "still"
     helper.dir = "left";
     helper.text = text;
-    helper.textPos = v(helper.pos.x - (text.length / 2) * 12.5 - 15, helper.pos.y-15);
+    helper.textPos = vec(helper.pos.x - (text.length / 2) * 12.5 - 15, helper.pos.y-15);
     while(helper.textPos.x + helper.text.length*10 > 900){
         helper.textPos.x -= 1;
     }

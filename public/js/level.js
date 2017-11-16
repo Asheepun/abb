@@ -1,4 +1,4 @@
-import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
+import vec, { add, half, mul, div, sub, pipe, align } from "/js/vector.js";
 import { bouncer, jumper, spawner, giantJumper } from "/js/enemy.js";
 import { obstacle,  box, grass } from "/js/obstacles.js";
 import { checkProx } from "/js/colission.js";
@@ -15,14 +15,14 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         points: set(),
         enemies: set(),
         helpers: set(),
-        box: box(v(-30, -30)),
+        box: box(vec(-30, -30)),
         player: undefined,
         deathCounter: undefined,
     }
     let help = 0;
     let pos;
     map.forEach((row, y) => strEach(row, (tile, x) => {
-        pos = v(x*30 + offsetX, y*30);
+        pos = vec(x*30 + offsetX, y*30);
         if(tile === "@") level.player = player(pos);
         if(tile === "§") level.deathCounter = deathCounter(pos);
         if(tile === "B") level.box = box(pos);
@@ -31,7 +31,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
             level.helpers.push(helper(pos, helps[help]));
             help ++;
         }
-        if(tile === "P" || tile === "p") level.points.push(point(v(pos.x + 5, pos.y + 5)));
+        if(tile === "P" || tile === "p") level.points.push(point(vec(pos.x + 5, pos.y + 5)));
         if(tile === "1") level.enemies.push(bouncer(pos));
         if(tile === "2") level.enemies.push(jumper(pos));
         if(tile === "3") level.enemies.push(spawner(pos));
@@ -49,7 +49,6 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         || tile === "5"
         || tile === "6"
         ) && map[y+1][x] === ",")) level.walls.push(entity({pos, img: "wall"}));
-
     }));
     
     return level;
@@ -58,7 +57,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
 const point = (pos) => {
     const point = entity({
         pos,
-        size: v(20, 20),
+        size: vec(20, 20),
         img: "point",
     });
 

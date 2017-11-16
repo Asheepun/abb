@@ -1,4 +1,4 @@
-import { v, add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
+import vec, { add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import entity from "/js/entity.js";
 import player from "/js/player.js";
 import helper from "/js/helper.js";
@@ -16,17 +16,17 @@ export const setupHome = (WORLD) => {
             WORLD.enemies,
         );
         homeTemplate.forEach((row, y) => strEach(row, (tile, x) => {
-            if(tile === "#") WORLD.obstacles.push(entity({pos: v(x*30, y*30), img: "planks"}));
+            if(tile === "#") WORLD.obstacles.push(entity({pos: vec(x*30, y*30), img: "planks"}));
         }));
-        WORLD.player = player(v(780, 330));
-        WORLD.helpers.push(helper(v(0, 480), "Welcome home!"));
+        WORLD.player = player(vec(780, 330));
+        WORLD.helpers.push(helper(vec(0, 480), "Welcome home!"));
         //switch world buttons
-        WORLD.buttons.push(button({ pos: v(748, 200), img: "start-world", size: v(60, 45), action(){
+        WORLD.buttons.push(button({ pos: vec(748, 200), img: "start-world", size: vec(60, 45), action(){
             WORLD.currentWorld = "start";
             WORLD.audio["yes-btn"].load();
             WORLD.audio["yes-btn"].play();
         } }));
-        WORLD.buttons.push(button({ pos: v(812, 200), img: "cave-world", size: v(60, 45), action(){
+        WORLD.buttons.push(button({ pos: vec(812, 200), img: "cave-world", size: vec(60, 45), action(){
             WORLD.currentWorld = "cave";
             WORLD.audio["yes-btn"].load();
             WORLD.audio["yes-btn"].play();
@@ -34,7 +34,7 @@ export const setupHome = (WORLD) => {
         WORLD.buttons[0].imgPos = [0, 0, 356, 261];
         WORLD.buttons[1].imgPos = [0, 0, 356, 261];
         //switch level buttons
-        WORLD.buttons.push(button({ pos: v(840, 300), img: "arrow-right", size: v(30, 30), action(){
+        WORLD.buttons.push(button({ pos: vec(840, 300), img: "arrow-right", size: vec(30, 30), action(){
             if(WORLD.worlds[WORLD.currentWorld].currentLevel < WORLD.returnProgress()){
                 WORLD.worlds[WORLD.currentWorld].currentLevel++;
                 WORLD.audio["yes-btn"].load();
@@ -45,7 +45,7 @@ export const setupHome = (WORLD) => {
                 WORLD.audio["not-btn"].play();
             }
         } }));
-        WORLD.buttons.push(button({ pos: v(750, 300), img: "arrow-left", size: v(30, 30), action(){
+        WORLD.buttons.push(button({ pos: vec(750, 300), img: "arrow-left", size: vec(30, 30), action(){
             if(WORLD.worlds[WORLD.currentWorld].currentLevel > 0){
                 WORLD.worlds[WORLD.currentWorld].currentLevel--;
                 WORLD.audio["yes-btn"].load();
@@ -57,7 +57,7 @@ export const setupHome = (WORLD) => {
             }
         } }));
         //play button
-        WORLD.buttons.push(button({ pos: v(780, 300), img: "play-btn", size: v(60, 30), action(){
+        WORLD.buttons.push(button({ pos: vec(780, 300), img: "play-btn", size: vec(60, 30), action(){
             WORLD.state = WORLD.states.setup;
         } }));
 
@@ -84,6 +84,7 @@ export const setupHome = (WORLD) => {
         ctx.font = "30px game";
         ctx.fillText("Level " + (WORLD.worlds[WORLD.currentWorld].currentLevel+1), 755, 290);
         ctx.fillRect(WORLD.currentWorld === "cave" ? 812 : 748, 195, 60, 5);
+        ctx.fillText(WORLD.currentWorld, 770, 190);
         //draw info
         ctx.font = "20px game";
         ctx.fillText("This game is work in progress.", 200, 150);
@@ -108,7 +109,7 @@ const homeTemplate = [
     "##############################",
     "########..............########",
     "######..................######",
-    "####......................####",
+    "####..........................",
     "##............................",
     "..............................",
     "..............................",

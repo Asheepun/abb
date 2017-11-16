@@ -1,77 +1,77 @@
-import { v, add, half, mul, div, sub, pipe, align } from "/js/vector.js";
+import vec, { add, half, mul, div, sub, pipe, align } from "/js/vector.js";
 import { checkHover } from "/js/colission.js";
 import entity from "/js/entity.js";
 import getAnimate from "/js/animate.js";
 import getMove from "/js/move.js";
 
 export const obstacle = (pos, map, offset = 0) => {
-    const obstacle = entity({
+    const that = entity({
         pos,
         img: "obstacle",
     });
     const mapPos = div(pos, 30);
-    if(mapPos.y !== 0 && map[mapPos.y-1][mapPos.x+offset/30] !== "#") obstacle.img = "obstacle-grass";
+    if(mapPos.y !== 0 && map[mapPos.y-1][mapPos.x+offset/30] !== "#") that.img = "obstacle-grass";
 
-    return obstacle;
+    return that;
 }
 
 export const box = (pos) => {
-    const box = entity({
+    const that = entity({
         pos, 
         img: "box",
     });
-    box.update = ({ pointer, obstacles, walls, grass }) => {
+    that.update = ({ pointer, obstacles, walls, grass }) => {
         if(pointer.down && !checkHover(pointer.pos, obstacles)){
-            box.pos.x = align(pointer.pos.x, 30);
-            box.pos.y = align(pointer.pos.y, 30);
+            that.pos.x = align(pointer.pos.x, 30);
+            that.pos.y = align(pointer.pos.y, 30);
             if(checkHover(pointer.pos, walls)){
-                box.pos = v(-30, -30);
+                that.pos.set(-30, -30);
                 if(pointer.pressed) confettiParticleEffect(grass, pointer.pos);
             }
-            box.fixCenter();
+            that.fixCenter();
         }
     }
-    return box;
+    return that;
 }
 
 export const grass = (pos) => {
-    const grass = entity({
+    const that = entity({
         pos,
         img: "grass",
     });
 
     if(Math.random() < 0.01 
-    && Math.random() < 0.01) grass.img = "rare-grass";
+    && Math.random() < 0.01) that.img = "rare-grass";
 
-    return grass;
+    return that;
 }
 
 const confettiParticleEffect = (array, pos) => {
     //pixel effect
     for(let i = 0; i <   Math.random()*15; i++){
-        const pixel = entity({
-            pos: v(pos.x + Math.random()*10 - 5, pos.y + Math.random()*10 - 5),
+        const that = entity({
+            pos: vec(pos.x + Math.random()*10 - 5, pos.y + Math.random()*10 - 5),
             img: "box-particle",
-            size: v(5, 5),
+            size: vec(5, 5),
             imgPos: [0, 0, 5, 5],
             rotation: Math.random()*360,
         });
-        pixel.move = getMove(pixel, {
+        that.move = getMove(that, {
             gravity: 0.02,
         });
-        pixel.velocity.y = -Math.random()*0.2 - 0.1;
-        if(pixel.pos.x > pos.x) pixel.dir = 1;
-        else pixel.dir = -1;
-        pixel.speed = Math.random()*0.1;
+        that.velocity.y = -Math.random()*0.2 - 0.1;
+        if(that.pos.x > pos.x) that.dir = 1;
+        else that.dir = -1;
+        that.speed = Math.random()*0.1;
         let fade = 0.005;
-        pixel.fade = () => {
+        that.fade = () => {
             fade *= 1.2;
-            pixel.alpha -= fade;
-            if(pixel.alpha <= 0) pixel.remove();
+            that.alpha -= fade;
+            if(that.alpha <= 0) that.remove();
         }
-        pixel.remove = () => array.splice(array.indexOf(pixel), 1);
+        that.remove = () => array.splice(array.indexOf(that), 1);
             
-        pixel.update = pixel.makeUpdate("move", "fade");
-        array.push(pixel);
+        that.update = that.makeUpdate("move", "fade");
+        array.push(that);
     }
 }

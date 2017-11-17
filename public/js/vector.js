@@ -1,4 +1,4 @@
-const vec = (x, y) => {
+const vec = (x = 0, y = 0) => {
     const that = {
         x, 
         y,

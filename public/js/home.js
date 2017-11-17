@@ -6,7 +6,7 @@ import button from "/js/button.js";
 import levelTeplates from "/js/levelTemplates.js";
 import { strEach, set } from "/js/level.js";
 
-export const setupHome = (WORLD) => {
+const setupHome = (WORLD) => {
         WORLD.spliceAll(
             WORLD.obstacles,
             WORLD.points,
@@ -125,5 +125,7 @@ const homeTemplate = [
     "##############################",
     "##############################",
 ];
+
+export default setupHome;
     
     

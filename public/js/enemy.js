@@ -3,96 +3,96 @@ import entity from "/js/entity.js";
 import getMove from "/js/move.js";
 
 const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210, 210], frame2 = [224, 0, 210, 210] }) => {
-    const enemy = entity({
+    const that = entity({
         pos,
         size,
         imgPos: frame1,
         img,
     });
-    enemy.jumpSpeed = jumpSpeed;
+    that.jumpSpeed = jumpSpeed;
 
-    enemy.move = getMove(enemy, {
+    that.move = getMove(that, {
         speed: 0.1,
         dir: -1,
         gravity: 0.01,
     });
-    enemy.handleColissionY = (object) => {
-        if(enemy.velocity.y > 0){
-            enemy.pos.y = object.pos.y - enemy.size.y;
-            enemy.grounded = true;
+    that.handleColissionY = (object) => {
+        if(that.velocity.y > 0){
+            that.pos.y = object.pos.y - that.size.y;
+            that.grounded = true;
         }
         else{ 
-            enemy.pos.y = object.pos.y + object.size.y;
-            enemy.grounded = false;
+            that.pos.y = object.pos.y + object.size.y;
+            that.grounded = false;
         }
-        enemy.velocity.y = 0;
+        that.velocity.y = 0;
     }
-    enemy.handleOubY = () => {
-        if(enemy.velocity.y < 0){
-            enemy.pos.y = 0;
-            enemy.velocity.y = 0;
+    that.handleOubY = () => {
+        if(that.velocity.y < 0){
+            that.pos.y = 0;
+            that.velocity.y = 0;
         }
     }
-    enemy.handleColissionX = enemy.handleOubX = () => {
-        enemy.dir *= -1;
-        enemy.pos.x += 4*enemy.dir;
+    that.handleColissionX = that.handleOubX = () => {
+        that.dir *= -1;
+        that.pos.x += 4*that.dir;
         //animate
-        if(enemy.dir > 0) enemy.imgPos = frame2;
-        else enemy.imgPos = frame1;
+        if(that.dir > 0) that.imgPos = frame2;
+        else that.imgPos = frame1;
     }
-    enemy.handlePlatCol = (object) => {
-        if(enemy.velocity.y > 0){
-            enemy.pos.y = object.pos.y - enemy.size.y;
-            enemy.grounded = true;
-            enemy.velocity.y = 0;
+    that.handlePlatCol = (object) => {
+        if(that.velocity.y > 0){
+            that.pos.y = object.pos.y - that.size.y;
+            that.grounded = true;
+            that.velocity.y = 0;
         }
     }
-    enemy.jump = () => {
-        if(enemy.grounded){
-            enemy.velocity.y = -enemy.jumpSpeed;
+    that.jump = () => {
+        if(that.grounded){
+            that.velocity.y = -that.jumpSpeed;
         }
     }
     //make talking engine
-    enemy.lines = [
+    that.lines = [
         "Lil bugger!",
         "Come'ere you!",
         "You scared boy?",
         "I dare you!",
         "Twerp!",
     ];
-    enemy.line = false;
-    enemy.talking = false;
-    enemy.talked = 0;
-    enemy.talk = ({ player, audio }) => {
-        if(enemy.talking && enemy.line){
-            enemy.talked++;
-            if(enemy.talked > 60) enemy.line = false;
+    that.line = false;
+    that.talking = false;
+    that.talked = 0;
+    that.talk = ({ player, audio }) => {
+        if(that.talking && that.line){
+            that.talked++;
+            if(that.talked > 60) that.line = false;
         }
-        if(sub(player.center, enemy.center).mag < enemy.size.x/2 + 100){
-            if(!enemy.talking){
-                enemy.talking = true
-                enemy.talked = 0;
-                enemy.line = enemy.lines[Math.floor(Math.random()*enemy.lines.length)];
+        if(sub(player.center, that.center).mag < that.size.x/2 + 100){
+            if(!that.talking){
+                that.talking = true
+                that.talked = 0;
+                that.line = that.lines[Math.floor(Math.random()*that.lines.length)];
             }
-        }else enemy.talking = false;
+        }else that.talking = false;
     }
-    let drawPosX = enemy.center.x-(enemy.line.length/2)*10-15;
-    enemy.addDrawingAction(ctx => {
-        if(enemy.talking && enemy.line){
+    let drawPosX = that.center.x-(that.line.length/2)*10-15;
+    that.addDrawingAction(ctx => {
+        if(that.talking && that.line){
             ctx.fillStyle = "white";
             ctx.font = "20px game";
-            if(enemy.size.x === 210) ctx.font = "30px game";
-            drawPosX = enemy.center.x-(enemy.line.length/2)*10-15;
+            if(that.size.x === 210) ctx.font = "30px game";
+            drawPosX = that.center.x-(that.line.length/2)*10-15;
             while(drawPosX < 10){
                 drawPosX += 10;
             }
-            ctx.fillText(enemy.line, drawPosX, enemy.pos.y - 10);
+            ctx.fillText(that.line, drawPosX, that.pos.y - 10);
         }
     });
 
-    enemy.update = enemy.makeUpdate("move", "jump", "talk");
+    that.update = that.makeUpdate("move", "jump", "talk");
 
-    return enemy;
+    return that;
 }
 
 export const bouncer = (pos) => enemy({

@@ -26,7 +26,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "@") level.player = player(pos);
         if(tile === "§") level.deathCounter = deathCounter(pos);
         if(tile === "B") level.box = box(pos);
-        if(tile === "#") level.obstacles.push(obstacle(pos, map, -offsetX));
+        if(tile === "#") level.obstacles.push(obstacle(pos, map, offsetX));
         if(tile === "H" || tile === "h"){
             level.helpers.push(helper(pos, helps[help]));
             help ++;

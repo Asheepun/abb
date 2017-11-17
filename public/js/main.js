@@ -2,10 +2,12 @@ import vec, { add, half, mul, div, sub, pipe, align, normalize, reverse } from "
 import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
 import { startWorldTemplates, caveWorldTemplates } from "/js/levelTemplates.js";
 import { loadSprites, loadAudio } from "/js/loadAssets.js";
-import { setupHome } from "/js/home.js";
+import setupHome from "/js/home.js";
+import setupSwitchLevel from "/js/switchLevel.js";
 import loadJSON from "/js/loadJSON.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
+import getRain from "/js/rain.js";
 import getMove from "/js/move.js";
 import player from "/js/player.js";
 import entity from "/js/entity.js";
@@ -27,11 +29,13 @@ Promise.all([
         "h",
     ),
     loadSprites(
-        "background1",
+        "background-normal",
+        "background-rain",
         "player",
         "player-jump",
         "obstacle",
         "obstacle-grass",
+        "obstacle-top",
         "wall",
         "box",
         "box-particle",
@@ -49,6 +53,7 @@ Promise.all([
         "death-counter",
         "start-world",
         "cave-world",
+        "rain",
     ),
     loadAudio(
         0.3,
@@ -85,6 +90,7 @@ Promise.all([
         buttons: [],
         states: {
             setupHome,
+            setupSwitchLevel,
         },
         worlds: {
             start: {
@@ -93,10 +99,11 @@ Promise.all([
             },
             cave: {
                 templates: caveWorldTemplates,
-                currentLevel: 1,
+                currentLevel: 0,
             }
         },
-        currentWorld: "cave",
+        currentWorld: "start",
+        weather: "normal",
     };
     WORLD.returnCurrentLevel = () => WORLD.worlds[WORLD.currentWorld].templates[WORLD.worlds[WORLD.currentWorld].currentLevel];
     WORLD.returnProgress = () => localStorage[WORLD.currentWorld + "Progress"];
@@ -126,6 +133,7 @@ Promise.all([
         WORLD.deathCounter = newLevel.deathCounter;
         WORLD.deathCounter.deaths = WORLD.deaths;
         WORLD.clouds = getClouds();
+        WORLD.rain = getRain();
         
         WORLD.startingAlpha = 1;
         WORLD.nextLevelCounter = undefined;
@@ -164,6 +172,7 @@ Promise.all([
             WORLD.points,
             WORLD.clouds,
             WORLD.grass,
+            WORLD.weather === "rain" ? WORLD.rain :[],
         );
     
         //check level end states
@@ -190,11 +199,12 @@ Promise.all([
         ctx.save();
         ctx.scale(WORLD.scale, WORLD.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
-        ctx.drawImage(WORLD.sprites.background1, 0, 0, WORLD.width, WORLD.height);
-        ctx.drawImage(WORLD.sprites.background1, 900, 0, WORLD.width, WORLD.height);
+        ctx.drawImage(WORLD.sprites["background-" + WORLD.weather], 0, 0, WORLD.width, WORLD.height);
+        ctx.drawImage(WORLD.sprites["background-" + WORLD.weather], 900, 0, WORLD.width, WORLD.height);
         ctx.fillStyle = "black";
         ctx.fillRect(0, 600, 900, 600);
         WORLD.drawAll(
+            WORLD.weather === "rain" ? WORLD.rain :[],
             WORLD.walls,
             WORLD.box,
             WORLD.obstacles,
@@ -221,69 +231,15 @@ Promise.all([
             ctx.globalAlpha = 1;
             WORLD.startingAlpha -= 0.05;
         }
+        //darken on rainy days
+        if(WORLD.weather === "rain"){
+            ctx.fillStyle = "black";
+            ctx.globalAlpha = 0.5;
+            ctx.fillRect(0, 0, c.width*2, c.height*2);
+            ctx.globalAlpha = 1;
+        }
 
         ctx.restore();
-    }
-
-    WORLD.states.setupSwitchLevel = () => {
-        WORLD.worlds[WORLD.currentWorld].currentLevel++;
-        if(WORLD.worlds[WORLD.currentWorld].currentLevel >= WORLD.worlds[WORLD.currentWorld].templates.length){
-            WORLD.state = WORLD.states.setupHome;
-            WORLD.worlds[WORLD.currentWorld].currentLevel--;
-        }else {
-            //save level progress
-            if(WORLD.worlds[WORLD.currentWorld].currentLevel > WORLD.returnProgress()){
-                localStorage[WORLD.currentWorld + "Progress"] = WORLD.worlds[WORLD.currentWorld].currentLevel;
-                console.log(WORLD.returnProgress());
-            }
-
-            //make mock world for switching animation
-            const newLevel = createLevel(WORLD.returnCurrentLevel(), 900);
-            WORLD.helper = newLevel.helper;
-            newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
-            newLevel.walls.forEach(w => WORLD.walls.push(w));
-            newLevel.grass.forEach(p => WORLD.grass.push(p));
-            newLevel.points.forEach(p => WORLD.points.push(p));
-            getClouds(15, 900).forEach(c => WORLD.clouds.push(c));
-            WORLD.newSpawn = newLevel.player.pos;
-            
-            WORLD.state = WORLD.states.switchLevel;
-        }
-    }
-    
-    WORLD.states.switchLevel = () => {
-
-        if(WORLD.player.alpha > 0.2) WORLD.player.alpha -= 0.05;
-
-        //level switch logic
-        WORLD.offset.x -= 7;
-        if(WORLD.player.pos.x < WORLD.newSpawn.x){
-            /*const dir = pipe(
-                sub(WORLD.player.pos, WORLD.newSpawn),
-                normalize,
-                reverse,
-                x => mul(x, 5),
-            );*/
-            const dir = sub(WORLD.player.pos, WORLD.newSpawn)
-            .normalize()
-            .reverse()
-            .mul(5);
-            WORLD.player.pos.add(dir);
-            WORLD.player.fixCenter();
-        }
-    
-        if(WORLD.offset.x <= -WORLD.width){
-            WORLD.state = WORLD.states.setup;
-        }
-    
-        WORLD.draw();
-        //make player more visible
-        ctx.save();
-        ctx.scale(WORLD.scale, WORLD.scale);
-        ctx.translate(WORLD.offset.x, WORLD.offset.y);
-        WORLD.player.draw(ctx, sprites);
-        ctx.restore();
-    
     }
 
     let lastTime = 0;
@@ -303,3 +259,5 @@ Promise.all([
     
     loop();
 });
+
+document.getElementById("no-modules").style.display = "none";

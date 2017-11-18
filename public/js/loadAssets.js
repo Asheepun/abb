@@ -12,27 +12,26 @@ export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject
     const audio = urls.reduce((audio, url) => {
         const a = new Audio(`/assets/audio/${url}.wav`);
         a.volume = volume;
+        a.load();
         audio[url] = a;
         return audio;
     }, {});
     resolve(audio);
 });
 
-/*
-const loadJson = (...urls) => new Promise((resolve, reject) => {
-    const json = [];
-    urls.forEach(url => {
-        const req = new XMLHttpRequest();
-        req.onreadystatechange = () => {
-            if(req.responseText){
-                console.log("CHECK");
-                if(urls.indexOf(url) < json.length) json.push(JSON.parse(req.responseText));
-                if(json.length === urls.length) resolve(json);
+export const loadJSON = (...srcs) => new Promise((resolve, reject) => {
+    const resJSON = {};
+
+    for(let i = 0; i < srcs.length; i++){
+        const jsonReq = new XMLHttpRequest();
+    
+        jsonReq.onreadystatechange = function(){
+            if(this.readyState === 4 && this.status === 200){
+                resJSON[srcs[i]] = JSON.parse(this.responseText);
+                if(Object.keys(resJSON).length === srcs.length) resolve(resJSON);
             }
         }
-        req.open("GET", "/assets/json/" + url + ".json", true);
-        req.send();
-    });
+        jsonReq.open("GET", "/assets/json/" + srcs[i] + ".json", true);
+        jsonReq.send();
+    }
 });
-loadJson("player").then((json) => console.log());
-*/

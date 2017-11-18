@@ -9,13 +9,18 @@ const createCanvas = (width = 800, height = 600, element = document.body) => new
     //fix canvas size
     const dif = height/width;
 
-    c.width = window.innerWidth-20;
-    c.height = c.width*dif;
-    while(c.height > window.innerHeight-20){
-        c.width -= 2;
+    const reSize  = () => {
+        c.width = window.innerWidth-20;
         c.height = c.width*dif;
+        while(c.height > window.innerHeight-20){
+            c.width -= 2;
+            c.height = c.width*dif;
+        }
+        c.scale = c.width/width;
     }
-    const scale = c.width/width;
+    reSize();
+
+    window.addEventListener("resize", reSize);
 
     const pointer = {
         pos: vec(0, 0),
@@ -32,14 +37,16 @@ const createCanvas = (width = 800, height = 600, element = document.body) => new
     });
     c.addEventListener("mousemove", e => {
         const offset = vec(c.offsetLeft, c.offsetTop);
-        pointer.pos = div(sub(vec(e.pageX, e.pageY), offset), scale);
+        pointer.pos = div(sub(vec(e.pageX, e.pageY), offset), c.scale);
+    });
+    c.addEventListener("contextmenu", e => {
+        e.preventDefault();
     });
 
     element.appendChild(c);
     resolve({
         c,
         ctx,
-        scale,
         pointer,
     });
 });

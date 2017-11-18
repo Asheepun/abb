@@ -75,7 +75,7 @@ const setupHome = (WORLD) => {
         
         //draw home
         ctx.save();
-        ctx.scale(WORLD.scale, WORLD.scale);
+        ctx.scale(WORLD.c.scale, WORLD.c.scale);
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, WORLD.width, WORLD.height);
         WORLD.drawAll(WORLD.obstacles);

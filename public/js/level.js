@@ -1,5 +1,5 @@
 import vec, { add, half, mul, div, sub, pipe, align } from "/js/vector.js";
-import { bouncer, jumper, spawner, giantJumper } from "/js/enemy.js";
+import { bouncer, jumper, spawner, giantJumper, follower } from "/js/enemy.js";
 import { obstacle,  box, grass } from "/js/obstacles.js";
 import { checkProx } from "/js/colission.js";
 import helper from "/js/helper.js";
@@ -23,8 +23,8 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
     let pos;
     map.forEach((row, y) => strEach(row, (tile, x) => {
         pos = vec(x*30 + offsetX, y*30);
-        if(tile === "@") level.player = player(pos);
-        if(tile === "§") level.deathCounter = deathCounter(pos);
+        if(tile === "@" || tile === "a") level.player = player(pos);
+        if(tile === "§" || tile === "£") level.deathCounter = deathCounter(pos);
         if(tile === "B") level.box = box(pos);
         if(tile === "#") level.obstacles.push(obstacle(pos, map, offsetX));
         if(tile === "H" || tile === "h"){
@@ -36,10 +36,13 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "2") level.enemies.push(jumper(pos));
         if(tile === "3") level.enemies.push(spawner(pos));
         if(tile === "4") level.enemies.push(giantJumper(pos));
+        if(tile === "5") level.enemies.push(follower(pos));
         if(y !== map.length-1
         && map[y+1][x] === "#" 
         && tile !== "#") level.grass.push(grass(pos));
         if(tile === ","
+        || tile === "£"
+        || tile === "a"
         || tile === "h"
         || tile === "p"
         ||((tile === "1"

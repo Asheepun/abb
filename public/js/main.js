@@ -1,10 +1,9 @@
 import vec, { add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
 import { startWorldTemplates, caveWorldTemplates } from "/js/levelTemplates.js";
-import { loadSprites, loadAudio } from "/js/loadAssets.js";
+import { loadSprites, loadAudio, loadJSON } from "/js/loadAssets.js";
 import setupHome from "/js/home.js";
 import setupSwitchLevel from "/js/switchLevel.js";
-import loadJSON from "/js/loadJSON.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
 import getRain from "/js/rain.js";
@@ -14,6 +13,9 @@ import entity from "/js/entity.js";
 import button from "/js/button.js";
 import createCanvas from "/js/canvas.js";
 import createLevel, { strEach, set } from "/js/level.js";
+
+//error message
+document.getElementById("no-modules").style.display = "none";
 
 Promise.all([
     createCanvas(900, 600),
@@ -27,6 +29,7 @@ Promise.all([
         "S",
         "D",
         "h",
+        "H",
     ),
     loadSprites(
         "background-normal",
@@ -73,9 +76,9 @@ Promise.all([
 
     //initialize
     const WORLD = {
+        c,
         width: 900,
         height: 600,
-        scale,
         pointer,
         keys,
         sprites,
@@ -146,13 +149,15 @@ Promise.all([
     WORLD.state = WORLD.states.setup;
 
     WORLD.controlPlayerKeys = () => {
-        if(keys.a.down) WORLD.player.dir = -1;
-        if(keys.d.down) WORLD.player.dir = 1;
-        if(keys.a.down && keys.d.down
-        || !keys.a.down && !keys.d.down) WORLD.player.dir = 0;
-        if(keys.w.pressed){
+        if(keys.a.down || keys.A.down) WORLD.player.dir = -1;
+        if(keys.d.down || keys.D.down) WORLD.player.dir = 1;
+        if((keys.a.down && keys.d.down
+        || !keys.a.down && !keys.d.down)
+        && (keys.A.down && keys.D.down
+        || !keys.A.down && !keys.D.down)) WORLD.player.dir = 0;
+        if(keys.w.pressed || keys.W.pressed){
             WORLD.player.jump(WORLD.audio.jump, WORLD);
-        }else if(keys.w.upped && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
+        }else if((keys.w.upped || keys.W.upped) && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
     }
     
     WORLD.states.game = () => {
@@ -197,7 +202,7 @@ Promise.all([
 
     WORLD.draw = () => {
         ctx.save();
-        ctx.scale(WORLD.scale, WORLD.scale);
+        ctx.scale(c.scale, c.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
         ctx.drawImage(WORLD.sprites["background-" + WORLD.weather], 0, 0, WORLD.width, WORLD.height);
         ctx.drawImage(WORLD.sprites["background-" + WORLD.weather], 900, 0, WORLD.width, WORLD.height);
@@ -259,5 +264,3 @@ Promise.all([
     
     loop();
 });
-
-document.getElementById("no-modules").style.display = "none";

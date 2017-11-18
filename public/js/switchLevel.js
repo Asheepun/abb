@@ -51,7 +51,7 @@ import getClouds from "/js/clouds.js";
         WORLD.draw(ctx);
         //make player more visible
         ctx.save();
-        ctx.scale(WORLD.scale, WORLD.scale);
+        ctx.scale(WORLD.c.scale, WORLD.c.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
         WORLD.player.draw(ctx, WORLD.sprites);
         ctx.restore();

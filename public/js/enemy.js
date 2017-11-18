@@ -101,26 +101,25 @@ export const bouncer = (pos) => enemy({
 });
 
 export const jumper = (pos) => {
-    const jumper = enemy({
+    const that = enemy({
         pos,
         size: vec(60, 60),
         jumpSpeed: 0.4,
     });
-    jumper.speed = 0;
-    jumper.lines.push("Don't run away!", "Stay here!");
+    that.speed = 0;
+    that.lines.push("Don't run away!");
 
-    jumper.look = ({ player, sprites }) => {
-        if(player.pos.x > jumper.pos.x + jumper.size.x){
-            jumper.dir = 1;
-            jumper.imgPos = [224, 0, 210, 210];
-        }
-        if(player.pos.x + player.size.x < jumper.pos.x){
-            jumper.dir = -1;
-            jumper.imgPos = [0, 0, 210, 210];
+    that.look = ({ player, sprites }) => {
+        if(player.pos.x > that.center.x){
+            that.dir = 1;
+            that.imgPos = [224, 0, 210, 210];
+        }else{
+            that.dir = -1;
+            that.imgPos = [0, 0, 210, 210];
         }
     }
-    jumper.update = jumper.makeUpdate("move", "jump", "look", "talk");
-    return jumper;
+    that.update = that.makeUpdate("move", "jump", "look", "talk");
+    return that;
 }
 
 export const giantJumper = (pos) => {
@@ -151,6 +150,31 @@ export const spawner = (pos) => {
     spawner.update = spawner.makeUpdate("move", "jump", "reSpawn", "talk");
 
     return spawner;
+}
+
+export const follower = (pos) => {
+    const that = jumper(pos);
+    that.jumpSpeed = 0.2;
+    that.speed = 0.1;
+
+    that.lines.push("I see you!", "I know where you are!");
+    
+    that.look = ({ player }) => {
+        if(player.pos.x > that.pos.x + that.size.x){
+            that.dir = 1;
+            that.imgPos = [224, 0, 210, 210];
+        }
+        if(player.pos.x < that.pos.x - player.size.x){
+            that.dir = -1;
+            that.imgPos = [0, 0, 210, 210];
+        }
+    }
+    that.handleColissionX = (object) => {
+        if(that.velocity.x > 0) that.pos.x = object.pos.x - that.size.x;
+        else that.pos.x = object.pos.x + object.size.x;
+    }
+
+    return that;
 }
 /*
 export const ghost = (pos) => {

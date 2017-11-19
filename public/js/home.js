@@ -70,6 +70,9 @@ const setupHome = (WORLD) => {
         ctx.fillStyle = "white";
         ctx.font = "30px game";
         ctx.fillText("Level " + (WORLD.currentLevel + 1), 755, 290);
+        ctx.drawImage(WORLD.sprites["levels/level_" + (WORLD.currentLevel + 1)],
+            780, 220, 60, 40,
+        );
         //draw info
         ctx.font = "20px game";
         ctx.fillText("This game is work in progress.", 200, 150);

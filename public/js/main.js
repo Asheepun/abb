@@ -17,6 +17,25 @@ import createLevel, { strEach, set } from "/js/level.js";
 //error message
 document.getElementById("no-modules").style.display = "none";
 
+const levelImgs = [
+    "levels/level_1",
+    "levels/level_2",
+    "levels/level_3",
+    "levels/level_4",
+    "levels/level_5",
+    "levels/level_6",
+    "levels/level_7",
+    "levels/level_8",
+    "levels/level_9",
+    "levels/level_10",
+    "levels/level_11",
+    "levels/level_12",
+    "levels/level_13",
+    "levels/level_14",
+    "levels/level_15",
+    "levels/level_16",
+];
+
 Promise.all([
     createCanvas(900, 600),
     createKeys(
@@ -53,11 +72,10 @@ Promise.all([
         "arrow-left",
         "play-btn",
         "death-counter",
-        "start-world",
-        "cave-world",
         "rain",
         "door",
-        "door-button"
+        "door-button",
+        ...levelImgs,
     ),
     loadAudio(
         0.3,

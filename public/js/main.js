@@ -57,6 +57,8 @@ Promise.all([
         "start-world",
         "cave-world",
         "rain",
+        "door",
+        "door-button"
     ),
     loadAudio(
         0.3,
@@ -66,6 +68,7 @@ Promise.all([
         "main",
         "yes-btn",
         "not-btn",
+        "door-btn",
         "enemy",
     ),
     loadJSON(
@@ -102,10 +105,10 @@ Promise.all([
             },
             cave: {
                 templates: caveWorldTemplates,
-                currentLevel: 0,
+                currentLevel: 5,
             }
         },
-        currentWorld: "start",
+        currentWorld: "cave",
         weather: "normal",
     };
     WORLD.returnCurrentLevel = () => WORLD.worlds[WORLD.currentWorld].templates[WORLD.worlds[WORLD.currentWorld].currentLevel];
@@ -119,7 +122,7 @@ Promise.all([
 
     audio.main.volume = 0.5;
     audio.main.loop = true;
-    audio.main.play();
+    //audio.main.play();
 
     WORLD.states.setup = () => {
 
@@ -178,6 +181,7 @@ Promise.all([
             WORLD.clouds,
             WORLD.grass,
             WORLD.weather === "rain" ? WORLD.rain :[],
+            WORLD.walls,
         );
     
         //check level end states

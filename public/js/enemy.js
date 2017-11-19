@@ -123,39 +123,39 @@ export const jumper = (pos) => {
 }
 
 export const giantJumper = (pos) => {
-    const gj = jumper(pos);
-    gj.size = vec(210, 210);
-    gj.jumpSpeed = 0.5;
+    const that = jumper(pos);
+    that.size = vec(210, 210);
+    that.jumpSpeed = 0.5;
 
-    return gj;
+    return that;
 }
 
 export const spawner = (pos) => {
-    const spawner = bouncer(pos);
-    spawner.spawn = vec(spawner.pos.x, spawner.pos.y);
-    spawner.oubArea = [0, 0, 900, 660];
-    spawner.alpha = 0;
+    const that = bouncer(pos);
+    that.spawn = vec(that.pos.x, that.pos.y);
+    that.oubArea = [0, 0, 900, 660];
+    that.alpha = 0;
 
-    spawner.handleOubY = () => {
-        if(spawner.velocity.y > 0){
-            spawner.pos = vec(spawner.spawn.x, spawner.spawn.y);
-            spawner.alpha = 0;
+    that.handleOubY = () => {
+        if(that.velocity.y > 0){
+            that.pos = vec(that.spawn.x, that.spawn.y);
+            that.alpha = 0;
         }
     }
-    spawner.reSpawn = () => {
-        if(spawner.alpha === 1) return;
-        spawner.alpha += 0.05;
-        if(spawner.alpha > 1) spawner.alpha = 1;
+    that.reSpawn = () => {
+        if(that.alpha === 1) return;
+        that.alpha += 0.05;
+        if(that.alpha > 1) that.alpha = 1;
     }
-    spawner.update = spawner.makeUpdate("move", "jump", "reSpawn", "talk");
+    that.update = that.makeUpdate("move", "jump", "reSpawn", "talk");
 
-    return spawner;
+    return that;
 }
 
 export const follower = (pos) => {
     const that = jumper(pos);
     that.jumpSpeed = 0.2;
-    that.speed = 0.1;
+    that.speed = 0.13;
 
     that.lines.push("I see you!", "I know where you are!");
     

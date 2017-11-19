@@ -2,6 +2,7 @@ import vec, { add, half, mul, div, sub, pipe, align } from "/js/vector.js";
 import { bouncer, jumper, spawner, giantJumper, follower } from "/js/enemy.js";
 import { obstacle,  box, grass } from "/js/obstacles.js";
 import { checkProx } from "/js/colission.js";
+import { door, key } from "/js/door.js";
 import helper from "/js/helper.js";
 import entity from "/js/entity.js";
 import player from "/js/player.js";
@@ -27,6 +28,10 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "§" || tile === "£") level.deathCounter = deathCounter(pos);
         if(tile === "B") level.box = box(pos);
         if(tile === "#") level.obstacles.push(obstacle(pos, map, offsetX));
+        if(tile === "|") level.obstacles.push(door(pos, 1));
+        if(tile === "*") level.helpers.push(key(pos, 1));
+        if(tile === "I") level.obstacles.push(door(pos, 2));
+        if(tile === "o") level.helpers.push(key(pos, 2));
         if(tile === "H" || tile === "h"){
             level.helpers.push(helper(pos, helps[help]));
             help ++;

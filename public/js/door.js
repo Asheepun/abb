@@ -30,7 +30,8 @@ export const key = (pos, i) => {
                 obstacles.forEach(o => {
                     if(o.index === that.index) obstacles.splice(obstacles.indexOf(o), 1);
                 });
-                audio["door-btn"].volume = 1;
+                that.imgPos = [30, 0, 30, 30];
+                audio["door-btn"].volume = 0.5;
                 audio["door-btn"].load();
                 audio["door-btn"].play();
             }

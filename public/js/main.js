@@ -105,10 +105,10 @@ Promise.all([
             },
             cave: {
                 templates: caveWorldTemplates,
-                currentLevel: 5,
+                currentLevel: 0,
             }
         },
-        currentWorld: "cave",
+        currentWorld: "start",
         weather: "normal",
     };
     WORLD.returnCurrentLevel = () => WORLD.worlds[WORLD.currentWorld].templates[WORLD.worlds[WORLD.currentWorld].currentLevel];
@@ -122,7 +122,7 @@ Promise.all([
 
     audio.main.volume = 0.5;
     audio.main.loop = true;
-    //audio.main.play();
+    audio.main.play();
 
     WORLD.states.setup = () => {
 

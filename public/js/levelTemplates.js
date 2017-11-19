@@ -1,4 +1,3 @@
-import vec from "/js/vector.js";
 /*
 1: bouncer
 2: jumper
@@ -54,9 +53,10 @@ import vec from "/js/vector.js";
     ],
 },
 */
-export const caveWorldTemplates = [
+
+const levelTemplates = [
     {
-        map: [
+        map: [//16
             "#####.........######...#######",  
             "###.............###.....######",
             ",,.............####.......####", 
@@ -80,7 +80,7 @@ export const caveWorldTemplates = [
         ],
     },
     {
-        map: [
+        map: [//15
             "#####..#####......#####....###",  
             "####.....##.........##......##",
             ",a,.......#.........#.......,,", 
@@ -104,7 +104,7 @@ export const caveWorldTemplates = [
         ],
     },
     {
-        map: [//5
+        map: [//14
             "#####...................######",  
             "####......................####",
             ",,,........................,,,", 
@@ -128,7 +128,7 @@ export const caveWorldTemplates = [
         ],
     },
     {
-        map: [//4
+        map: [//13
             "#####.....................#####",  
             "###........................###",
             "##.........................###", 
@@ -152,7 +152,7 @@ export const caveWorldTemplates = [
         ],
     },
     {
-        map: [//3
+        map: [//12
             "####...................#######",  
             "####.....................#####",
             "###.......................####", 
@@ -176,7 +176,7 @@ export const caveWorldTemplates = [
         ],
     },
     {
-        map: [//2
+        map: [//11
             ".....#########################",  
             ".......##,,,,,,,##############",
             ".....@..,,,,,,,,,,,,,#########", 
@@ -201,7 +201,7 @@ export const caveWorldTemplates = [
         helps: ["Do you think I can make that jump?"],
     },
     {
-        map: [//1
+        map: [//10
             "......########################",  
             "......########..##############",
             ".@....########...##########...", 
@@ -224,9 +224,6 @@ export const caveWorldTemplates = [
             "####..#############,,,,,,,,###",
         ],
     },
-];
-
-export const startWorldTemplates = [
     {
         map: [//9
             "..............................",  
@@ -453,14 +450,6 @@ export const startWorldTemplates = [
     },
 ];
 
-startWorldTemplates.reverse();
-caveWorldTemplates.reverse();
+levelTemplates.reverse();
 
-const templates = {
-    startWorldTemplates,
-    caveWorldTemplates
-}
-export default templates;
-/*
-startWorldTemplates
-    caveWorldTemplates*/
+export default levelTemplates;

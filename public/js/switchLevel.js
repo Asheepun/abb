@@ -2,19 +2,18 @@ import createLevel, { strEach, set } from "/js/level.js";
 import getClouds from "/js/clouds.js";
 
     const setupSwitchLevel = (WORLD, ctx) => {
-        WORLD.worlds[WORLD.currentWorld].currentLevel++;
-        if(WORLD.worlds[WORLD.currentWorld].currentLevel >= WORLD.worlds[WORLD.currentWorld].templates.length){
+        WORLD.currentLevel++;
+        if(WORLD.currentLevel >= WORLD.levelTemplates.length){
             WORLD.state = WORLD.states.setupHome;
-            WORLD.worlds[WORLD.currentWorld].currentLevel--;
+            WORLD.currentLevel--;
         }else {
             //save level progress
-            if(WORLD.worlds[WORLD.currentWorld].currentLevel > WORLD.returnProgress()){
-                localStorage[WORLD.currentWorld + "Progress"] = WORLD.worlds[WORLD.currentWorld].currentLevel;
-                console.log(WORLD.returnProgress());
+            if(WORLD.currentLevel > localStorage.furtestLevel){
+                localStorage.furtestLevel = WORLD.currentLevel;
             }
 
             //make mock world for switching animation
-            const newLevel = createLevel(WORLD.returnCurrentLevel(), 900);
+            const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel], 900);
             WORLD.helper = newLevel.helper;
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
             newLevel.walls.forEach(w => WORLD.walls.push(w));

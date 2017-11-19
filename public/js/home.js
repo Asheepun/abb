@@ -20,23 +20,10 @@ const setupHome = (WORLD) => {
         }));
         WORLD.player = player(vec(780, 330));
         WORLD.helpers.push(helper(vec(0, 480), "Welcome home!"));
-        //switch world buttons
-        WORLD.buttons.push(button({ pos: vec(748, 200), img: "start-world", size: vec(60, 45), action(){
-            WORLD.currentWorld = "start";
-            WORLD.audio["yes-btn"].load();
-            WORLD.audio["yes-btn"].play();
-        } }));
-        WORLD.buttons.push(button({ pos: vec(812, 200), img: "cave-world", size: vec(60, 45), action(){
-            WORLD.currentWorld = "cave";
-            WORLD.audio["yes-btn"].load();
-            WORLD.audio["yes-btn"].play();
-        } }));
-        WORLD.buttons[0].imgPos = [0, 0, 356, 261];
-        WORLD.buttons[1].imgPos = [0, 0, 356, 261];
         //switch level buttons
         WORLD.buttons.push(button({ pos: vec(840, 300), img: "arrow-right", size: vec(30, 30), action(){
-            if(WORLD.worlds[WORLD.currentWorld].currentLevel < WORLD.returnProgress()){
-                WORLD.worlds[WORLD.currentWorld].currentLevel++;
+            if(WORLD.currentLevel < localStorage.furtestLevel){
+                WORLD.currentLevel++;
                 WORLD.audio["yes-btn"].load();
                 WORLD.audio["yes-btn"].play();
             }
@@ -46,8 +33,8 @@ const setupHome = (WORLD) => {
             }
         } }));
         WORLD.buttons.push(button({ pos: vec(750, 300), img: "arrow-left", size: vec(30, 30), action(){
-            if(WORLD.worlds[WORLD.currentWorld].currentLevel > 0){
-                WORLD.worlds[WORLD.currentWorld].currentLevel--;
+            if(WORLD.currentLevel > 0){
+                WORLD.currentLevel--;
                 WORLD.audio["yes-btn"].load();
                 WORLD.audio["yes-btn"].play();
             }
@@ -82,9 +69,7 @@ const setupHome = (WORLD) => {
         //draw level switching system
         ctx.fillStyle = "white";
         ctx.font = "30px game";
-        ctx.fillText("Level " + (WORLD.worlds[WORLD.currentWorld].currentLevel+1), 755, 290);
-        ctx.fillRect(WORLD.currentWorld === "cave" ? 812 : 748, 195, 60, 5);
-        ctx.fillText(WORLD.currentWorld, 770, 190);
+        ctx.fillText("Level " + (WORLD.currentLevel + 1), 755, 290);
         //draw info
         ctx.font = "20px game";
         ctx.fillText("This game is work in progress.", 200, 150);

@@ -1,6 +1,6 @@
 import vec, { add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
 import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
-import { startWorldTemplates, caveWorldTemplates } from "/js/levelTemplates.js";
+import levelTemplates from "/js/levelTemplates.js";
 import { loadSprites, loadAudio, loadJSON } from "/js/loadAssets.js";
 import setupHome from "/js/home.js";
 import setupSwitchLevel from "/js/switchLevel.js";
@@ -38,7 +38,6 @@ Promise.all([
         "player-jump",
         "obstacle",
         "obstacle-grass",
-        "obstacle-top",
         "wall",
         "box",
         "box-particle",
@@ -98,24 +97,12 @@ Promise.all([
             setupHome,
             setupSwitchLevel,
         },
-        worlds: {
-            start: {
-                templates: startWorldTemplates,
-                currentLevel: 0,
-            },
-            cave: {
-                templates: caveWorldTemplates,
-                currentLevel: 0,
-            }
-        },
-        currentWorld: "start",
+        levelTemplates,
+        currentLevel: 0,
         weather: "normal",
     };
-    WORLD.returnCurrentLevel = () => WORLD.worlds[WORLD.currentWorld].templates[WORLD.worlds[WORLD.currentWorld].currentLevel];
-    WORLD.returnProgress = () => localStorage[WORLD.currentWorld + "Progress"];
 
-    if(localStorage.startProgress === undefined) localStorage.startProgress = 0;
-    if(localStorage.caveProgress === undefined) localStorage.caveProgress = 0;
+    if(localStorage.furtestLevel === undefined) localStorage.furtestLevel = 0;
 
     WORLD.drawAll = makeDrawAll(ctx, sprites);
     WORLD.updateAll = makeUpdateAll(WORLD);
@@ -127,7 +114,7 @@ Promise.all([
     WORLD.states.setup = () => {
 
         //initialize level
-        const newLevel = createLevel(WORLD.returnCurrentLevel());
+        const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel]);
         WORLD.player = newLevel.player;
         WORLD.box = newLevel.box;
         WORLD.obstacles = newLevel.obstacles;

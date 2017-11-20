@@ -21,7 +21,7 @@ const setupHome = (WORLD) => {
         WORLD.player = player(vec(780, 330));
         WORLD.helpers.push(helper(vec(0, 480), "Welcome home!"));
         //switch level buttons
-        WORLD.buttons.push(button({ pos: vec(840, 300), img: "arrow-right", size: vec(30, 30), action(){
+        WORLD.buttons.push(button({ pos: vec(840, 300), img: "buttons/arrow-right", size: vec(30, 30), action(){
             if(WORLD.currentLevel < localStorage.furtestLevel){
                 WORLD.currentLevel++;
                 WORLD.audio["yes-btn"].load();
@@ -32,7 +32,7 @@ const setupHome = (WORLD) => {
                 WORLD.audio["not-btn"].play();
             }
         } }));
-        WORLD.buttons.push(button({ pos: vec(750, 300), img: "arrow-left", size: vec(30, 30), action(){
+        WORLD.buttons.push(button({ pos: vec(750, 300), img: "buttons/arrow-left", size: vec(30, 30), action(){
             if(WORLD.currentLevel > 0){
                 WORLD.currentLevel--;
                 WORLD.audio["yes-btn"].load();
@@ -44,8 +44,12 @@ const setupHome = (WORLD) => {
             }
         } }));
         //play button
-        WORLD.buttons.push(button({ pos: vec(780, 300), img: "play-btn", size: vec(60, 30), action(){
+        WORLD.buttons.push(button({ pos: vec(780, 300), img: "buttons/play", size: vec(60, 30), action(){
             WORLD.state = WORLD.states.setup;
+        } }));
+        //shop button
+        WORLD.buttons.push(button({ pos: vec(0, 430), img: "buttons/shop", size: vec(60, 30), action(){
+            WORLD.state = WORLD.states.setupShop;
         } }));
 
         WORLD.state = updateHome;

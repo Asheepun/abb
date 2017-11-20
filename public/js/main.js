@@ -3,6 +3,7 @@ import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
 import levelTemplates from "/js/levelTemplates.js";
 import { loadSprites, loadAudio, loadJSON } from "/js/loadAssets.js";
 import setupHome from "/js/home.js";
+import setupShop from "/js/shop.js";
 import setupSwitchLevel from "/js/switchLevel.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
@@ -34,6 +35,14 @@ const levelImgs = [
     "levels/level_14",
     "levels/level_15",
     "levels/level_16",
+];
+
+const buttonIgs = [
+    "buttons/arrow-right",
+    "buttons/arrow-left",
+    "buttons/play",
+    "buttons/exit",
+    "buttons/shop",
 ];
 
 Promise.all([
@@ -68,13 +77,11 @@ Promise.all([
         "grass-particle",
         "enemy",
         "planks",
-        "arrow-right",
-        "arrow-left",
-        "play-btn",
         "death-counter",
         "rain",
         "door",
         "door-button",
+        ...buttonIgs,
         ...levelImgs,
     ),
     loadAudio(
@@ -113,6 +120,7 @@ Promise.all([
         buttons: [],
         states: {
             setupHome,
+            setupShop,
             setupSwitchLevel,
         },
         levelTemplates,
@@ -127,7 +135,7 @@ Promise.all([
 
     audio.main.volume = 0.5;
     audio.main.loop = true;
-    audio.main.play();
+    //audio.main.play();
 
     WORLD.states.setup = () => {
 
@@ -172,7 +180,7 @@ Promise.all([
 
         //check keys
         WORLD.controlPlayerKeys();
-        if(keys.h.down){
+        if(keys.h.down || keys.H.down){
             WORLD.state = WORLD.states.setupHome;
         }
 

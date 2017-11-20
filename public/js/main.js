@@ -116,7 +116,7 @@ Promise.all([
             setupSwitchLevel,
         },
         levelTemplates,
-        currentLevel: 11,
+        currentLevel: 0,
         weather: "normal",
     };
 

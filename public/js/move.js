@@ -26,9 +26,8 @@ const getMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 
         oub = checkOub(that, ...that.oubArea);
         platCol = checkPlatCol(that, box);
         if(col && that.handleColissionY){
-            if(!that.grounded && that.velocity.y > 0){
+            if(!that.grounded && that.velocity.y > 0) 
                 hitGroundParticleEffect(grass, that);
-            }
             that.handleColissionY(col);
         }else that.grounded = false;
         if(platCol && that.handlePlatCol) that.handlePlatCol(box);
@@ -54,7 +53,7 @@ const hitGroundParticleEffect = (array, object) => {
             imgPos: [0, 0, 5, 5],
             rotation: Math.random()*360,
         });
-        if(Math.random() < 0.4) that.img = "player";
+        if(Math.random() < 0.4) that.img = "player";//uses the edge of the sprites hair
         that.move = getMove(that, {
             gravity: 0.02,
         });

@@ -73,7 +73,7 @@ export const confettiParticleEffect = (array, pos, xSpread = 10, ySpread = 10, a
         }
         that.remove = () => array.splice(array.indexOf(that), 1);
             
-        that.update = that.makeUpdate("move", "fade");
+        that.update = that.getUpdate("move", "fade");
         array.push(that);
     }
 }

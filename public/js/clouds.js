@@ -38,7 +38,7 @@ const getClouds = (amount = 20, offset = 0) => {
         cloud.sineWave = () => {
             cloud.velocity.y += Math.sin(cloud.pos.x/3)/2000;
         }
-        cloud.update = cloud.makeUpdate("sineWave", "move", "fixCenter");
+        cloud.update = cloud.getUpdate("sineWave", "move", "fixCenter");
 
         clouds.push(cloud);
     }

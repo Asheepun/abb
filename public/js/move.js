@@ -69,7 +69,7 @@ const hitGroundParticleEffect = (array, object) => {
         }
         that.remove = () => array.splice(array.indexOf(that), 1);
             
-        that.update = that.makeUpdate("move", "fade");
+        that.update = that.getUpdate("move", "fade");
         array.push(that);
     }
 }

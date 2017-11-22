@@ -24,7 +24,7 @@ const getRain = () => {
         that.handleOubY = () => {
             if(that.pos.y > 100) that.init();
         }
-        that.update = that.makeUpdate("move");
+        that.update = that.getUpdate("move");
 
         rain.push(that);
     }

@@ -19,18 +19,18 @@ const player = (pos) => {
 
     that.animate = getAnimate(that, {
         delay: 4,
-        handleFrames: ({ playerFrames }) => {
+        handleFrames: ({ JSON, progress }) => {
             if(that.grounded){ 
-                that.img = "player";
+                that.img = progress.items.unlocked.find(x => x === "Purple coat") ? "player-purple": "player";
                 that.state = that.dir === 0 ? "still" : "moving";
             }
             else{ 
-                that.img = "player-jump";
+                that.img = progress.items.unlocked.find(x => x === "Purple coat") ? "player-jump-purple": "player-jump";
                 that.state = "jumping";
             }
             if(that.dir < 0) that.imgDir = "left";
             if(that.dir > 0) that.imgDir = "right";
-            return playerFrames[that.state][that.imgDir];
+            return JSON.playerFrames[that.state][that.imgDir];
         }
     });
 
@@ -77,10 +77,45 @@ const player = (pos) => {
             }
         }
     }
-    that.update = that.makeUpdate("move", "checkHit", "animate");
+    that.rainbow = ({ progress, grass, helpers }) => {
+        if(progress.items.unlocked.find(x => x === "Rainbow trail") && (that.velocity.x !== 0 || that.velocity.y !== 0)){
+            rainbowParticleEffect(helpers, that.center.copy(), mul(that.velocity, 0.1));
+        }
+    }
+    that.update = that.getUpdate("move", "checkHit", "rainbow", "animate");
 
     return that;
 }
 
+const rainbowParticleEffect = (array, pos, vel) => {
+    for(let i = 0; i < Math.random()*2; i++){
+        const that = entity({
+            pos,
+            size: vec(5, 5),
+            rotation: Math.random()*360,
+            img: "rainbow"
+        });
+        for(let i = 0; i < 3; i++){
+            if(Math.random() < i*0.3) that.imgPos[0] += 5;
+        }
+        that.pos.y += Math.random()*10-5;
+        that.pos.x += Math.random()*10-5;
+        that.move = getMove(that, {
+            dir: vel.x * Math.random()*5,
+            gravity: vel.y * 0.01 + Math.random()*0.001,
+            speed: 0.1,
+        });
+        that.fade = () => {
+            if(that.alpha > 0){
+                that.alpha -= Math.random()*0.1;
+                if(that.alpha <= 0) array.splice(array.indexOf(that), 1);
+            }
+        }
+
+        that.update = that.getUpdate("move", "fade");
+
+        array.push(that);
+    }
+}
 
 export default player;

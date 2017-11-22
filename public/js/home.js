@@ -1,8 +1,8 @@
 import vec, { add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
+import createLevel from "/js/level.js";
 import entity from "/js/entity.js";
-import player from "/js/player.js";
-import helper from "/js/helper.js";
 import button from "/js/button.js";
+import helper from "/js/helper.js";
 import levelTeplates from "/js/levelTemplates.js";
 import { strEach, set } from "/js/level.js";
 
@@ -15,11 +15,14 @@ const setupHome = (WORLD) => {
             WORLD.helpers,
             WORLD.enemies,
         );
-        homeTemplate.forEach((row, y) => strEach(row, (tile, x) => {
-            if(tile === "#") WORLD.obstacles.push(entity({pos: vec(x*30, y*30), img: "planks"}));
-        }));
-        WORLD.player = player(vec(780, 330));
-        WORLD.helpers.push(helper(vec(0, 480), "Welcome home!"));
+        const newLevel = createLevel({map: homeTemplate});
+        WORLD.obstacles = newLevel.obstacles;
+        WORLD.walls = newLevel.walls;
+        WORLD.player = newLevel.player;
+        WORLD.grass = newLevel.grass;
+        WORLD.helpers.push(helper(vec(0, 420), "Welcome to our home!"));
+        WORLD.helpers.push(helper(vec(345, 480), "Can I interest you in my wares?"));
+        WORLD.helpers.push(helper(vec(660, 480), "When I'm done I'll get my cash at level 10."));
         //switch level buttons
         WORLD.buttons.push(button({ pos: vec(840, 300), img: "buttons/arrow-right", size: vec(30, 30), action(){
             if(WORLD.currentLevel < localStorage.furtestLevel){
@@ -48,7 +51,7 @@ const setupHome = (WORLD) => {
             WORLD.state = WORLD.states.setup;
         } }));
         //shop button
-        WORLD.buttons.push(button({ pos: vec(0, 430), img: "buttons/shop", size: vec(60, 30), action(){
+        WORLD.buttons.push(button({ pos: vec(330, 440), img: "buttons/shop", size: vec(60, 30), action(){
             WORLD.state = WORLD.states.setupShop;
         } }));
 
@@ -62,14 +65,15 @@ const setupHome = (WORLD) => {
             WORLD.player,
             WORLD.buttons,
             WORLD.helpers,
+            WORLD.grass,
         );
         
         //draw home
         ctx.save();
         ctx.scale(WORLD.c.scale, WORLD.c.scale);
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, WORLD.width, WORLD.height);
-        WORLD.drawAll(WORLD.obstacles);
+        WORLD.drawAll(
+            WORLD.walls,
+        )
         //draw level switching system
         ctx.fillStyle = "white";
         ctx.font = "30px game";
@@ -78,18 +82,19 @@ const setupHome = (WORLD) => {
             780, 220, 60, 40,
         );
         //draw info
-        ctx.font = "20px game";
-        ctx.fillText("This game is work in progress.", 200, 150);
-        ctx.fillText("More content is comming in the future!", 200, 180);
-        ctx.fillText("Programming by Gustav Almstrom.", 200, 210);
-        ctx.fillText('Music by "The soft toffts".', 200, 240);
-        ctx.font = "30px game";
-        ctx.fillText('Press "H" in any level.', 200, 300);
-        ctx.fillText('to return here.', 200, 335);
+        if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1){
+            ctx.font = "20px game";
+            ctx.fillText("This game is work in progress.", 200, 150);
+            ctx.fillText("More content is comming in the future!", 200, 180);
+            ctx.fillText("Programming by Gustav Almstrom.", 200, 210);
+            ctx.fillText('Music by "The soft toffts".', 200, 240);
+        }
         WORLD.drawAll(
+            WORLD.obstacles,
             WORLD.buttons,
             WORLD.helpers,
             WORLD.player,
+            WORLD.grass,
         );
         ctx.restore();
 
@@ -99,20 +104,20 @@ const homeTemplate = [
     "##############################",
     "##############################",
     "##############################",
-    "########..............########",
-    "######..................######",
-    "####..........................",
-    "##............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    "..............................",
-    ".......................#######",
-    ".......................#######",
-    "......................H#######",
+    "########,,,,,,,,,,,,,,########",
+    "######,,,,,,,,,,,,,,,,,,######",
+    "####,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    "##,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,a,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,#######",
+    "###,,,,,,,,,,,,,,,,,,,,#######",
+    "#####,,,,,,,,,,,,,,,,,,#######",
     "##############################",
     "##############################",
     "##############################",

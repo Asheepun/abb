@@ -10,6 +10,7 @@ import getClouds from "/js/clouds.js";
             //save level progress
             if(WORLD.currentLevel > localStorage.furtestLevel){
                 localStorage.furtestLevel = WORLD.currentLevel;
+                WORLD.progress.completedLevels++;
             }
 
             //make mock world for switching animation
@@ -47,12 +48,12 @@ import getClouds from "/js/clouds.js";
             WORLD.state = WORLD.states.setup;
         }
     
-        WORLD.draw(ctx);
+        WORLD.draw(ctx, WORLD);
         //make player more visible
         ctx.save();
         ctx.scale(WORLD.c.scale, WORLD.c.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
-        WORLD.player.draw(ctx, WORLD.sprites);
+        WORLD.player.draw(ctx, WORLD);
         ctx.restore();
     
     }

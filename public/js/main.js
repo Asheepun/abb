@@ -3,7 +3,7 @@ import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
 import levelTemplates from "/js/levelTemplates.js";
 import { loadSprites, loadAudio, loadJSON } from "/js/loadAssets.js";
 import setupHome from "/js/home.js";
-import setupShop from "/js/shop.js";
+import setupShop, { emptyProgress, updateProgress } from "/js/shop.js";
 import setupSwitchLevel from "/js/switchLevel.js";
 import createKeys from "/js/keys.js";
 import getClouds from "/js/clouds.js";
@@ -35,6 +35,7 @@ const levelImgs = [
     "levels/level_14",
     "levels/level_15",
     "levels/level_16",
+    "levels/level_17",
 ];
 
 const buttonIgs = [
@@ -43,6 +44,7 @@ const buttonIgs = [
     "buttons/play",
     "buttons/exit",
     "buttons/shop",
+    "buttons/convert",
 ];
 
 Promise.all([
@@ -64,6 +66,8 @@ Promise.all([
         "background-rain",
         "player",
         "player-jump",
+        "player-purple",
+        "player-jump-purple",
         "obstacle",
         "obstacle-grass",
         "wall",
@@ -71,16 +75,17 @@ Promise.all([
         "box-particle",
         "cloud",
         "helper",
+        "helper-big",
         "point",
         "grass",
         "rare-grass",
         "grass-particle",
         "enemy",
-        "planks",
         "death-counter",
         "rain",
         "door",
         "door-button",
+        "rainbow",
         ...buttonIgs,
         ...levelImgs,
     ),
@@ -112,7 +117,6 @@ Promise.all([
         audio,
         JSON: resJSON,
         timeScl: (1/60)*1000,
-        currentLevel: 0,
         state: undefined,
         newSpawn: undefined,
         spliceAll,
@@ -126,20 +130,31 @@ Promise.all([
         levelTemplates,
         currentLevel: 0,
         weather: "normal",
+        saveProgress(){
+            localStorage.progress = JSON.stringify(WORLD.progress);
+        }
     };
+    //handle progress
+    if(localStorage.progress === undefined){
+        localStorage.clear();
+        localStorage.progress = JSON.stringify(emptyProgress());
+    }
+    WORLD.progress = JSON.parse(localStorage.progress);
+    updateProgress(WORLD.progress);
 
     if(localStorage.furtestLevel === undefined) localStorage.furtestLevel = 0;
 
-    WORLD.drawAll = makeDrawAll(ctx, sprites);
+    WORLD.drawAll = makeDrawAll(ctx, WORLD);
     WORLD.updateAll = makeUpdateAll(WORLD);
 
     audio.main.volume = 0.5;
     audio.main.loop = true;
-    //audio.main.play();
+    audio.main.play();
 
     WORLD.states.setup = () => {
 
         //initialize level
+        WORLD.buttons = [];
         const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel]);
         WORLD.player = newLevel.player;
         WORLD.box = newLevel.box;
@@ -195,6 +210,7 @@ Promise.all([
             WORLD.grass,
             WORLD.weather === "rain" ? WORLD.rain :[],
             WORLD.walls,
+            WORLD.buttons,
         );
     
         //check level end states
@@ -230,6 +246,7 @@ Promise.all([
             WORLD.walls,
             WORLD.box,
             WORLD.obstacles,
+            WORLD.buttons,
             WORLD.helpers,
             WORLD.deathCounter,
             WORLD.points,
@@ -266,11 +283,14 @@ Promise.all([
 
     let lastTime = 0;
     let accTime = 0;
+    let lastState = undefined;
 
     const loop = (time = 0) => {
         accTime += time - lastTime;
         lastTime = time;
         while(accTime > WORLD.timeScl){
+            if(lastState !== WORLD.state) WORLD.saveProgress();
+            lastState = WORLD.state;
             WORLD.state(WORLD, ctx);
             WORLD.pointer.pressed = false;
             WORLD.keys.reset();

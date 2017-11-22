@@ -90,7 +90,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         }
     });
 
-    that.update = that.makeUpdate("move", "jump", "talk");
+    that.update = that.getUpdate("move", "jump", "talk");
 
     return that;
 }
@@ -118,7 +118,7 @@ export const jumper = (pos) => {
             that.imgPos = [0, 0, 210, 210];
         }
     }
-    that.update = that.makeUpdate("move", "jump", "look", "talk");
+    that.update = that.getUpdate("move", "jump", "look", "talk");
     return that;
 }
 
@@ -147,7 +147,7 @@ export const spawner = (pos) => {
         that.alpha += 0.05;
         if(that.alpha > 1) that.alpha = 1;
     }
-    that.update = that.makeUpdate("move", "jump", "reSpawn", "talk");
+    that.update = that.getUpdate("move", "jump", "reSpawn", "talk");
 
     return that;
 }

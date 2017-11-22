@@ -8,13 +8,13 @@ export const makeUpdateAll = (object) => (...arrs) => {
     }
 }
 
-export const makeDrawAll = (ctx, sprites) => (...arrs) => {
+export const makeDrawAll = (ctx, WORLD) => (...arrs) => {
     for(let i = 0; i < arrs.length; i++){
         if(arrs[i].constructor === Array){
             for(let j = 0; j < arrs[i].length; j++){
-                arrs[i][j].draw(ctx, sprites);
+                arrs[i][j].draw(ctx, WORLD);
             }
-        }else arrs[i].draw(ctx, sprites);
+        }else arrs[i].draw(ctx, WORLD);
     }
 }
 

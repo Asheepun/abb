@@ -2,35 +2,35 @@ import vec from "/js/vector.js";
 import entity from "/js/entity.js";
 
 const button = ({ pos, img, size, action = () => {} }) => {
-    const button = entity({
+    const that = entity({
         pos,
         img,
         size,
     });
-    button.down = false;
+    that.down = false;
 
-    button.checkPointer = ({ pointer }) => {
-        if(pointer.pos.x > button.pos.x
-        && pointer.pos.x < button.pos.x + button.size.x
-        && pointer.pos.y > button.pos.y
-        && pointer.pos.y < button.pos.y + button.size.y){
-            button.alpha = 0.5;
-            if(pointer.pressed){
-                button.down = true;
+    that.checkPointer = (WORLD) => {
+        if(WORLD.pointer.pos.x > that.pos.x
+        && WORLD.pointer.pos.x < that.pos.x + that.size.x
+        && WORLD.pointer.pos.y > that.pos.y
+        && WORLD.pointer.pos.y < that.pos.y + that.size.y){
+            that.alpha = 0.5;
+            if(WORLD.pointer.pressed){
+                that.down = true;
             }
-            if(!pointer.down && button.down){
-                button.down = false;
-                action();
+            if(!WORLD.pointer.down && that.down){
+                that.down = false;
+                action(WORLD);
             }
         }else{
-            button.alpha = 1;
-            button.down = false;
+            that.alpha = 1;
+            that.down = false;
         }
     }
 
-    button.update = button.makeUpdate("checkPointer");
+    that.update = that.getUpdate("checkPointer");
 
-    return button;
+    return that;
 }
 
 export default button;

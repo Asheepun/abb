@@ -3,7 +3,7 @@ import { bouncer, jumper, spawner, giantJumper, follower } from "/js/enemy.js";
 import { obstacle,  box, grass } from "/js/obstacles.js";
 import { checkProx } from "/js/colission.js";
 import { door, key } from "/js/door.js";
-import helper from "/js/helper.js";
+import helper, { converter } from "/js/helper.js";
 import entity from "/js/entity.js";
 import player from "/js/player.js";
 import getAnimate from "/js/animate.js";
@@ -27,6 +27,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "@" || tile === "a") level.player = player(pos);
         if(tile === "§" || tile === "£") level.deathCounter = deathCounter(pos);
         if(tile === "B") level.box = box(pos);
+        if(tile === "$") level.helpers.push(converter(pos));
         if(tile === "#") level.obstacles.push(obstacle(pos, map, offsetX));
         if(tile === "|") level.obstacles.push(door(pos, 1));
         if(tile === "*") level.helpers.push(key(pos, 1));
@@ -76,7 +77,7 @@ const point = (pos) => {
             points.splice(points.indexOf(point), 1);
         }
     }
-    point.update = point.makeUpdate("checkCol");
+    point.update = point.getUpdate("checkCol");
 
     return point;
 }

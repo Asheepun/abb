@@ -41,7 +41,7 @@ export const key = (pos, i) => {
             }
         }
     }
-    that.update = that.makeUpdate("checkCol");
+    that.update = that.getUpdate("checkCol");
 
     return that;
 }

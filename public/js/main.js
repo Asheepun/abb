@@ -18,27 +18,7 @@ import createLevel, { strEach, set } from "/js/level.js";
 //error message
 document.getElementById("no-modules").style.display = "none";
 
-const levelImgs = [
-    "levels/level_1",
-    "levels/level_2",
-    "levels/level_3",
-    "levels/level_4",
-    "levels/level_5",
-    "levels/level_6",
-    "levels/level_7",
-    "levels/level_8",
-    "levels/level_9",
-    "levels/level_10",
-    "levels/level_11",
-    "levels/level_12",
-    "levels/level_13",
-    "levels/level_14",
-    "levels/level_15",
-    "levels/level_16",
-    "levels/level_17",
-];
-
-const buttonIgs = [
+const buttonImgs = [
     "buttons/arrow-right",
     "buttons/arrow-left",
     "buttons/play",
@@ -46,6 +26,8 @@ const buttonIgs = [
     "buttons/shop",
     "buttons/convert",
     "buttons/empty",
+    "buttons/empty_x120",
+    "buttons/empty_x200",
 ];
 
 Promise.all([
@@ -87,8 +69,7 @@ Promise.all([
         "door",
         "door-button",
         "rainbow",
-        ...buttonIgs,
-        ...levelImgs,
+        ...buttonImgs,
     ),
     loadAudio(
         0.3,
@@ -215,8 +196,7 @@ Promise.all([
         if(WORLD.points.length <= 0 && WORLD.nextLevelCounter === undefined)
             WORLD.nextLevelCounter = 4;
         if(WORLD.nextLevelCounter > 0){
-            let sub = Math.round(WORLD.timeScl*100)
-            WORLD.nextLevelCounter -= sub/100000;
+            WORLD.nextLevelCounter -= WORLD.timeScl/1000;
         }
         if(WORLD.points.length <= 0 && WORLD.nextLevelCounter <= 1){
             WORLD.nextLevelCounter = undefined;
@@ -231,9 +211,7 @@ Promise.all([
             WORLD.goHomeCounter = 3;
         }
         if(WORLD.goHomeCounter > 0){
-            let sub = Math.round(WORLD.timeScl*100)
-            WORLD.goHomeCounter -= sub/100000;
-            console.log(WORLD.goHomeCounter);
+            WORLD.goHomeCounter -= WORLD.timeScl/1000;
         }
         if(WORLD.goHomeCounter < 1){
             WORLD.goHomeCounter = undefined;
@@ -273,7 +251,7 @@ Promise.all([
         }
         //draw goHomeCounter
         if(WORLD.goHomeCounter){
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = "#d6b420";
             ctx.font = "25px game";
             ctx.fillText(Math.floor(WORLD.goHomeCounter), WORLD.player.center.x - 7.5, WORLD.player.pos.y-5);
         }

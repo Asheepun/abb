@@ -49,7 +49,7 @@ const setupShop = (WORLD) => {
         const btn = button({
             pos: vec(150, 200 + i*60),
             size: vec(200, 30),
-            img: "buttons/play",
+            img: "buttons/empty_x200",
             action({ progress }){
                 if(progress.coins >= item.price){
                     progress.coins -= item.price;
@@ -64,14 +64,13 @@ const setupShop = (WORLD) => {
                 }
             }
         });
+        //fix buttons drawing
         btn.draw = (ctx) => {
             ctx.globalAlpha = btn.alpha;
-            ctx.fillStyle = "#5e503c";
-            ctx.font = "20px game";
-            ctx.fillRect(btn.pos.x, btn.pos.y, btn.size.x, btn.size.y);
-            ctx.fillStyle = "white";
-            ctx.fillText(item.name, btn.pos.x + 5, btn.pos.y + 25);
-            ctx.fillText(item.price, btn.pos.x + 180, btn.pos.y + 25);
+            ctx.drawImage(WORLD.sprites[btn.img], btn.pos.x, btn.pos.y, btn.size.x, btn.size.y);
+            ctx.fillStyle = "#594228"
+            ctx.fillText(item.name, btn.pos.x + 5, btn.pos.y + 22);
+            ctx.fillText(item.price, btn.pos.x + 180, btn.pos.y + 22);
             ctx.globalAlpha = 1;
         }
         WORLD.buttons.push(btn);
@@ -102,9 +101,8 @@ const shop = ({ c, width, height, buttons, drawAll, updateAll, progress, sprites
             else ctx.drawImage(sprites.wall, 100 + i*30, 100 + j*30, 30, 30);
         }
     }
-    ctx.fillStyle = "#4d4d4d";
-    ctx.fillRect(130, 130, 120, 30);
-    ctx.fillStyle = "white";
+    ctx.drawImage(sprites["buttons/empty_x120"], 130, 130, 120, 30);
+    ctx.fillStyle = "#594228"
     ctx.font = "20px game";
     ctx.fillText("Coins: " + progress.coins, 140, 150);
 

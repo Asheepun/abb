@@ -45,6 +45,7 @@ const buttonIgs = [
     "buttons/exit",
     "buttons/shop",
     "buttons/convert",
+    "buttons/empty",
 ];
 
 Promise.all([
@@ -171,6 +172,7 @@ Promise.all([
         
         WORLD.startingAlpha = 1;
         WORLD.nextLevelCounter = undefined;
+        WORLD.getHomeCounter = undefined;
         WORLD.offset = vec(0, 0);
 
         WORLD.state = WORLD.states.game;
@@ -193,11 +195,7 @@ Promise.all([
     
     WORLD.states.game = () => {
 
-        //check keys
         WORLD.controlPlayerKeys();
-        if(keys.h.down || keys.H.down){
-            WORLD.state = WORLD.states.setupHome;
-        }
 
         //update logic
         WORLD.updateAll(
@@ -228,7 +226,19 @@ Promise.all([
             WORLD.state = WORLD.states.setup;
             WORLD.deaths++;
         }
-            
+        //go home
+        if(keys.h.down || keys.H.down){
+            WORLD.goHomeCounter = 3;
+        }
+        if(WORLD.goHomeCounter > 0){
+            let sub = Math.round(WORLD.timeScl*100)
+            WORLD.goHomeCounter -= sub/100000;
+            console.log(WORLD.goHomeCounter);
+        }
+        if(WORLD.goHomeCounter < 1){
+            WORLD.goHomeCounter = undefined;
+            WORLD.state = WORLD.states.setupHome;
+        }
     
         WORLD.draw();
     }
@@ -260,6 +270,12 @@ Promise.all([
             ctx.fillStyle = "red";
             ctx.font = "25px game";
             ctx.fillText(Math.floor(WORLD.nextLevelCounter), WORLD.player.center.x - 7.5, WORLD.player.pos.y-5);
+        }
+        //draw goHomeCounter
+        if(WORLD.goHomeCounter){
+            ctx.fillStyle = "blue";
+            ctx.font = "25px game";
+            ctx.fillText(Math.floor(WORLD.goHomeCounter), WORLD.player.center.x - 7.5, WORLD.player.pos.y-5);
         }
 
         //make shade in beginning of level

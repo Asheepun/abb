@@ -6,6 +6,8 @@ import helper from "/js/helper.js";
 import levelTeplates from "/js/levelTemplates.js";
 import { strEach, set } from "/js/level.js";
 
+let extraPlayerState = undefined;
+
 const setupHome = (WORLD) => {
         WORLD.spliceAll(
             WORLD.obstacles,
@@ -19,6 +21,7 @@ const setupHome = (WORLD) => {
         WORLD.obstacles = newLevel.obstacles;
         WORLD.walls = newLevel.walls;
         WORLD.player = newLevel.player;
+        if(extraPlayerState !== undefined) WORLD.player = extraPlayerState;
         WORLD.grass = newLevel.grass;
         WORLD.helpers.push(helper(vec(0, 420), "Welcome to our home!"));
         WORLD.helpers.push(helper(vec(345, 480), "Can I interest you in my wares?"));
@@ -48,10 +51,12 @@ const setupHome = (WORLD) => {
         } }));
         //play button
         WORLD.buttons.push(button({ pos: vec(780, 300), img: "buttons/play", size: vec(60, 30), action(){
+            extraPlayerState = undefined;
             WORLD.state = WORLD.states.setup;
         } }));
         //shop button
         WORLD.buttons.push(button({ pos: vec(330, 440), img: "buttons/shop", size: vec(60, 30), action(){
+            extraPlayerState = WORLD.player;
             WORLD.state = WORLD.states.setupShop;
         } }));
 

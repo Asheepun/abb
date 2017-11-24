@@ -1,8 +1,8 @@
-import vec from "/js/vector.js";
-import { checkCol, checkOub, checkPlatCol } from "/js/colission.js";
-import entity from "/js/entity.js";
+import vec                                  from "/js/engine/factories/vector.js";
+import entity                               from "/js/engine/factories/entity.js";
+import { checkCol, checkOub, checkPlatCol } from "/js/engine/functions/colission.js";
 
-const getMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 900, 600] }) => {
+const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 900, 600] }) => {
     that.dir = dir;
     that.speed = speed;
     that.gravity = gravity;
@@ -12,7 +12,7 @@ const getMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 
     that.maxFallSpeed = 0.4;
     let col, oub, platCol;
 
-    return ({ timeScl, obstacles, box, grass }) => {
+    that.move = ({ timeScl, obstacles, box, grass }) => {
 
         that.velocity.x = that.dir * that.speed;
 
@@ -54,7 +54,7 @@ const hitGroundParticleEffect = (array, object) => {
             rotation: Math.random()*360,
         });
         if(Math.random() < 0.4) that.img = "player";//uses the edge of the sprites hair
-        that.move = getMove(that, {
+        addMove(that, {
             gravity: 0.02,
         });
         that.velocity.y = -Math.random()*0.2 - 0.1;
@@ -69,9 +69,9 @@ const hitGroundParticleEffect = (array, object) => {
         }
         that.remove = () => array.splice(array.indexOf(that), 1);
             
-        that.update = that.getUpdate("move", "fade");
+        that.addUpdateActions("move", "fade");
         array.push(that);
     }
 }
 
-export default getMove;
+export default addMove;

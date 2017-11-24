@@ -1,5 +1,5 @@
-import vec from "/js/vector.js";
-import entity from "/js/entity.js";
+import vec    from "/js/engine/factories/vector.js";
+import entity from "/js/engine/factories/entity.js";
 
 const button = ({ pos, img, size, action = () => {} }) => {
     const that = entity({
@@ -28,7 +28,7 @@ const button = ({ pos, img, size, action = () => {} }) => {
         }
     }
 
-    that.update = that.getUpdate("checkPointer");
+    that.addUpdateActions("checkPointer");
 
     return that;
 }

@@ -1,8 +1,9 @@
-import vec, { add, half, mul, div, sub, pipe, round } from "/js/vector.js";
-import getMove from "/js/move.js";
-import entity from "/js/entity.js";
-import getAnimate from "/js/animate.js";
-import { checkCol, checkProx } from "/js/colission.js";
+import vec, { add, half, mul, div, sub, pipe, round } from "/js/engine/factories/vector.js";
+import entity                                         from "/js/engine/factories/entity.js";
+import addAnimate                                     from "/js/engine/functions/animate.js";
+import { checkCol, checkProx }                        from "/js/engine/functions/colission.js";
+import { addHandleCol }                               from "/js/handleCol.js";
+import addMove                                        from "/js/move.js";
 
 const player = (pos) => {
     const that = entity({
@@ -15,16 +16,16 @@ const player = (pos) => {
     that.grounded = false;
     that.dead = false;
     
-    that.move = getMove(that, {oubArea: [0, 0, 900, 700]});
-
-    that.animate = getAnimate(that, {
+    addMove(that, {oubArea: [0, 0, 900, 700]});
+    addHandleCol(that);
+    addAnimate(that, {
         delay: 4,
         handleFrames: ({ JSON, progress }) => {
             if(that.grounded){ 
                 that.img = progress.items.unlocked.find(x => x === "Purple coat") ? "player-purple": "player";
                 that.state = that.dir === 0 ? "still" : "moving";
             }
-            else{ 
+            else{
                 that.img = progress.items.unlocked.find(x => x === "Purple coat") ? "player-jump-purple": "player-jump";
                 that.state = "jumping";
             }
@@ -41,18 +42,6 @@ const player = (pos) => {
             that.velocity.y = -0.8
         }
     }
-    that.handleColissionX = (object) => {
-        if(that.velocity.x > 0) that.pos.x = object.pos.x - that.size.x;
-        else that.pos.x = object.pos.x + object.size.x;
-    }
-    that.handleColissionY = (object) => {
-        if(that.velocity.y > 0){
-            that.grounded = true;
-            that.pos.y = object.pos.y - that.size.y;
-            that.pos = round(that.pos);
-        }else that.pos.y = object.pos.y + object.size.y;
-        that.velocity.y = 0;
-    }
     that.handleOubX = () => {
         if(that.velocity.x > 0) that.pos.x = 870;
         else that.pos.x = 0;
@@ -61,14 +50,6 @@ const player = (pos) => {
         if(that.velocity.y > 0) that.dead = true;
         else that.pos.y = 0;
         that.velocity.y = 0;
-    }
-    that.handlePlatCol = (object) => {
-        if(that.velocity.y > 0){
-            that.pos.y = object.pos.y - that.size.y;
-            that.grounded = true;
-            that.velocity.y = 0;
-            that.pos = round(that.pos);
-        }
     }
     that.checkHit = ({ enemies }) => {
         for(let i = 0; i < enemies.length; i++){
@@ -82,7 +63,7 @@ const player = (pos) => {
             rainbowParticleEffect(helpers, that.center.copy(), mul(that.velocity, 0.1));
         }
     }
-    that.update = that.getUpdate("move", "checkHit", "rainbow", "animate");
+    that.addUpdateActions("move", "checkHit", "rainbow", "animate");
 
     return that;
 }
@@ -100,7 +81,7 @@ const rainbowParticleEffect = (array, pos, vel) => {
         }
         that.pos.y += Math.random()*10-5;
         that.pos.x += Math.random()*10-5;
-        that.move = getMove(that, {
+        addMove(that, {
             dir: vel.x * Math.random()*5,
             gravity: vel.y * 0.01 + Math.random()*0.001,
             speed: 0.1,
@@ -112,7 +93,7 @@ const rainbowParticleEffect = (array, pos, vel) => {
             }
         }
 
-        that.update = that.getUpdate("move", "fade");
+        that.addUpdateActions("move", "fade");
 
         array.push(that);
     }

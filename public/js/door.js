@@ -1,6 +1,6 @@
-import entity from "/js/entity.js";
-import vec from "/js/vector.js";
-import { checkCol } from "/js/colission.js";
+import entity                     from "/js/engine/factories/entity.js";
+import vec                        from "/js/engine/factories/vector.js";
+import { checkCol }               from "/js/engine/functions/colission.js";
 import { confettiParticleEffect } from "/js/obstacles.js";
 
 export const door = (pos, i) => {
@@ -41,7 +41,19 @@ export const key = (pos, i) => {
             }
         }
     }
-    that.update = that.getUpdate("checkCol");
+    that.addUpdateActions("checkCol");
+
+    return that;
+}
+
+export const portal = (pos) => {
+    const that = entity({
+        pos,
+        size: vec(30, 9),
+        img: "portal",
+    });
+    that.pos.y += 21;
+    that.fixCenter();
 
     return that;
 }

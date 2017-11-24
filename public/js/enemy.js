@@ -1,6 +1,9 @@
-import vec, { sub } from "/js/vector.js";
-import entity from "/js/entity.js";
-import getMove from "/js/move.js";
+import vec, { sub }                         from "/js/engine/factories/vector.js";
+import entity                               from "/js/engine/factories/entity.js";
+import addAnimate                           from "/js/engine/factories/entity.js";
+import { addHandleColBounce, addHandleCol } from "/js/handleCol.js";
+import addMove                              from "/js/move.js";
+import addTalk                              from "/js/talk.js";
 
 const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210, 210], frame2 = [224, 0, 210, 210] }) => {
     const that = entity({
@@ -10,40 +13,27 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         img,
     });
     that.jumpSpeed = jumpSpeed;
+    that.lines = [
+        "Lil bugger!",
+        "Come'ere you!",
+        "You scared boy?",
+        "I dare you!",
+        "Twerp!",
+    ];
+    that.text = false;
+    that.talking = false;
+    that.talked = 0;
 
-    that.move = getMove(that, {
+    addTalk(that, () => that.talking);
+    addHandleColBounce(that);
+    addMove(that, {
         speed: 0.1,
         dir: -1,
         gravity: 0.01,
     });
-    that.handleColissionY = (object) => {
-        if(that.velocity.y > 0){
-            that.pos.y = object.pos.y - that.size.y;
-            that.grounded = true;
-        }
-        else{ 
-            that.pos.y = object.pos.y + object.size.y;
-            that.grounded = false;
-        }
-        that.velocity.y = 0;
-    }
     that.handleOubY = () => {
         if(that.velocity.y < 0){
             that.pos.y = 0;
-            that.velocity.y = 0;
-        }
-    }
-    that.handleColissionX = that.handleOubX = () => {
-        that.dir *= -1;
-        that.pos.x += 4*that.dir;
-        //animate
-        if(that.dir > 0) that.imgPos = frame2;
-        else that.imgPos = frame1;
-    }
-    that.handlePlatCol = (object) => {
-        if(that.velocity.y > 0){
-            that.pos.y = object.pos.y - that.size.y;
-            that.grounded = true;
             that.velocity.y = 0;
         }
     }
@@ -53,44 +43,27 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         }
     }
     //make talking engine
-    that.lines = [
-        "Lil bugger!",
-        "Come'ere you!",
-        "You scared boy?",
-        "I dare you!",
-        "Twerp!",
-    ];
-    that.line = false;
-    that.talking = false;
-    that.talked = 0;
-    that.talk = ({ player, audio }) => {
-        if(that.talking && that.line){
+    that.handleLines = ({ player, audio }) => {
+        if(that.talking && that.text){
             that.talked++;
-            if(that.talked > 60) that.line = false;
+            if(that.talked > 60) that.text = false;
         }
         if(sub(player.center, that.center).mag < that.size.x/2 + 100){
             if(!that.talking){
                 that.talking = true
                 that.talked = 0;
-                that.line = that.lines[Math.floor(Math.random()*that.lines.length)];
+                that.text = that.lines[Math.floor(Math.random()*that.lines.length)];
             }
         }else that.talking = false;
     }
-    let drawPosX = that.center.x-(that.line.length/2)*10-15;
-    that.addDrawingAction(ctx => {
-        if(that.talking && that.line){
-            ctx.fillStyle = "white";
-            ctx.font = "20px game";
-            if(that.size.x === 210) ctx.font = "30px game";
-            drawPosX = that.center.x-(that.line.length/2)*10-15;
-            while(drawPosX < 10){
-                drawPosX += 10;
-            }
-            ctx.fillText(that.line, drawPosX, that.pos.y - 10);
-        }
-    });
+    
+    that.animate = () => {
+        if(that.dir > 0) that.imgPos = frame2;
+        else that.imgPos = frame1;
+    }
 
-    that.update = that.getUpdate("move", "jump", "talk");
+    that.addUpdateActions("move", "jump", "handleLines", "animate");
+    that.addDrawingActions("talk");
 
     return that;
 }
@@ -109,7 +82,7 @@ export const jumper = (pos) => {
     that.speed = 0;
     that.lines.push("Don't run away!");
 
-    that.look = ({ player, sprites }) => {
+    that.animate = ({ player, sprites }) => {
         if(player.pos.x > that.center.x){
             that.dir = 1;
             that.imgPos = [224, 0, 210, 210];
@@ -118,7 +91,6 @@ export const jumper = (pos) => {
             that.imgPos = [0, 0, 210, 210];
         }
     }
-    that.update = that.getUpdate("move", "jump", "look", "talk");
     return that;
 }
 
@@ -132,7 +104,7 @@ export const giantJumper = (pos) => {
 
 export const spawner = (pos) => {
     const that = bouncer(pos);
-    that.spawn = vec(that.pos.x, that.pos.y);
+    that.spawn = vec(that.pos.x, that.pos.y).copy();
     that.oubArea = [0, 0, 900, 660];
     that.alpha = 0;
 
@@ -147,7 +119,7 @@ export const spawner = (pos) => {
         that.alpha += 0.05;
         if(that.alpha > 1) that.alpha = 1;
     }
-    that.update = that.getUpdate("move", "jump", "reSpawn", "talk");
+    that.addUpdateActions("reSpawn");
 
     return that;
 }
@@ -159,7 +131,9 @@ export const follower = (pos) => {
 
     that.lines.push("I see you!", "I know where you are!");
     
-    that.look = ({ player }) => {
+    addHandleCol(that);
+
+    that.animate = ({ player }) => {
         if(player.pos.x > that.pos.x + that.size.x){
             that.dir = 1;
             that.imgPos = [224, 0, 210, 210];
@@ -168,10 +142,6 @@ export const follower = (pos) => {
             that.dir = -1;
             that.imgPos = [0, 0, 210, 210];
         }
-    }
-    that.handleColissionX = (object) => {
-        if(that.velocity.x > 0) that.pos.x = object.pos.x - that.size.x;
-        else that.pos.x = object.pos.x + object.size.x;
     }
 
     return that;

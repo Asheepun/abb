@@ -1,8 +1,8 @@
-import vec, { add, half, mul, div, sub, pipe, align } from "/js/vector.js";
-import { checkHover } from "/js/colission.js";
-import entity from "/js/entity.js";
-import getAnimate from "/js/animate.js";
-import getMove from "/js/move.js";
+import vec, { add, half, mul, div, sub, pipe, align } from "/js/engine/factories/vector.js";
+import entity                                         from "/js/engine/factories/entity.js";
+import { checkHover }                                 from "/js/engine/functions/colission.js";
+import getAnimate                                     from "/js/engine/functions/animate.js";
+import addMove                                        from "/js/move.js";
 
 export const obstacle = (pos, map, offset = 0) => {
     const that = entity({
@@ -58,7 +58,7 @@ export const confettiParticleEffect = (array, pos, xSpread = 10, ySpread = 10, a
             imgPos: [0, 0, 5, 5],
             rotation: Math.random()*360,
         });
-        that.move = getMove(that, {
+        addMove(that, {
             gravity: 0.02,
         });
         that.velocity.y = -Math.random()*0.2 - 0.1;
@@ -73,7 +73,7 @@ export const confettiParticleEffect = (array, pos, xSpread = 10, ySpread = 10, a
         }
         that.remove = () => array.splice(array.indexOf(that), 1);
             
-        that.update = that.getUpdate("move", "fade");
+        that.addUpdateActions("move", "fade");
         array.push(that);
     }
 }

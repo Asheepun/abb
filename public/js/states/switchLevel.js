@@ -1,5 +1,5 @@
 import createLevel, { strEach, set } from "/js/level.js";
-import getClouds from "/js/clouds.js";
+import getClouds                     from "/js/clouds.js";
 
     const setupSwitchLevel = (WORLD, ctx) => {
         WORLD.currentLevel++;

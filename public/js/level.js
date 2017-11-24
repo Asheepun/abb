@@ -1,12 +1,12 @@
-import vec, { add, half, mul, div, sub, pipe, align } from "/js/vector.js";
+import vec, { add, half, mul, div, sub, pipe, align }      from "/js/engine/factories/vector.js";
+import entity                                              from "/js/engine/factories/entity.js";
+import { checkProx }                                       from "/js/engine/functions/colission.js";
+import getAnimate                                          from "/js/engine/functions/animate.js";
 import { bouncer, jumper, spawner, giantJumper, follower } from "/js/enemy.js";
-import { obstacle,  box, grass } from "/js/obstacles.js";
-import { checkProx } from "/js/colission.js";
-import { door, key } from "/js/door.js";
-import helper, { converter } from "/js/helper.js";
-import entity from "/js/entity.js";
-import player from "/js/player.js";
-import getAnimate from "/js/animate.js";
+import { obstacle,  box, grass }                           from "/js/obstacles.js";
+import { door, key, portal }                               from "/js/door.js";
+import helper, { converter }                               from "/js/helper.js";
+import player                                              from "/js/player.js";
 
 const createLevel = ({ map, helps }, offsetX = 0) => {
     const level = {
@@ -33,6 +33,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "*") level.helpers.push(key(pos, 1));
         if(tile === "I") level.obstacles.push(door(pos, 2));
         if(tile === "o") level.helpers.push(key(pos, 2));
+        if(tile === "_") level.obstacles.push(portal(pos));
         if(tile === "H" || tile === "h"){
             level.helpers.push(helper(pos, helps[help]));
             help ++;
@@ -64,42 +65,44 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
 };
 
 const point = (pos) => {
-    const point = entity({
+    const that = entity({
         pos,
         size: vec(20, 20),
         img: "point",
     });
 
-    point.checkCol = ({ player, points, audio, reload, state }) => {
-        if(checkProx(point.center, [player.center], 30)){
+    that.checkCol = ({ player, points, audio, reload, state }) => {
+        if(checkProx(that.center, [player.center], 30)){
             audio.point.load();
             audio.point.play();
-            points.splice(points.indexOf(point), 1);
+            points.splice(points.indexOf(that), 1);
         }
     }
-    point.update = point.getUpdate("checkCol");
+    that.addUpdateActions("checkCol");
 
-    return point;
+    return that;
 }
 
 const deathCounter = (pos) => {
-    const deathCounter = entity({ pos, img: "death-counter" });
-    deathCounter.deaths = 0;
+    const that = entity({ pos, img: "death-counter" });
+    that.deaths = 0;
 
-    deathCounter.addDrawingAction(ctx => {
+    that.drawDeaths = ctx => {
         ctx.fillStyle = "#5c3434";
         ctx.font = "12px game";
-        if(deathCounter.deaths < 10) ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 13, deathCounter.pos.y + 18);
-        else if(deathCounter.deaths < 100){
+        if(that.deaths < 10) ctx.fillText(that.deaths, that.pos.x + 13, that.pos.y + 18);
+        else if(that.deaths < 100){
             ctx.font = "10px game";
-            ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 10, deathCounter.pos.y + 18);
+            ctx.fillText(that.deaths, that.pos.x + 10, that.pos.y + 18);
         }else {
             ctx.font = "8px game";
-            ctx.fillText(deathCounter.deaths, deathCounter.pos.x + 8, deathCounter.pos.y + 18);
+            ctx.fillText(that.deaths, that.pos.x + 8, that.pos.y + 18);
         }
-    });
+    }
 
-    return deathCounter;
+    that.addDrawingActions("drawDeaths");
+
+    return that;
 }
 
 export const set = () => {

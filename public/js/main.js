@@ -1,19 +1,19 @@
-import vec, { add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/vector.js";
-import { makeDrawAll, makeUpdateAll, spliceAll } from "/js/loopAll.js";
-import levelTemplates from "/js/levelTemplates.js";
-import { loadSprites, loadAudio, loadJSON } from "/js/loadAssets.js";
-import setupHome from "/js/home.js";
-import setupShop, { emptyProgress, updateProgress } from "/js/shop.js";
-import setupSwitchLevel from "/js/switchLevel.js";
-import createKeys from "/js/keys.js";
-import getClouds from "/js/clouds.js";
-import getRain from "/js/rain.js";
-import getMove from "/js/move.js";
-import player from "/js/player.js";
-import entity from "/js/entity.js";
-import button from "/js/button.js";
-import createCanvas from "/js/canvas.js";
-import createLevel, { strEach, set } from "/js/level.js";
+import vec, { add, half, mul, div, sub, pipe, align, normalize, reverse } from "/js/engine/factories/vector.js";
+import entity                                                             from "/js/engine/factories/entity.js";
+import { makeDrawAll, makeUpdateAll, spliceAll }                          from "/js/engine/functions/loopAll.js";
+import createCanvas                                                       from "/js/engine/promises/canvas.js";
+import createKeys                                                         from "/js/engine/promises/keys.js";
+import { loadSprites, loadAudio, loadJSON }                               from "/js/engine/promises/assets.js";
+import setupSwitchLevel                                                   from "/js/states/switchLevel.js";
+import setupHome                                                          from "/js/states/home.js";
+import setupShop, { emptyProgress, updateProgress }                       from "/js/states/shop.js";
+import levelTemplates                                                     from "/js/levelTemplates.js";
+import getClouds                                                          from "/js/clouds.js";
+import getRain                                                            from "/js/rain.js";
+import getMove                                                            from "/js/move.js";
+import player                                                             from "/js/player.js";
+import button                                                             from "/js/button.js";
+import createLevel, { strEach, set }                                      from "/js/level.js";
 
 //error message
 document.getElementById("no-modules").style.display = "none";
@@ -69,6 +69,7 @@ Promise.all([
         "door",
         "door-button",
         "rainbow",
+        "portal",
         ...buttonImgs,
     ),
     loadAudio(

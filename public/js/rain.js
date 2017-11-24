@@ -1,6 +1,6 @@
-import vec, { angle } from "/js/vector.js";
-import entity from "/js/entity.js";
-import getMove from "/js/move.js";
+import vec, { angle } from "/js/engine/factories/vector.js";
+import entity         from "/js/engine/factories/entity.js";
+import addMove        from "/js/move.js";
 
 const getRain = () => {
     const rain = [];
@@ -16,15 +16,14 @@ const getRain = () => {
         }
         that.init();
         that.pos.y = Math.random()*600;
-
-        that.move = getMove(that, {});
+        addMove(that, {});
         that.speed = 0.1;
         that.dir = 1;
         
         that.handleOubY = () => {
             if(that.pos.y > 100) that.init();
         }
-        that.update = that.getUpdate("move");
+        that.addUpdateActions("move");
 
         rain.push(that);
     }

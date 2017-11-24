@@ -1,54 +1,40 @@
-import vec, { add, half, mul, div, sub, pipe, align } from "/js/vector.js";
-import { checkCol } from "/js/colission.js";
-import entity from "/js/entity.js";
-import button from "/js/button.js";
-import getAnimate from "/js/animate.js";
+import vec, { add, half, mul, div, sub, pipe, align } from "/js/engine/factories/vector.js";
+import entity                                         from "/js/engine/factories/entity.js";
+import { checkCol }                                   from "/js/engine/functions/colission.js";
+import addAnimate                                     from "/js/engine/functions/animate.js";
+import button                                         from "/js/button.js";
+import addTalk                                        from "/js/talk.js";
 
 const helper = (pos = vec(-30, -30), text = "Hello!") => {
-    const helper = entity({ pos, img: "helper" });
-    helper.state = "still"
-    helper.dir = "left";
-    helper.text = text;
-    helper.textPos = vec(helper.pos.x - (text.length / 2) * 12.5 - 15, helper.pos.y-15);
-    while(helper.textPos.x + helper.text.length*10 > 900){
-        helper.textPos.x -= 1;
-    }
-    while(helper.textPos.x < 15){
-        helper.textPos.x += 1;
-    }
+    const that = entity({ pos, img: "helper" });
+    that.state = "still"
+    that.dir = "left";
+    that.text = text;
 
-    helper.animate = getAnimate(helper, {
+    addAnimate(that, {
         delay: 3,
-        handleFrames: ({JSON }) => JSON.helperFrames[helper.state][helper.dir],
+        handleFrames: ({JSON }) => JSON.helperFrames[that.state][that.dir],
     });
-    helper.checkCol = ({ player, audio }) => {
-        if(checkCol(helper, player)){ 
-            if(helper.state !== "talking"){
-                helper.state = "talking";
+    addTalk(that, () => that.state === "talking");
+    
+    that.checkCol = ({ player, audio }) => {
+        if(checkCol(that, player)){ 
+            if(that.state !== "talking"){
+                that.state = "talking";
                 audio.talk.load();
                 audio.talk.play();
             }
-        }else helper.state = "still";
+        }else that.state = "still";
     }
-    helper.look = ({ player }) => {
-        if(player.pos.x > helper.pos.x + helper.size.x) helper.dir = "right";
-        if(player.pos.x + player.size.x < helper.pos.x) helper.dir = "left";
-    }
-
-    helper.update = helper.getUpdate("checkCol", "look", "animate");
-
-    helper.drawText = ctx => {
-        if(helper.state === "talking"){
-            ctx.fillStyle = "white";
-            ctx.font = "20px game";
-            ctx.fillText(helper.text, helper.textPos.x, helper.textPos.y);
-        }
+    that.look = ({ player }) => {
+        if(player.pos.x > that.pos.x + that.size.x) that.dir = "right";
+        if(player.pos.x + player.size.x < that.pos.x) that.dir = "left";
     }
 
-    helper.addDrawingAction(helper.drawText);
+    that.addUpdateActions("checkCol", "look", "animate");
+    that.addDrawingActions("talk");
 
-
-    return helper;
+    return that;
 }
 
 export const converter = (pos) => {
@@ -85,9 +71,9 @@ export const converter = (pos) => {
         }
     }
     that.drawingActions.splice(0, 1);
-    that.addDrawingAction(that.drawText);
 
-    that.update = that.getUpdate("checkCol", "look", "animate", "addConverterButton");
+    that.addDrawingActions("drawText");
+    that.addUpdateActions("addConverterButton");
 
     return that;
 }

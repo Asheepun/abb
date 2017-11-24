@@ -1,5 +1,5 @@
+import vec    from "/js/engine/factories/vector.js";
 import button from "/js/button.js";
-import vec from "/js/vector.js";
 
 export const emptyProgress = () => ({
     completedLevels: 0,

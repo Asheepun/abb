@@ -1,12 +1,11 @@
 import vec, { add, half, mul, div, sub, pipe, align }      from "/js/engine/factories/vector.js";
 import entity                                              from "/js/engine/factories/entity.js";
-import { checkProx }                                       from "/js/engine/functions/colission.js";
-import getAnimate                                          from "/js/engine/functions/animate.js";
 import { bouncer, jumper, spawner, giantJumper, follower } from "/js/enemy.js";
 import { obstacle,  box, grass }                           from "/js/obstacles.js";
 import { door, key }                                       from "/js/door.js";
 import helper, { converter }                               from "/js/helper.js";
 import player                                              from "/js/player.js";
+import { point, movingPoint }                              from "/js/point.js";
 
 const createLevel = ({ map, helps }, offsetX = 0) => {
     const that = {
@@ -38,6 +37,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
             help ++;
         }
         if(tile === "P") that.points.push(point(vec(pos.x + 5, pos.y + 5)));
+        if(tile === "p") that.points.push(movingPoint(vec(pos.x + 5, pos.y + 5)));
         if(tile === "1") that.enemies.push(bouncer(pos));
         if(tile === "2") that.enemies.push(jumper(pos));
         if(tile === "3") that.enemies.push(spawner(pos));
@@ -54,6 +54,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         || tile === "@"
         || tile === "H"
         || tile === "P"
+        || tile === "p"
         || tile === "$"
         || tile === "1"
         || tile === "2"
@@ -73,25 +74,6 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
     
     return that;
 };
-
-const point = (pos) => {
-    const that = entity({
-        pos,
-        size: vec(20, 20),
-        img: "point",
-    });
-
-    that.checkCol = ({ player, points, audio, reload, state }) => {
-        if(checkProx(that.center, [player.center], 30)){
-            audio.point.load();
-            audio.point.play();
-            points.splice(points.indexOf(that), 1);
-        }
-    }
-    that.addUpdateActions("checkCol");
-
-    return that;
-}
 
 const deathCounter = (pos) => {
     const that = entity({ pos, img: "death-counter" });

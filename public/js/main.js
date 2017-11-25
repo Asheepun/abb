@@ -122,6 +122,7 @@ Promise.all([
         localStorage.progress = JSON.stringify(emptyProgress());
     }
     WORLD.progress = JSON.parse(localStorage.progress);
+    WORLD.currentLevel = localStorage.furtestLevel;
     updateProgress(WORLD.progress);
 
     if(localStorage.furtestLevel === undefined) localStorage.furtestLevel = 0;

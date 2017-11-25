@@ -21,10 +21,10 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         "Twerp!",
     ];
     that.text = false;
-    that.talking = false;
+    that.state = "silent";
     that.talked = 0;
 
-    addTalk(that, () => that.talking);
+    addTalk(that);
     addHandleColBounce(that);
     addMove(that, {
         speed: 0.1,
@@ -44,17 +44,17 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
     }
     //make talking engine
     that.handleLines = ({ player, audio }) => {
-        if(that.talking && that.text){
+        if(that.state === "talking" && that.text){
             that.talked++;
             if(that.talked > 60) that.text = false;
         }
         if(sub(player.center, that.center).mag < that.size.x/2 + 100){
-            if(!that.talking){
-                that.talking = true
+            if(that.state !== "talking"){
+                that.state = "talking"
                 that.talked = 0;
                 that.text = that.lines[Math.floor(Math.random()*that.lines.length)];
             }
-        }else that.talking = false;
+        }else that.state = "silent";
     }
     
     that.animate = () => {
@@ -80,17 +80,17 @@ export const jumper = (pos) => {
         jumpSpeed: 0.4,
     });
     that.speed = 0;
-    that.lines.push("Don't run away!");
-
-    that.animate = ({ player, sprites }) => {
+    that.lines.push("Don't run away!", "Stay there!");
+    
+    that.look = ({ player }) => {
         if(player.pos.x > that.center.x){
             that.dir = 1;
-            that.imgPos = [224, 0, 210, 210];
         }else{
             that.dir = -1;
-            that.imgPos = [0, 0, 210, 210];
         }
     }
+    that.addUpdateActions("look");
+
     return that;
 }
 
@@ -98,6 +98,7 @@ export const giantJumper = (pos) => {
     const that = jumper(pos);
     that.size = vec(210, 210);
     that.jumpSpeed = 0.5;
+    that.lines.push("I'll crush you!", "I am your biggest nightmare!");
 
     return that;
 }
@@ -107,6 +108,7 @@ export const spawner = (pos) => {
     that.spawn = vec(that.pos.x, that.pos.y).copy();
     that.oubArea = [0, 0, 900, 660];
     that.alpha = 0;
+    that.lines.push("I'm back!", "Think you can get rid of me?");
 
     that.handleOubY = () => {
         if(that.velocity.y > 0){
@@ -125,24 +127,25 @@ export const spawner = (pos) => {
 }
 
 export const follower = (pos) => {
-    const that = jumper(pos);
+    const that = enemy({
+        pos,
+        size: vec(60, 60),
+    });
     that.jumpSpeed = 0.2;
     that.speed = 0.13;
-
     that.lines.push("I see you!", "I know where you are!");
     
     addHandleCol(that);
 
-    that.animate = ({ player }) => {
+    that.follow = ({ player }) => {
         if(player.pos.x > that.pos.x + that.size.x){
             that.dir = 1;
-            that.imgPos = [224, 0, 210, 210];
         }
         if(player.pos.x < that.pos.x - player.size.x){
             that.dir = -1;
-            that.imgPos = [0, 0, 210, 210];
         }
     }
+    that.addUpdateActions("follow");
 
     return that;
 }

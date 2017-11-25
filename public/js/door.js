@@ -45,15 +45,3 @@ export const key = (pos, i) => {
 
     return that;
 }
-
-export const portal = (pos) => {
-    const that = entity({
-        pos,
-        size: vec(30, 9),
-        img: "portal",
-    });
-    that.pos.y += 21;
-    that.fixCenter();
-
-    return that;
-}

@@ -69,7 +69,6 @@ Promise.all([
         "door",
         "door-button",
         "rainbow",
-        "portal",
         ...buttonImgs,
     ),
     loadAudio(

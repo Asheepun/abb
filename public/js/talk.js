@@ -1,9 +1,9 @@
 import vec from "/js/engine/factories/vector.js";
 
-const addTalk = (that, condition) => {
+const addTalk = (that) => {
     that.textPos = vec(0, 0);
     that.talk = (ctx) => {
-        if(condition()){
+        if(that.state === "talking"){
             that.textPos = vec(that.center.x - (that.text.length / 2) * 12.5, that.pos.y-15);
             while(that.textPos.x + that.text.length*10 > 900){
                 that.textPos.x -= 1;

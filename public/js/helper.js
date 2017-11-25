@@ -15,7 +15,7 @@ const helper = (pos = vec(-30, -30), text = "Hello!") => {
         delay: 3,
         handleFrames: ({JSON }) => JSON.helperFrames[that.state][that.dir],
     });
-    addTalk(that, () => that.state === "talking");
+    addTalk(that);
     
     that.checkCol = ({ player, audio }) => {
         if(checkCol(that, player)){ 

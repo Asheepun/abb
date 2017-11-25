@@ -29,9 +29,10 @@ const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 
             if(!that.grounded && that.velocity.y > 0) 
                 hitGroundParticleEffect(grass, that);
             that.handleColissionY(col);
-        }else that.grounded = false;
+        }
         if(platCol && that.handlePlatCol) that.handlePlatCol(box);
         if(oub && that.handleOubY) that.handleOubY();
+        if(!platCol && !col) that.grounded = false;
 
         //moveX
         that.pos.x += that.velocity.x * timeScl;

@@ -4,12 +4,12 @@ import { checkProx }                                       from "/js/engine/func
 import getAnimate                                          from "/js/engine/functions/animate.js";
 import { bouncer, jumper, spawner, giantJumper, follower } from "/js/enemy.js";
 import { obstacle,  box, grass }                           from "/js/obstacles.js";
-import { door, key, portal }                               from "/js/door.js";
+import { door, key }                                       from "/js/door.js";
 import helper, { converter }                               from "/js/helper.js";
 import player                                              from "/js/player.js";
 
 const createLevel = ({ map, helps }, offsetX = 0) => {
-    const level = {
+    const that = {
         walls: set(),
         obstacles: set(),
         grass: set(),
@@ -24,44 +24,54 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
     let pos;
     map.forEach((row, y) => strEach(row, (tile, x) => {
         pos = vec(x*30 + offsetX, y*30);
-        if(tile === "@" || tile === "a") level.player = player(pos);
-        if(tile === "§" || tile === "£") level.deathCounter = deathCounter(pos);
-        if(tile === "B") level.box = box(pos);
-        if(tile === "$") level.helpers.push(converter(pos));
-        if(tile === "#") level.obstacles.push(obstacle(pos, map, offsetX));
-        if(tile === "|") level.obstacles.push(door(pos, 1));
-        if(tile === "*") level.helpers.push(key(pos, 1));
-        if(tile === "I") level.obstacles.push(door(pos, 2));
-        if(tile === "o") level.helpers.push(key(pos, 2));
-        if(tile === "_") level.obstacles.push(portal(pos));
-        if(tile === "H" || tile === "h"){
-            level.helpers.push(helper(pos, helps[help]));
+        if(tile === "@") that.player = player(pos);
+        if(tile === "§") that.deathCounter = deathCounter(pos);
+        if(tile === "B") that.box = box(pos);
+        if(tile === "$") that.helpers.push(converter(pos));
+        if(tile === "#") that.obstacles.push(obstacle(pos, map, offsetX));
+        if(tile === "|") that.obstacles.push(door(pos, 1));
+        if(tile === "*") that.helpers.push(key(pos, 1));
+        if(tile === "I") that.obstacles.push(door(pos, 2));
+        if(tile === "o") that.helpers.push(key(pos, 2));
+        if(tile === "H"){
+            that.helpers.push(helper(pos, helps[help]));
             help ++;
         }
-        if(tile === "P" || tile === "p") level.points.push(point(vec(pos.x + 5, pos.y + 5)));
-        if(tile === "1") level.enemies.push(bouncer(pos));
-        if(tile === "2") level.enemies.push(jumper(pos));
-        if(tile === "3") level.enemies.push(spawner(pos));
-        if(tile === "4") level.enemies.push(giantJumper(pos));
-        if(tile === "5") level.enemies.push(follower(pos));
+        if(tile === "P") that.points.push(point(vec(pos.x + 5, pos.y + 5)));
+        if(tile === "1") that.enemies.push(bouncer(pos));
+        if(tile === "2") that.enemies.push(jumper(pos));
+        if(tile === "3") that.enemies.push(spawner(pos));
+        if(tile === "4") that.enemies.push(giantJumper(pos));
+        if(tile === "5") that.enemies.push(follower(pos));
+        //handle grass
         if(y !== map.length-1
         && map[y+1][x] === "#" 
-        && tile !== "#") level.grass.push(grass(pos));
+        && tile !== "#") that.grass.push(grass(pos));
+        //handle walls
         if(tile === ","
-        || tile === "£"
-        || tile === "a"
-        || tile === "h"
-        || tile === "p"
-        ||((tile === "1"
+        //handle entities
+        || ((tile === "§"
+        || tile === "@"
+        || tile === "H"
+        || tile === "P"
+        || tile === "$"
+        || tile === "1"
         || tile === "2"
         || tile === "3"
         || tile === "4"
         || tile === "5"
         || tile === "6"
-        ) && map[y+1][x] === ",")) level.walls.push(entity({pos, img: "wall"}));
+        || tile === "|"
+        || tile === "I"
+        || tile === "*"
+        || tile === "o") 
+        && (y !== map.length-1
+        && map[y+1][x] === ","
+        || y !== 0
+        && map[y-1][x] === ","))) that.walls.push(entity({pos, img: "wall"}));
     }));
     
-    return level;
+    return that;
 };
 
 const point = (pos) => {

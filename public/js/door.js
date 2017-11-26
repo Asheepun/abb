@@ -35,9 +35,7 @@ export const key = (pos, i) => {
                     }
                 });
                 that.imgPos = [30, 0, 30, 30];
-                audio["door-btn"].volume = 0.5;
-                audio["door-btn"].load();
-                audio["door-btn"].play();
+                audio.play("door-btn");
             }
         }
     }

@@ -21,8 +21,7 @@ const helper = (pos = vec(-30, -30), text = "Hello!") => {
         if(checkCol(that, player)){ 
             if(that.state !== "talking"){
                 that.state = "talking";
-                audio.talk.load();
-                audio.talk.play();
+                audio.play("talk");
             }
         }else that.state = "still";
     }

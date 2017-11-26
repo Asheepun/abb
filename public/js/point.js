@@ -14,8 +14,7 @@ export const point = (pos) => {
 
     that.checkCol = ({ player, points, audio, reload, state }) => {
         if(checkProx(that.center, [player.center], 30)){
-            audio.point.load();
-            audio.point.play();
+            audio.play("point");
             points.splice(points.indexOf(that), 1);
         }
     }

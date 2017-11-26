@@ -9,13 +9,31 @@ export const loadSprites = (...urls) => new Promise((resolve, reject) => {
 });
 
 export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject) => {
-    const audio = urls.reduce((audio, url) => {
-        const a = new Audio(`/assets/audio/${url}.wav`);
-        a.volume = volume;
-        a.load();
-        audio[url] = a;
-        return audio;
-    }, {});
+    const audio = {
+        //get audio elements
+        sounds: urls.reduce((sounds, url) => {
+            const a = new Audio(`/assets/audio/${url}.wav`);
+            a.load();
+            sounds[url] = a;
+            a.originVolume = volume;
+            return sounds;
+        }, {}),
+        volume: 100,
+    };
+    audio.play = (url) => {
+        audio.sounds[url].load();
+        audio.sounds[url].play();
+    }
+    audio.loop = (url) => {
+        audio.sounds[url].loop = true;
+        audio.play(url);
+    }
+    audio.setVolume = (volume) => {
+        audio.volume = volume !== undefined ? volume: audio.volume;
+        for(let key in audio.sounds){
+            audio.sounds[key].volume = audio.sounds[key].originVolume * (audio.volume/100);
+        }
+    }
     resolve(audio);
 });
 

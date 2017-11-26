@@ -5,9 +5,6 @@ const addTalk = (that) => {
     that.talk = (ctx) => {
         if(that.state === "talking"){
             that.textPos = vec(that.center.x - (that.text.length / 2) * 12.5, that.pos.y-15);
-            while(that.textPos.x + that.text.length*10 > 900){
-                that.textPos.x -= 1;
-            }
             while(that.textPos.x < 15){
                 that.textPos.x += 1;
             }

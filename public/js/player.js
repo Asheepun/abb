@@ -35,10 +35,9 @@ const player = (pos) => {
         }
     });
 
-    that.jump = (sound, WORLD) => {
+    that.jump = (WORLD) => {
         if(that.grounded){ 
-            sound.load();
-            sound.play();
+            WORLD.audio.play("jump");
             that.velocity.y = -0.8
         }
     }

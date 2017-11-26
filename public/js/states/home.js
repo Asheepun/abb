@@ -31,23 +31,19 @@ const setupHome = (WORLD) => {
         WORLD.buttons.push(button({ pos: vec(860, 360), img: "buttons/arrow-right", size: vec(30, 30), action(){
             if(WORLD.currentLevel < localStorage.furtestLevel){
                 WORLD.currentLevel++;
-                WORLD.audio["yes-btn"].load();
-                WORLD.audio["yes-btn"].play();
+                WORLD.audio.play("yes-btn")
             }
             else{
-                WORLD.audio["not-btn"].load();
-                WORLD.audio["not-btn"].play();
+                WORLD.audio.play("not-btn")
             }
         } }));
         WORLD.buttons.push(button({ pos: vec(730, 360), img: "buttons/arrow-left", size: vec(30, 30), action(){
             if(WORLD.currentLevel > 0){
                 WORLD.currentLevel--;
-                WORLD.audio["yes-btn"].load();
-                WORLD.audio["yes-btn"].play();
+                WORLD.audio.play("yes-btn")
             }
             else{
-                WORLD.audio["not-btn"].load();
-                WORLD.audio["not-btn"].play();
+                WORLD.audio.play("not-btn")
             }
         } }));
         //shop button

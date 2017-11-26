@@ -5,6 +5,7 @@ import createCanvas                                                       from "
 import createKeys                                                         from "/js/engine/promises/keys.js";
 import { loadSprites, loadAudio, loadJSON }                               from "/js/engine/promises/assets.js";
 import setupSwitchLevel                                                   from "/js/states/switchLevel.js";
+import { setupSettings }                                                  from "/js/states/settings.js";
 import setupHome                                                          from "/js/states/home.js";
 import setupShop, { emptyProgress, updateProgress }                       from "/js/states/shop.js";
 import levelTemplates                                                     from "/js/levelTemplates.js";
@@ -19,16 +20,18 @@ import createLevel, { strEach, set }                                      from "
 document.getElementById("no-modules").style.display = "none";
 
 const buttonImgs = [
-    "buttons/arrow-right",
-    "buttons/arrow-left",
-    "buttons/play",
-    "buttons/exit",
-    "buttons/shop",
-    "buttons/convert",
-    "buttons/empty",
-    "buttons/empty_x120",
-    "buttons/empty_x200",
-];
+    "arrow-right",
+    "arrow-left",
+    "play",
+    "exit",
+    "shop",
+    "convert",
+    "empty",
+    "empty_x120",
+    "empty_x200",
+    "settings",
+    
+].map(x => "buttons/" + x);
 
 Promise.all([
     createCanvas(900, 600),
@@ -107,6 +110,7 @@ Promise.all([
         states: {
             setupHome,
             setupShop,
+            setupSettings,
             setupSwitchLevel,
         },
         levelTemplates,
@@ -116,13 +120,14 @@ Promise.all([
             localStorage.progress = JSON.stringify(WORLD.progress);
         }
     };
+    
     //handle progress
     if(localStorage.progress === undefined){
         localStorage.clear();
         localStorage.progress = JSON.stringify(emptyProgress());
     }
     WORLD.progress = JSON.parse(localStorage.progress);
-    WORLD.currentLevel = localStorage.furtestLevel;
+    WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);
     updateProgress(WORLD.progress);
 
     if(localStorage.furtestLevel === undefined) localStorage.furtestLevel = 0;
@@ -130,9 +135,11 @@ Promise.all([
     WORLD.drawAll = makeDrawAll(ctx, WORLD);
     WORLD.updateAll = makeUpdateAll(WORLD);
 
-    audio.main.volume = 0.5;
-    audio.main.loop = true;
-    audio.main.play();
+    //fix some audio
+    audio.sounds["door-btn"].originVolume = 0.5;
+    audio.sounds.main.originVolume = 0.5;
+    audio.loop("main");
+    audio.setVolume();
 
     WORLD.states.setup = () => {
 
@@ -151,6 +158,15 @@ Promise.all([
         WORLD.deathCounter.deaths = WORLD.deaths;
         WORLD.clouds = getClouds();
         WORLD.rain = getRain();
+        //add settings button
+        WORLD.buttons.push(button({
+            pos: vec(WORLD.width-25, 5),
+            size: vec(20, 20),
+            img: "buttons/settings",
+            action(){
+                WORLD.state = WORLD.states.setupSettings;
+            }
+        }));
         
         WORLD.startingAlpha = 1;
         WORLD.nextLevelCounter = undefined;
@@ -171,7 +187,7 @@ Promise.all([
         && (keys.A.down && keys.D.down
         || !keys.A.down && !keys.D.down)) WORLD.player.dir = 0;
         if(keys.w.pressed || keys.W.pressed){
-            WORLD.player.jump(WORLD.audio.jump, WORLD);
+            WORLD.player.jump(WORLD);
         }else if((keys.w.upped || keys.W.upped) && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
     }
     

@@ -56,11 +56,9 @@ const setupShop = (WORLD) => {
                     progress.items.locked.splice(progress.items.locked.indexOf(item), 1);
                     progress.items.unlocked.push(item.name);
                     WORLD.buttons.splice(WORLD.buttons.indexOf(btn), 1);
-                    WORLD.audio["yes-btn"].load();
-                    WORLD.audio["yes-btn"].play();
+                    WORLD.audio.play("yes-btn")
                 }else{
-                    WORLD.audio["not-btn"].load();
-                    WORLD.audio["not-btn"].play();
+                    WORLD.audio.play("not-btn")
                 }
             }
         });

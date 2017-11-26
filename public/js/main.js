@@ -61,6 +61,7 @@ Promise.all([
         "box-particle",
         "cloud",
         "helper",
+        "converter",
         "helper-big",
         "point",
         "grass",
@@ -88,6 +89,7 @@ Promise.all([
     loadJSON(
         "playerFrames",
         "helperFrames",
+        "converterFrames",
     ),
 ]).then(([ { c, ctx, scale, pointer }, keys, sprites, audio, resJSON  ]) => {
 
@@ -122,15 +124,15 @@ Promise.all([
     };
     
     //handle progress
-    if(localStorage.progress === undefined){
+    if(localStorage.progress === undefined || localStorage.furtestLevel === undefined){
         localStorage.clear();
         localStorage.progress = JSON.stringify(emptyProgress());
+        localStorage.furtestLevel = 0;
     }
     WORLD.progress = JSON.parse(localStorage.progress);
-    WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);
+    WORLD.currentLevel = 9//JSON.parse(localStorage.furtestLevel);
     updateProgress(WORLD.progress);
 
-    if(localStorage.furtestLevel === undefined) localStorage.furtestLevel = 0;
 
     WORLD.drawAll = makeDrawAll(ctx, WORLD);
     WORLD.updateAll = makeUpdateAll(WORLD);

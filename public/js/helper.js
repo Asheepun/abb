@@ -38,26 +38,32 @@ const helper = (pos = vec(-30, -30), text = "Hello!") => {
 
 export const converter = (pos) => {
     const that = helper(pos);
+    that.img = "converter";
+    that.size = vec(30, 60);
+    that.fixCenter();
+    addAnimate(that, {
+        delay: 3,
+        handleFrames: ({ JSON }) => JSON.converterFrames[that.state][that.dir],
+    });
 
     that.addConverterButton = (WORLD) => {
-        if(that.state === "talking" && WORLD.buttons.length === 0){
-            WORLD.buttons.push(button({
-                pos: vec(that.pos.x - 25, that.pos.y - 45),
-                size: vec(80, 20),
-                img: "buttons/convert",
-                action(){
-                    if(WORLD.progress.completedLevels > 0){
-                        WORLD.progress.completedLevels--;
-                        WORLD.progress.coins++;
-                        WORLD.audio["yes-btn"].load();
-                        WORLD.audio["yes-btn"].play();
-                    }else{
-                        WORLD.audio["not-btn"].load();
-                        WORLD.audio["not-btn"].play();
-                    }
+        const btn = button({
+            pos: vec(that.pos.x - 25, that.pos.y - 45),
+            size: vec(80, 20),
+            img: "buttons/convert",
+            action(){
+                if(WORLD.progress.completedLevels > 0){
+                    WORLD.progress.completedLevels--;
+                    WORLD.progress.coins++;
+                    WORLD.audio.play("yes-btn");
+                }else{
+                    WORLD.audio.play("not-btn");
                 }
-            }));
-        }else if(that.state !== "talking" && WORLD.buttons.length === 1) WORLD.buttons.splice(0, 1);
+            } 
+        });
+        if(that.state === "talking" && WORLD.buttons.length === 1){
+            WORLD.buttons.push(btn);
+        }else if(that.state !== "talking" && WORLD.buttons.length === 2) WORLD.buttons.splice(1, 1);
     }
 
     that.drawText = (ctx, { progress }) => {

@@ -30,6 +30,7 @@ const buttonImgs = [
     "empty_x120",
     "empty_x200",
     "settings",
+    "audio",
     
 ].map(x => "buttons/" + x);
 
@@ -167,6 +168,15 @@ Promise.all([
             img: "buttons/settings",
             action(){
                 WORLD.state = WORLD.states.setupSettings;
+            }
+        }));
+        WORLD.buttons.push(button({
+            pos: vec(WORLD.width-50, 5),
+            size: vec(20, 20),
+            img: "buttons/audio",
+            action(){
+                if(WORLD.audio.sounds["main"].volume > 0) WORLD.audio.setVolume(0);
+                else WORLD.audio.setVolume();
             }
         }));
         

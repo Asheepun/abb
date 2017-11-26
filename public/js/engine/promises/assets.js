@@ -29,9 +29,8 @@ export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject
         audio.play(url);
     }
     audio.setVolume = (volume) => {
-        audio.volume = volume !== undefined ? volume: audio.volume;
         for(let key in audio.sounds){
-            audio.sounds[key].volume = audio.sounds[key].originVolume * (audio.volume/100);
+            audio.sounds[key].volume = audio.sounds[key].originVolume * (volume !== undefined ? volume : audio.volume/100);
         }
     }
     resolve(audio);

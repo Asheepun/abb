@@ -61,9 +61,9 @@ export const converter = (pos) => {
                 }
             } 
         });
-        if(that.state === "talking" && WORLD.buttons.length === 1){
+        if(that.state === "talking" && WORLD.buttons.length === 2){
             WORLD.buttons.push(btn);
-        }else if(that.state !== "talking" && WORLD.buttons.length === 2) WORLD.buttons.splice(1, 1);
+        }else if(that.state !== "talking" && WORLD.buttons.length === 3) WORLD.buttons.splice(2, 1);
     }
 
     that.drawText = (ctx, { progress }) => {

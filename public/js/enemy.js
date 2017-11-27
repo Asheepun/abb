@@ -149,23 +149,25 @@ export const follower = (pos) => {
 
     return that;
 }
-/*
+
 export const ghost = (pos) => {
-    const ghost = jumper(pos);
-    ghost.alpha = 0.8;
-    ghost.gravity = 0;
-    ghost.dir.x = 0;
-    ghost.velocity.y = 0.2;
-    ghost.oubArea = [0, 0, 900, 600];
+    const that = giantJumper(pos);
+    that.alpha = 0.8;
+    that.gravity = 0;
+    that.dir = 0;
+    that.velocity.y = 0.2;
+    that.oubArea = [0, 0, 900, 600];
+    that.lines = ["BoOOoO!", "Jumpscare!!!"];
 
-    ghost.handleOubY = () => {
-        ghost.velocity.y *= -1;
+    that.handleOubY = () => {
+        that.velocity.y *= -1;
     }
-    ghost.handleColissionY = undefined;
-    ghost.handleColissionX = undefined;
-    ghost.handlePlatCol = undefined;
+    that.handleColissionY = undefined;
+    that.handleColissionX = undefined;
+    that.handleOubX = undefined;
+    that.handlePlatCol = undefined;
 
-    return ghost;
+    return that;
 }
 
 export const giantGhost = (pos) => {
@@ -174,6 +176,6 @@ export const giantGhost = (pos) => {
     jg.velocity.y = 0.2;
 
     return jg;
-}*/
+}
 
 export default enemy;

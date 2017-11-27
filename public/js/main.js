@@ -49,6 +49,7 @@ Promise.all([
         "D",
         "h",
         "H",
+        " "
     ),
     loadSprites(
         "background-normal",
@@ -122,7 +123,7 @@ Promise.all([
             cloudsOn: true,
         },
         levelTemplates,
-        currentLevel: 0,
+        currentLevel: 19,
         weather: "normal",
         saveProgress(){
             localStorage.progress = JSON.stringify(WORLD.progress);
@@ -204,9 +205,9 @@ Promise.all([
         || !keys.a.down && !keys.d.down)
         && (keys.A.down && keys.D.down
         || !keys.A.down && !keys.D.down)) WORLD.player.dir = 0;
-        if(keys.w.pressed || keys.W.pressed){
+        if(keys.w.pressed || keys.W.pressed || keys[" "].pressed){
             WORLD.player.jump(WORLD);
-        }else if((keys.w.upped || keys.W.upped) && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
+        }else if((keys.w.upped || keys.W.upped || keys[" "].upped) && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
     }
     
     WORLD.states.game = () => {

@@ -1,11 +1,11 @@
-import vec, { add, half, mul, div, sub, pipe, align }      from "/js/engine/factories/vector.js";
-import entity                                              from "/js/engine/factories/entity.js";
-import { bouncer, jumper, spawner, giantJumper, follower } from "/js/enemy.js";
-import { obstacle,  box, grass }                           from "/js/obstacles.js";
-import { door, key }                                       from "/js/door.js";
-import helper, { converter }                               from "/js/helper.js";
-import player                                              from "/js/player.js";
-import { point, movingPoint }                              from "/js/point.js";
+import vec, { add, half, mul, div, sub, pipe, align }             from "/js/engine/factories/vector.js";
+import entity                                                     from "/js/engine/factories/entity.js";
+import { bouncer, jumper, spawner, giantJumper, follower, ghost } from "/js/enemy.js";
+import { obstacle,  box, grass }                                  from "/js/obstacles.js";
+import { door, key }                                              from "/js/door.js";
+import helper, { converter }                                      from "/js/helper.js";
+import player                                                     from "/js/player.js";
+import { point, movingPoint }                                     from "/js/point.js";
 
 const createLevel = ({ map, helps }, offsetX = 0) => {
     const that = {
@@ -43,33 +43,17 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "3") that.enemies.push(spawner(pos));
         if(tile === "4") that.enemies.push(giantJumper(pos));
         if(tile === "5") that.enemies.push(follower(pos));
+        if(tile === "6") that.enemies.push(ghost(pos));
         //handle grass
         if(y !== map.length-1
         && map[y+1][x] === "#" 
         && tile !== "#") that.grass.push(grass(pos));
         //handle walls
-        if(tile === ","
-        //handle entities
-        || ((tile === "§"
-        || tile === "@"
-        || tile === "H"
-        || tile === "P"
-        || tile === "p"
-        || tile === "$"
-        || tile === "1"
-        || tile === "2"
-        || tile === "3"
-        || tile === "4"
-        || tile === "5"
-        || tile === "6"
-        || tile === "|"
-        || tile === "I"
-        || tile === "*"
-        || tile === "o") 
-        && (y !== map.length-1
-        && map[y+1][x] === ","
-        || y !== 0
-        && map[y-1][x] === ","))) that.walls.push(entity({pos, img: "wall"}));
+        if((tile === ","
+        || (y !== 0 && map[y-1][x] === ",")
+        || (y !== map.length-1 && map[y+1][x] === ","))
+        && tile !== "#"
+        && tile !== ".") that.walls.push(entity({pos: pos.copy(), img: "wall"}));
     }));
     
     return that;

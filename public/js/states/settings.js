@@ -32,7 +32,23 @@ export const setupSettings = (WORLD) => {
             WORLD.audio.play("yes-btn")
         }else WORLD.audio.play("not-btn")
     } }));
-
+    //graphics buttons
+    //clouds
+    const cloudBtn = button({
+        pos: vec(500, 250),
+        size: vec(30, 30),
+        img: WORLD.settings.cloudsOn ? "buttons/on" : "buttons/off",
+    });
+    cloudBtn.action = () => {
+        if(cloudBtn.img === "buttons/off"){
+            cloudBtn.img = "buttons/on";
+            WORLD.settings.cloudsOn = true;
+        }else{
+            cloudBtn.img = "buttons/off";
+            WORLD.settings.cloudsOn = false;
+        }
+    }
+    WORLD.buttons.push(cloudBtn);
 
     WORLD.state = settings;
 }
@@ -60,6 +76,8 @@ const settings = ({ c, width, height, sprites, buttons, drawAll, updateAll, audi
     ctx.fillStyle = "#594228";
     ctx.font = "18px game";
     ctx.drawImage(sprites["buttons/empty_x120"], 380, 190, 120, 30);
+    ctx.drawImage(sprites["buttons/empty_x120"], 350, 250, 120, 30);
     ctx.fillText("Volume " + audio.volume + "%", 384, 213);
+    ctx.fillText("Clouds", 354, 273);
     ctx.restore();
 }

@@ -20,7 +20,7 @@ import getClouds                     from "/js/clouds.js";
             newLevel.walls.forEach(w => WORLD.walls.push(w));
             newLevel.grass.forEach(p => WORLD.grass.push(p));
             newLevel.points.forEach(p => WORLD.points.push(p));
-            getClouds(15, 900).forEach(c => WORLD.clouds.push(c));
+            if(WORLD.settings.cloudsOn) getClouds(15, 900).forEach(c => WORLD.clouds.push(c));
             WORLD.newSpawn = newLevel.player.pos;
             
             WORLD.state = switchLevel;

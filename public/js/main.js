@@ -31,6 +31,8 @@ const buttonImgs = [
     "empty_x200",
     "settings",
     "audio",
+    "on",
+    "off",
     
 ].map(x => "buttons/" + x);
 
@@ -116,6 +118,9 @@ Promise.all([
             setupSettings,
             setupSwitchLevel,
         },
+        settings: {
+            cloudsOn: true,
+        },
         levelTemplates,
         currentLevel: 0,
         weather: "normal",
@@ -131,7 +136,6 @@ Promise.all([
         localStorage.furtestLevel = 0;
     }
     WORLD.progress = JSON.parse(localStorage.progress);
-    WORLD.currentLevel = 9//JSON.parse(localStorage.furtestLevel);
     updateProgress(WORLD.progress);
 
 
@@ -179,6 +183,8 @@ Promise.all([
                 else WORLD.audio.setVolume();
             }
         }));
+        //handle graphics settings
+        if(!WORLD.settings.cloudsOn) WORLD.clouds = [];
         
         WORLD.startingAlpha = 1;
         WORLD.nextLevelCounter = undefined;

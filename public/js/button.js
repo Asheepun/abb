@@ -7,6 +7,7 @@ const button = ({ pos, img, size, action = () => {} }) => {
         img,
         size,
     });
+    that.action = action;
     that.down = false;
 
     that.checkPointer = (WORLD) => {
@@ -20,7 +21,7 @@ const button = ({ pos, img, size, action = () => {} }) => {
             }
             if(!WORLD.pointer.down && that.down){
                 that.down = false;
-                action(WORLD);
+                that.action(WORLD);
             }
         }else{
             that.alpha = 1;

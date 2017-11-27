@@ -82,7 +82,7 @@ const setupHome = (WORLD) => {
             ctx.font = "20px game";
             ctx.fillText("This game is work in progress.", 200, 150);
             ctx.fillText("More content is comming in the future!", 200, 180);
-            ctx.fillText("Programming by Gustav Almstrom.", 200, 210);
+            ctx.fillText("Programming and art by Gustav Almstrom.", 200, 210);
             ctx.fillText('Music by "The soft toffts".', 200, 240);
         }
         WORLD.drawAll(

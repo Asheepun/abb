@@ -7,7 +7,7 @@ import addMove                                        from "/js/move.js";
 export const obstacle = (pos, map, offset = 0) => {
     const that = entity({
         pos,
-        img: "obstacle",
+        img: "obstacles/900",
     });
     const mapPos = div(pos, 30);
     if(mapPos.y !== 0 && map[mapPos.y-1][mapPos.x-offset/30] !== "#"){

@@ -53,8 +53,43 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         || (y !== 0 && map[y-1][x] === ",")
         || (y !== map.length-1 && map[y+1][x] === ","))
         && tile !== "#"
-        && tile !== ".") that.walls.push(entity({pos: pos.copy(), img: "wall"}));
+        && tile !== ".") that.walls.push(entity({pos: pos.copy(), img: "walls/30"}));
     }));
+
+    //group obstacles
+    that.obstacles.filter(x => Math.floor(x.pos.y/30) !== 0 && map[Math.floor(x.pos.y/30)-1][Math.floor(x.pos.x/30)] === "#")
+    .forEach(o1 => {
+        const arr = that.obstacles.filter(o2 => {
+            if(o1.pos.y === o2.pos.y
+            && o1 !== o2 
+            && o1.pos.x + o1.size.x === o2.pos.x
+            && (Math.floor(o2.pos.y/30) !== 0 && map[Math.floor(o2.pos.y/30)-1][Math.floor(o2.pos.x/30)] === "#")){
+                o1.size.x += o2.size.x;
+                o1.fixCenter();
+                o1.fixImgPos();
+                o1.img = "obstacles/" + o1.size.x;
+                return true;
+            }
+            return false;
+        });
+        arr.forEach(x => that.obstacles.splice(that.obstacles.indexOf(x), 1));
+    });
+    //group walls
+    that.walls.forEach(w1 => {
+        const arr = that.walls.filter(w2 => {
+            if(w1.pos.y === w2.pos.y
+            && w1 !== w2 
+            && w1.pos.x + w1.size.x === w2.pos.x){
+                w1.size.x += w2.size.x;
+                w1.fixCenter();
+                w1.fixImgPos();
+                w1.img = "walls/" + w1.size.x;
+                return true;
+            }
+            return false;
+        });
+        arr.forEach(x => that.walls.splice(that.walls.indexOf(x), 1));
+    });
     
     return that;
 };

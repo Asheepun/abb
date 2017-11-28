@@ -36,6 +36,16 @@ const buttonImgs = [
     
 ].map(x => "buttons/" + x);
 
+const obstacleImgs = [];
+for(let i = 0; i < 30; i++){
+    obstacleImgs.push("obstacles/" + (30 + i*30));
+}
+
+const wallImgs = [];
+for(let i = 0; i < 30; i++){
+    wallImgs.push("walls/" + (30 + i*30));
+}
+
 Promise.all([
     createCanvas(900, 600),
     createKeys(
@@ -60,7 +70,6 @@ Promise.all([
         "player-jump-purple",
         "obstacle",
         "obstacle-grass",
-        "wall",
         "box",
         "box-particle",
         "cloud",
@@ -78,6 +87,8 @@ Promise.all([
         "door-button",
         "rainbow",
         ...buttonImgs,
+        ...obstacleImgs,
+        ...wallImgs,
     ),
     loadAudio(
         0.3,
@@ -123,7 +134,7 @@ Promise.all([
             cloudsOn: true,
         },
         levelTemplates,
-        currentLevel: 19,
+        currentLevel: 0,
         weather: "normal",
         saveProgress(){
             localStorage.progress = JSON.stringify(WORLD.progress);
@@ -193,7 +204,6 @@ Promise.all([
         WORLD.offset = vec(0, 0);
 
         WORLD.state = WORLD.states.game;
-
     }
 
     WORLD.state = WORLD.states.setup;

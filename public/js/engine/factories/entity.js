@@ -40,6 +40,7 @@ const entity = ({ pos = vec(0, 0), size = vec(30, 30), img = "obstacle", alpha =
     }
 
     that.fixCenter = () => that.center = vec.add(that.pos, vec.half(that.size));
+    that.fixImgPos = () => that.imgPos = [0, 0, that.size.x, that.size.y];
 
     that.addUpdateActions = (...actions) => {
         actions.forEach(action => that.updateActions.push(action));

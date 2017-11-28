@@ -94,9 +94,9 @@ const shop = ({ c, width, height, buttons, drawAll, updateAll, progress, sprites
         for(let j = 0; j < Math.floor((height-200)/30); j++){
             if(i === 0 || j === 0 || i === Math.floor(((width-200)/30))-1 || j === Math.floor((height-200)/30)-1){
                 if(j === 0) ctx.drawImage(sprites["obstacle-grass"], 100 + i*30, 100 + j*30, 30, 30);
-                else ctx.drawImage(sprites.obstacle, 100 + i*30, 100 + j*30, 30, 30);
+                else ctx.drawImage(sprites["obstacles/30"], 100 + i*30, 100 + j*30, 30, 30);
             }
-            else ctx.drawImage(sprites.wall, 100 + i*30, 100 + j*30, 30, 30);
+            else ctx.drawImage(sprites["walls/30"], 100 + i*30, 100 + j*30, 30, 30);
         }
     }
     ctx.drawImage(sprites["buttons/empty_x120"], 130, 130, 120, 30);

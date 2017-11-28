@@ -61,14 +61,16 @@ const settings = ({ c, width, height, sprites, buttons, drawAll, updateAll, audi
     ctx.save();
     ctx.scale(c.scale, c.scale);
     //draw background
-    for(let i = 0; i < Math.floor((width-400)/30); i++){
-        ctx.drawImage(sprites.grass, 200 + i*30, 70, 30, 30);
-        for(let j = 0; j < Math.floor((height-200)/30); j++){
-            if(i === 0 || j === 0 || i === Math.floor(((width-400)/30))-1 || j === Math.floor((height-200)/30)-1){
-                if(j === 0) ctx.drawImage(sprites["obstacle-grass"], 200 + i*30, 100 + j*30, 30, 30);
-                else ctx.drawImage(sprites.obstacle, 200 + i*30, 100 + j*30, 30, 30);
+    for(let i = 0; i < Math.floor((height-200)/30); i++){
+        for(let j = 0; j < Math.floor((width-400)/30); j++){
+            ctx.drawImage(sprites.grass, 200 + j*30, 70, 30, 30);
+            if(i === 0 || j === 0 || i === Math.floor(((height-200)/30))-1 || j === Math.floor((width-400)/30)-1){
+                if(i === 0) ctx.drawImage(sprites["obstacle-grass"], 200 + j*30, 100 + i*30, 30, 30);
             }
-            else ctx.drawImage(sprites.wall, 200 + i*30, 100 + j*30, 30, 30);
+        }
+        if(i !== 0){
+            ctx.drawImage(sprites["obstacles/480"], 200, 100 + i*30, 480, 30);
+            if(i !== Math.floor((height-200)/30)-1) ctx.drawImage(sprites["walls/420"], 230, 100 + i*30, 420, 30);
         }
     }
     drawAll(buttons);

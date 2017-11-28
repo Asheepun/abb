@@ -157,7 +157,7 @@ export const ghost = (pos) => {
     that.dir = 0;
     that.velocity.y = 0.2;
     that.oubArea = [0, 0, 900, 600];
-    that.lines = ["BoOOoO!", "Jumpscare!!!"];
+    that.lines = ["BoOOoO!", "Jumpscare!!!", "RAAAAAHH!", "You live and you learn."];
 
     that.handleOubY = () => {
         that.velocity.y *= -1;

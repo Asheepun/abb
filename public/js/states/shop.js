@@ -11,6 +11,10 @@ export const emptyProgress = () => ({
                 price: 6,
             },
             {
+                name: "Box of gold",
+                price: 6,
+            },
+            {
                 name: "Rainbow trail",
                 price: 8,
             },
@@ -93,7 +97,7 @@ const shop = ({ c, width, height, buttons, drawAll, updateAll, progress, sprites
         ctx.drawImage(sprites.grass, 100 + i*30, 70, 30, 30);
         for(let j = 0; j < Math.floor((height-200)/30); j++){
             if(i === 0 || j === 0 || i === Math.floor(((width-200)/30))-1 || j === Math.floor((height-200)/30)-1){
-                if(j === 0) ctx.drawImage(sprites["obstacle-grass"], 100 + i*30, 100 + j*30, 30, 30);
+                if(j === 0) ctx.drawImage(sprites["grass/30"], 100 + i*30, 100 + j*30, 30, 30);
                 else ctx.drawImage(sprites["obstacles/30"], 100 + i*30, 100 + j*30, 30, 30);
             }
             else ctx.drawImage(sprites["walls/30"], 100 + i*30, 100 + j*30, 30, 30);

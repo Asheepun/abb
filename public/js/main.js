@@ -46,6 +46,11 @@ for(let i = 0; i < 30; i++){
     wallImgs.push("walls/" + (30 + i*30));
 }
 
+const obstacleGrassImgs = [];
+for(let i = 0; i < 30; i++){
+    obstacleGrassImgs.push("grass/" + (30 + i*30));
+}
+
 Promise.all([
     createCanvas(900, 600),
     createKeys(
@@ -72,6 +77,8 @@ Promise.all([
         "obstacle-grass",
         "box",
         "box-particle",
+        "box-of-gold",
+        "box-of-gold-particle",
         "cloud",
         "helper",
         "converter",
@@ -86,9 +93,11 @@ Promise.all([
         "door",
         "door-button",
         "rainbow",
+        "buttons/audio-off",
         ...buttonImgs,
         ...obstacleImgs,
         ...wallImgs,
+        ...obstacleGrassImgs,
     ),
     loadAudio(
         0.3,
@@ -186,15 +195,22 @@ Promise.all([
                 WORLD.state = WORLD.states.setupSettings;
             }
         }));
-        WORLD.buttons.push(button({
+        const audioBtn = button({
             pos: vec(WORLD.width-50, 5),
             size: vec(20, 20),
             img: "buttons/audio",
-            action(){
-                if(WORLD.audio.sounds["main"].volume > 0) WORLD.audio.setVolume(0);
-                else WORLD.audio.setVolume();
+        });
+        audioBtn.action = () => {
+            if(WORLD.audio.sounds["main"].volume > 0){
+                WORLD.audio.setVolume(0);
+                audioBtn.img = "buttons/audio-off";
             }
-        }));
+            else{
+                WORLD.audio.setVolume();
+                audioBtn.img = "buttons/audio";
+            }
+        }
+        WORLD.buttons.push(audioBtn);
         //handle graphics settings
         if(!WORLD.settings.cloudsOn) WORLD.clouds = [];
         

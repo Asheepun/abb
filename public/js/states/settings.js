@@ -65,7 +65,7 @@ const settings = ({ c, width, height, sprites, buttons, drawAll, updateAll, audi
         for(let j = 0; j < Math.floor((width-400)/30); j++){
             ctx.drawImage(sprites.grass, 200 + j*30, 70, 30, 30);
             if(i === 0 || j === 0 || i === Math.floor(((height-200)/30))-1 || j === Math.floor((width-400)/30)-1){
-                if(i === 0) ctx.drawImage(sprites["obstacle-grass"], 200 + j*30, 100 + i*30, 30, 30);
+                if(i === 0) ctx.drawImage(sprites["grass/30"], 200 + j*30, 100 + i*30, 30, 30);
             }
         }
         if(i !== 0){

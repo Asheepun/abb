@@ -9,9 +9,9 @@ export const obstacle = (pos, map, offset = 0) => {
         pos,
         img: "obstacles/900",
     });
-    const mapPos = div(pos, 30);
-    if(mapPos.y !== 0 && map[mapPos.y-1][mapPos.x-offset/30] !== "#"){
-        that.img = "obstacle-grass";
+    that.mapPos = div(pos, 30);
+    if(that.mapPos.y !== 0 && map[that.mapPos.y-1][that.mapPos.x-offset/30] !== "#"){
+        that.img = "grass/30";
     }
 
     return that;
@@ -22,13 +22,14 @@ export const box = (pos) => {
         pos, 
         img: "box",
     });
-    that.update = ({ pointer, obstacles, walls, grass }) => {
+    that.update = ({ pointer, obstacles, walls, grass, progress }) => {
+        if(progress.items.unlocked.find(x => x === "Box of gold")) that.img = "box-of-gold";
         if(pointer.down && !checkHover(pointer.pos, obstacles)){
             that.pos.x = align(pointer.pos.x, 30);
             that.pos.y = align(pointer.pos.y, 30);
             if(checkHover(pointer.pos, walls)){
                 that.pos.set(-30, -30);
-                if(pointer.pressed) confettiParticleEffect(grass, pointer.pos);
+                if(pointer.pressed) confettiParticleEffect(grass, pointer.pos, 10, 10, 15, that.img + "-particle");
             }
             that.fixCenter();
         }

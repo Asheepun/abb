@@ -8,3 +8,7 @@
     font-family: "game";
     src: url("/game.ttf");
 }
+
+p{
+    font-size:20px;
+}

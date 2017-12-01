@@ -17,7 +17,6 @@ import button                                                             from "
 import createLevel, { strEach, set }                                      from "/js/level.js";
 
 //error message
-document.getElementById("no-modules").style.display = "none";
 
 const buttonImgs = [
     "arrow-right",
@@ -31,9 +30,9 @@ const buttonImgs = [
     "empty_x200",
     "settings",
     "audio",
+    "audio-off",
     "on",
     "off",
-    
 ].map(x => "buttons/" + x);
 
 const obstacleImgs = [];
@@ -93,7 +92,7 @@ Promise.all([
         "door",
         "door-button",
         "rainbow",
-        "buttons/audio-off",
+        "water",
         ...buttonImgs,
         ...obstacleImgs,
         ...wallImgs,
@@ -183,6 +182,7 @@ Promise.all([
         WORLD.points = newLevel.points;
         WORLD.grass = newLevel.grass;
         WORLD.deathCounter = newLevel.deathCounter;
+        WORLD.water = newLevel.water;
         WORLD.deathCounter.deaths = WORLD.deaths;
         WORLD.clouds = getClouds();
         WORLD.rain = getRain();
@@ -242,6 +242,7 @@ Promise.all([
 
         //update logic
         WORLD.updateAll(
+            WORLD.water,
             WORLD.box,
             WORLD.enemies,
             WORLD.player,
@@ -303,6 +304,7 @@ Promise.all([
             WORLD.player,
             WORLD.enemies,
             WORLD.grass,
+            WORLD.water,
             WORLD.clouds,
         );
         //draw nextLevelCounter
@@ -356,4 +358,5 @@ Promise.all([
     }
     
     loop();
+    document.getElementById("loading").style.display = "none";
 });

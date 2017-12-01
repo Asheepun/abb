@@ -2,7 +2,7 @@ import vec                                  from "/js/engine/factories/vector.js
 import entity                               from "/js/engine/factories/entity.js";
 import { checkCol, checkOub, checkPlatCol } from "/js/engine/functions/colission.js";
 
-const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 900, 600] }) => {
+const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 900, 600], moveOnGround = false }) => {
     that.dir = dir;
     that.speed = speed;
     that.gravity = gravity;
@@ -10,6 +10,7 @@ const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 
     that.velocity = vec(0, 0);
     that.grounded = false;
     that.maxFallSpeed = 0.4;
+    that.moveOnGround = moveOnGround;
     let col, oub, platCol;
 
     that.move = ({ timeScl, obstacles, box, grass }) => {
@@ -35,7 +36,7 @@ const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 
         if(!platCol && !col) that.grounded = false;
 
         //moveX
-        that.pos.x += that.velocity.x * timeScl;
+        if(!(that.moveOnGround && !that.grounded))that.pos.x += that.velocity.x * timeScl;
         col = checkCol(that, obstacles);
         oub = checkOub(that, ...that.oubArea);
         if(col && that.handleColissionX) that.handleColissionX(col);

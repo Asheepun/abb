@@ -5,6 +5,7 @@ import { obstacle,  box, grass }                                  from "/js/obst
 import { door, key }                                              from "/js/door.js";
 import helper, { converter }                                      from "/js/helper.js";
 import player                                                     from "/js/player.js";
+import waterStream                                                from "/js/water.js";
 import { point, movingPoint }                                     from "/js/point.js";
 
 const createLevel = ({ map, helps }, offsetX = 0) => {
@@ -15,6 +16,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         points: set(),
         enemies: set(),
         helpers: set(),
+        water: set(),
         box: box(vec(-30, -30)),
         player: undefined,
         deathCounter: undefined,
@@ -32,6 +34,8 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "*") that.helpers.push(key(pos, 1));
         if(tile === "I") that.obstacles.push(door(pos, 2));
         if(tile === "o") that.helpers.push(key(pos, 2));
+        if(tile === "<") that.water.push(waterStream(pos, -1));
+        if(tile === ">") that.water.push(waterStream(pos, 1));
         if(tile === "H"){
             that.helpers.push(helper(pos, helps[help]));
             help ++;
@@ -149,6 +153,7 @@ export const set = () => {
             if(set[i].draw) set[i].draw(ctx);
         }
     }
+    set.remove = (x) => set.splice(set.indexOf(x), 1);
     return set;
 }
 

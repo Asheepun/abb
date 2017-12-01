@@ -3,6 +3,7 @@ import entity                                         from "/js/engine/factories
 import addAnimate                                     from "/js/engine/functions/animate.js";
 import { checkCol, checkProx }                        from "/js/engine/functions/colission.js";
 import { addHandleCol }                               from "/js/handleCol.js";
+import addHandleWater                                 from "/js/handleWater.js";
 import addMove                                        from "/js/move.js";
 
 const player = (pos) => {
@@ -15,9 +16,11 @@ const player = (pos) => {
     that.imgDir = "right";
     that.grounded = false;
     that.dead = false;
+    that.jumpSpeed = 0.8;
     
     addMove(that, {oubArea: [0, 0, 900, 700]});
     addHandleCol(that);
+    addHandleWater(that, {});
     addAnimate(that, {
         delay: 4,
         handleFrames: ({ JSON, progress }) => {
@@ -38,7 +41,7 @@ const player = (pos) => {
     that.jump = (WORLD) => {
         if(that.grounded){ 
             WORLD.audio.play("jump");
-            that.velocity.y = -0.8
+            that.velocity.y = -that.jumpSpeed;
         }
     }
     that.handleOubX = () => {
@@ -62,6 +65,7 @@ const player = (pos) => {
             rainbowParticleEffect(helpers, that.center.copy(), mul(that.velocity, 0.1));
         }
     }
+
     that.addUpdateActions("move", "checkHit", "rainbow", "animate");
 
     return that;

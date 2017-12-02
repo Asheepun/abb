@@ -31,7 +31,10 @@ export const addHandleColBounce = (that) => {
         if(that.velocity.y > 0){
             that.grounded = true;
             that.pos.y = object.pos.y - that.size.y;
-        }else that.pos.y = object.pos.y + object.size.y;
+        }else{
+            that.grounded = false;
+            that.pos.y = object.pos.y + object.size.y;
+        }
         that.velocity.y = 0;
     }
     that.handlePlatCol = (object) => {

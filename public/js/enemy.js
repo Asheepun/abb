@@ -33,6 +33,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         speed: 0.1,
         dir: -1,
         gravity: 0.01,
+        oubArea: [0, 0, 900, 600],
     });
     addHandleWater(that, {
         speed: 0.05,
@@ -43,10 +44,10 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         if(that.velocity.y < 0){
             that.pos.y = 0;
             that.velocity.y = 0;
-        }
+        }else that.dead = true;
     }
     that.jump = () => {
-        if(that.grounded){
+        if(that.grounded && that.velocity.y === 0){
             that.velocity.y = -that.jumpSpeed;
         }
     }
@@ -75,6 +76,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
             that.speed = 0;
             that.alpha -= 0.01;
             if(that.alpha < 0) enemies.remove(that);
+            console.log("CHECK")
         }
     }
 

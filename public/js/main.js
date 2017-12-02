@@ -6,6 +6,7 @@ import createKeys                                                         from "
 import { loadSprites, loadAudio, loadJSON }                               from "/js/engine/promises/assets.js";
 import setupSwitchLevel                                                   from "/js/states/switchLevel.js";
 import { setupSettings }                                                  from "/js/states/settings.js";
+import setupStartScreen                                                   from "/js/states/startScreen.js";
 import setupHome                                                          from "/js/states/home.js";
 import setupShop, { emptyProgress, updateProgress }                       from "/js/states/shop.js";
 import levelTemplates                                                     from "/js/levelTemplates.js";
@@ -137,6 +138,7 @@ Promise.all([
             setupShop,
             setupSettings,
             setupSwitchLevel,
+            setupStartScreen,
         },
         settings: {
             cloudsOn: true,
@@ -157,6 +159,7 @@ Promise.all([
     }
     WORLD.progress = JSON.parse(localStorage.progress);
     updateProgress(WORLD.progress);
+    WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);
 
 
     WORLD.drawAll = makeDrawAll(ctx, WORLD);
@@ -165,8 +168,9 @@ Promise.all([
     //fix some audio
     audio.sounds["door-btn"].originVolume = 0.5;
     audio.sounds.main.originVolume = 0.5;
-    audio.loop("main");
     audio.setVolume();
+    
+    WORLD.state = WORLD.states.setupStartScreen;
 
     WORLD.states.setup = () => {
 
@@ -221,8 +225,6 @@ Promise.all([
 
         WORLD.state = WORLD.states.game;
     }
-
-    WORLD.state = WORLD.states.setup;
 
     WORLD.controlPlayerKeys = () => {
         if(keys.a.down || keys.A.down) WORLD.player.dir = -1;

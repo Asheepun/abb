@@ -36,7 +36,7 @@ const waterPiece = (pos, dir) => {
         }
     }
 
-    that.addUpdateActions("move", "checkHit");
+    that.addUpdateActions("checkHit");
 
     return that;
 }

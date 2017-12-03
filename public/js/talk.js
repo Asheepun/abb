@@ -13,6 +13,7 @@ const addTalk = (that) => {
             ctx.fillText(that.text, that.textPos.x, that.textPos.y);
         }
     }
+    that.addDrawingActions("talk");
 }
 
 export default addTalk;

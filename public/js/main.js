@@ -226,6 +226,8 @@ Promise.all([
         WORLD.state = WORLD.states.game;
     }
 
+    //WORLD.state = WORLD.states.setup;
+
     WORLD.controlPlayerKeys = () => {
         if(keys.a.down || keys.A.down) WORLD.player.dir = -1;
         if(keys.d.down || keys.D.down) WORLD.player.dir = 1;

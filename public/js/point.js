@@ -1,6 +1,7 @@
 import entity                 from "/js/engine/factories/entity.js";
 import vec, { sub }           from "/js/engine/factories/vector.js";
 import { checkProx }          from "/js/engine/functions/colission.js";
+import addHandleWater         from "/js/handleWater.js";
 import addMove                from "/js/move.js";
 import addTalk                from "/js/talk.js";
 import { addHandleColBounce } from "/js/handleCol.js";
@@ -34,6 +35,8 @@ export const movingPoint = (pos) => {
     that.text = false;
     that.state = "silent";
     that.talked = 0;
+    that.jumpSpeed = 0.15;
+    that.dead = false;
 
 
     addMove(that, {
@@ -43,10 +46,15 @@ export const movingPoint = (pos) => {
     });
     addHandleColBounce(that);
     addTalk(that);
+    addHandleWater(that, {
+        speed: 0.02,
+        jumpSpeed: 0.07,
+        gravity: 0.004,
+    });
 
     that.jump = () => {
         if(that.grounded){
-            that.velocity.y = -0.15;
+            that.velocity.y = -that.jumpSpeed;
         }
     }
     //make talking engine
@@ -63,9 +71,16 @@ export const movingPoint = (pos) => {
             }
         }else that.state = "silent";
     }
+    that.checkDead = ({  }) => {
+        if(that.dead){
+            that.jumpSpeed = 0;
+            that.speed = 0;
+            that.alpha -= 0.01;
+            if(that.alpha <= 0.01) that.pos.y = 600;
+        }
+    }
 
-    that.addUpdateActions("move", "jump", "handleLines");
-    that.addDrawingActions("talk");
+    that.addUpdateActions("jump", "handleLines", "checkDead");
 
     return that;
 }

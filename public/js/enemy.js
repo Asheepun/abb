@@ -76,12 +76,10 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
             that.speed = 0;
             that.alpha -= 0.01;
             if(that.alpha < 0) enemies.remove(that);
-            console.log("CHECK")
         }
     }
 
-    that.addUpdateActions("move", "jump", "handleLines", "animate", "checkDead");
-    that.addDrawingActions("talk");
+    that.addUpdateActions( "jump", "handleLines", "animate", "checkDead");
 
     return that;
 }
@@ -118,7 +116,7 @@ export const giantJumper = (pos) => {
     that.size = vec(210, 210);
     that.jumpSpeed = 0.5;
     that.lines.push("I'll crush you!", "I am your biggest nightmare!");
-    addHandleWater(that, {});
+    addHandleWater(that, {speed: 0,});
 
     return that;
 }
@@ -130,16 +128,19 @@ export const spawner = (pos) => {
     that.alpha = 0;
     that.lines.push("I'm back!", "Think you can get rid of me?");
 
-    that.handleOubY = () => {
-        if(that.velocity.y > 0){
-            that.pos = vec(that.spawn.x, that.spawn.y);
-            that.alpha = 0;
-        }
-    }
     that.reSpawn = () => {
         if(that.alpha === 1) return;
         that.alpha += 0.05;
         if(that.alpha > 1) that.alpha = 1;
+    }
+    that.checkDead = () => {
+        if(that.dead){
+            that.pos = vec(that.spawn.x, that.spawn.y);
+            that.alpha = 0;
+            that.dir = -1;
+            that.dead = false;
+            that.waterCounter = 0;
+        }
     }
     that.addUpdateActions("reSpawn");
 

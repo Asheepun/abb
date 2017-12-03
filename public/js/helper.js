@@ -31,7 +31,6 @@ const helper = (pos = vec(-30, -30), text = "Hello!") => {
     }
 
     that.addUpdateActions("checkCol", "look", "animate");
-    that.addDrawingActions("talk");
 
     return that;
 }

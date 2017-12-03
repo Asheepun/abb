@@ -44,6 +44,8 @@ const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 
         
         that.fixCenter();
     }
+    
+    that.addUpdateActions("move");
 }
 
 const hitGroundParticleEffect = (array, object) => {
@@ -71,7 +73,7 @@ const hitGroundParticleEffect = (array, object) => {
         }
         that.remove = () => array.splice(array.indexOf(that), 1);
             
-        that.addUpdateActions("move", "fade");
+        that.addUpdateActions("fade");
         array.push(that);
     }
 }

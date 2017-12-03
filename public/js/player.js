@@ -66,7 +66,7 @@ const player = (pos) => {
         }
     }
 
-    that.addUpdateActions("move", "checkHit", "rainbow", "animate");
+    that.addUpdateActions("checkHit", "rainbow", "animate");
 
     return that;
 }
@@ -96,7 +96,7 @@ const rainbowParticleEffect = (array, pos, vel) => {
             }
         }
 
-        that.addUpdateActions("move", "fade");
+        that.addUpdateActions("fade");
 
         array.push(that);
     }

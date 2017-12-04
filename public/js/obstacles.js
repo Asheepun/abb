@@ -22,14 +22,14 @@ export const box = (pos) => {
         pos, 
         img: "box",
     });
-    that.update = ({ pointer, obstacles, walls, grass, progress }) => {
+    that.update = ({ pointer, obstacles, walls, foreground, progress }) => {
         if(progress.items.unlocked.find(x => x === "Box of gold")) that.img = "box-of-gold";
         if(pointer.down && !checkHover(pointer.pos, obstacles)){
             that.pos.x = align(pointer.pos.x, 30);
             that.pos.y = align(pointer.pos.y, 30);
             if(checkHover(pointer.pos, walls)){
                 that.pos.set(-30, -30);
-                if(pointer.pressed) confettiParticleEffect(grass, pointer.pos, 10, 10, 15, that.img + "-particle");
+                if(pointer.pressed) confettiParticleEffect(foreground, pointer.pos, 10, 10, 15, that.img + "-particle");
             }
             that.fixCenter();
         }
@@ -74,7 +74,7 @@ export const confettiParticleEffect = (array, pos, xSpread = 10, ySpread = 10, a
         }
         that.remove = () => array.splice(array.indexOf(that), 1);
             
-        that.addUpdateActions("move", "fade");
+        that.addUpdateActions("fade");
         array.push(that);
     }
 }

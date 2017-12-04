@@ -10,16 +10,17 @@ import { point, movingPoint }                                     from "/js/poin
 
 const createLevel = ({ map, helps }, offsetX = 0) => {
     const that = {
+        background: set(),
         walls: set(),
         obstacles: set(),
-        grass: set(),
-        points: set(),
-        enemies: set(),
-        helpers: set(),
-        water: set(),
         box: box(vec(-30, -30)),
-        player: undefined,
         deathCounter: undefined,
+        points: set(),
+        midground: set(),
+        player: undefined,
+        enemies: set(),
+        foreground: set(),
+        water: set(),
     }
     let help = 0;
     let pos;
@@ -28,16 +29,16 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "@") that.player = player(pos);
         if(tile === "§") that.deathCounter = deathCounter(pos);
         if(tile === "B") that.box = box(pos);
-        if(tile === "$") that.helpers.push(converter(pos));
+        if(tile === "$") that.midground.push(converter(pos));
         if(tile === "#") that.obstacles.push(obstacle(pos, map, offsetX));
         if(tile === "|") that.obstacles.push(door(pos, 1));
-        if(tile === "*") that.helpers.push(key(pos, 1));
+        if(tile === "*") that.midground.push(key(pos, 1));
         if(tile === "I") that.obstacles.push(door(pos, 2));
-        if(tile === "o") that.helpers.push(key(pos, 2));
+        if(tile === "o") that.midground.push(key(pos, 2));
         if(tile === "<") that.water.push(waterStream(pos, -1));
         if(tile === ">") that.water.push(waterStream(pos, 1));
         if(tile === "H"){
-            that.helpers.push(helper(pos, helps[help]));
+            that.midground.push(helper(pos, helps[help]));
             help ++;
         }
         if(tile === "P") that.points.push(point(vec(pos.x + 5, pos.y + 5)));
@@ -51,7 +52,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         //handle grass
         if(y !== map.length-1
         && map[y+1][x] === "#" 
-        && tile !== "#") that.grass.push(grass(pos));
+        && tile !== "#") that.foreground.push(grass(pos));
         //handle walls
         if((tile === ","
         || (y !== 0 && map[y-1][x] === ",")

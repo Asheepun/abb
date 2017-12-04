@@ -45,24 +45,33 @@ export const converter = (pos) => {
         handleFrames: ({ JSON }) => JSON.converterFrames[that.state][that.dir],
     });
 
-    that.addConverterButton = (WORLD) => {
-        const btn = button({
-            pos: vec(that.pos.x - 25, that.pos.y - 45),
-            size: vec(80, 20),
-            img: "buttons/convert",
-            action(){
-                if(WORLD.progress.completedLevels > 0){
-                    WORLD.progress.completedLevels--;
-                    WORLD.progress.coins++;
-                    WORLD.audio.play("yes-btn");
-                }else{
-                    WORLD.audio.play("not-btn");
-                }
-            } 
-        });
-        if(that.state === "talking" && WORLD.buttons.length === 2){
-            WORLD.buttons.push(btn);
-        }else if(that.state !== "talking" && WORLD.buttons.length === 3) WORLD.buttons.splice(2, 1);
+    const btn = button({
+        pos: vec(that.pos.x - 25, that.pos.y - 45),
+        size: vec(80, 20),
+        img: "buttons/convert",
+        action(){
+            if(WORLD.progress.completedLevels > 0){
+                WORLD.progress.completedLevels--;
+                WORLD.progress.coins++;
+                WORLD.audio.play("yes-btn");
+            }else{
+                WORLD.audio.play("not-btn");
+            }
+        } 
+    });
+    that.addConverterButton = ({ midground, progress, audio }) => {
+        btn.action = () => {
+            if(progress.completedLevels > 0){
+                progress.completedLevels--;
+                progress.coins++;
+                audio.play("yes-btn");
+            }else{
+                audio.play("not-btn");
+            }
+        } 
+        if(that.state === "talking" && midground.indexOf(btn) === -1){
+            midground.push(btn);
+        }else if(that.state !== "talking" && midground.indexOf(btn) !== -1) midground.splice(midground.indexOf(btn), 1);
     }
 
     that.drawText = (ctx, { progress }) => {

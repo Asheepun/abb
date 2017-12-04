@@ -13,7 +13,7 @@ const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 
     that.moveOnGround = moveOnGround;
     let col, oub, platCol;
 
-    that.move = ({ timeScl, obstacles, box, grass }) => {
+    that.move = ({ timeScl, obstacles, box, foreground }) => {
 
         that.velocity.x = that.dir * that.speed;
 
@@ -28,7 +28,7 @@ const addMove = (that, { speed = 0.2, gravity = 0.04, dir = 0, oubArea = [0, 0, 
         platCol = checkPlatCol(that, box);
         if(col && that.handleColissionY){
             if(!that.grounded && that.velocity.y > 0) 
-                hitGroundParticleEffect(grass, that);
+                hitGroundParticleEffect(foreground, that);
             that.handleColissionY(col);
         }
         if(platCol && that.handlePlatCol) that.handlePlatCol(box);

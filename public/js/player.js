@@ -60,9 +60,9 @@ const player = (pos) => {
             }
         }
     }
-    that.rainbow = ({ progress, grass, helpers }) => {
+    that.rainbow = ({ progress, midground, helpers }) => {
         if(progress.items.unlocked.find(x => x === "Rainbow trail") && (that.velocity.x !== 0 || that.velocity.y !== 0)){
-            rainbowParticleEffect(helpers, that.center.copy(), mul(that.velocity, 0.1));
+            rainbowParticleEffect(midground, that.center.copy(), mul(that.velocity, 0.1));
         }
     }
 

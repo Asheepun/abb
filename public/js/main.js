@@ -160,6 +160,7 @@ Promise.all([
     WORLD.progress = JSON.parse(localStorage.progress);
     updateProgress(WORLD.progress);
     WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);
+    WORLD.progress.items.unlocked.push("Rainbow trail");
 
 
     WORLD.drawAll = makeDrawAll(ctx, WORLD);
@@ -171,27 +172,27 @@ Promise.all([
     audio.setVolume();
     
     WORLD.state = WORLD.states.setupStartScreen;
-
+WORLD.currentLevel = 9;
     WORLD.states.setup = () => {
 
         //initialize level
-        WORLD.buttons = [];
         const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel]);
-        WORLD.player = newLevel.player;
-        WORLD.box = newLevel.box;
-        WORLD.obstacles = newLevel.obstacles;
+        WORLD.background = newLevel.background;
         WORLD.walls = newLevel.walls;
-        WORLD.helpers = newLevel.helpers;
-        WORLD.enemies = newLevel.enemies;
-        WORLD.points = newLevel.points;
-        WORLD.grass = newLevel.grass;
+        WORLD.obstacles = newLevel.obstacles;
+        WORLD.box = newLevel.box;
         WORLD.deathCounter = newLevel.deathCounter;
+        WORLD.points = newLevel.points;
+        WORLD.midground = newLevel.midground;
+        WORLD.player = newLevel.player;
+        WORLD.enemies = newLevel.enemies;
+        WORLD.foreground = newLevel.foreground;
         WORLD.water = newLevel.water;
+        WORLD.foreground = WORLD.foreground.concat(getClouds());
+        if(WORLD.weather === "rain") WORLD.background = WORLD.background.concat(getRain());
         WORLD.deathCounter.deaths = WORLD.deaths;
-        WORLD.clouds = getClouds();
-        WORLD.rain = getRain();
         //add settings button
-        WORLD.buttons.push(button({
+        WORLD.midground.push(button({
             pos: vec(WORLD.width-25, 5),
             size: vec(20, 20),
             img: "buttons/settings",
@@ -214,7 +215,7 @@ Promise.all([
                 audioBtn.img = "buttons/audio";
             }
         }
-        WORLD.buttons.push(audioBtn);
+        WORLD.midground.push(audioBtn);
         //handle graphics settings
         if(!WORLD.settings.cloudsOn) WORLD.clouds = [];
         
@@ -250,13 +251,11 @@ Promise.all([
             WORLD.box,
             WORLD.enemies,
             WORLD.player,
-            WORLD.helpers,
             WORLD.points,
-            WORLD.clouds,
-            WORLD.grass,
-            WORLD.weather === "rain" ? WORLD.rain :[],
+            WORLD.foreground,
             WORLD.walls,
-            WORLD.buttons,
+            WORLD.background,
+            WORLD.midground,
         );
     
         //check level end states
@@ -297,19 +296,17 @@ Promise.all([
         ctx.fillStyle = "black";
         ctx.fillRect(0, 600, 900, 600);
         WORLD.drawAll(
-            WORLD.weather === "rain" ? WORLD.rain :[],
+            WORLD.background,
             WORLD.walls,
-            WORLD.box,
             WORLD.obstacles,
-            WORLD.buttons,
-            WORLD.helpers,
+            WORLD.box,
             WORLD.deathCounter,
             WORLD.points,
+            WORLD.midground,
             WORLD.player,
             WORLD.enemies,
-            WORLD.grass,
+            WORLD.foreground,
             WORLD.water,
-            WORLD.clouds,
         );
         //draw nextLevelCounter
         if(WORLD.nextLevelCounter){

@@ -4,14 +4,6 @@ import button from "/js/button.js";
 let volume = 100;
 
 export const setupSettings = (WORLD) => {
-    WORLD.spliceAll(
-        WORLD.obstacles,
-        WORLD.points,
-        WORLD.grass,
-        WORLD.buttons,
-        WORLD.helpers,
-        WORLD.enemies,
-    );
 
     //exit button
     WORLD.buttons.push(button({ pos: vec(585, 425), img: "buttons/exit", size: vec(60, 30), action(){

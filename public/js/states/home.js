@@ -13,9 +13,10 @@ const setupHome = (WORLD) => {
         WORLD.spliceAll(
             WORLD.obstacles,
             WORLD.points,
-            WORLD.grass,
             WORLD.buttons,
-            WORLD.helpers,
+            WORLD.midground,
+            WORLD.background,
+            WORLD.background,
             WORLD.enemies,
             WORLD.water,
         );
@@ -25,12 +26,9 @@ const setupHome = (WORLD) => {
         WORLD.walls = newLevel.walls;
         WORLD.player = newLevel.player;
         if(extraPlayerState !== undefined) WORLD.player = extraPlayerState;
-        WORLD.grass = newLevel.grass;
-        WORLD.helpers.push(helper(vec(0, 420), "Welcome to our home!"));
-        WORLD.helpers.push(helper(vec(345, 480), "Can I interest you in my wares?"));
-        WORLD.helpers.push(helper(vec(660, 480), "When I'm done I'll get my cash at level 10."));
+        WORLD.foreground = newLevel.foreground;
         //switch level buttons
-        WORLD.buttons.push(button({ 
+        WORLD.midground.push(button({ 
             pos: vec(860, 360), 
             img: "buttons/arrow-right", 
             size: vec(30, 30), 
@@ -43,7 +41,7 @@ const setupHome = (WORLD) => {
                     WORLD.audio.play("not-btn")
                 }
         } }));
-        WORLD.buttons.push(button({ 
+        WORLD.midground.push(button({ 
             pos: vec(730, 360), 
             img: "buttons/arrow-left", 
             size: vec(30, 30), 
@@ -57,7 +55,7 @@ const setupHome = (WORLD) => {
                 }
         } }));
         //shop button
-        WORLD.buttons.push(button({ 
+        WORLD.midground.push(button({ 
             pos: vec(330, 440), 
             img: "buttons/shop", 
             size: vec(60, 30), 
@@ -67,7 +65,7 @@ const setupHome = (WORLD) => {
         } }));
         //add text credits text
         if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1){
-            WORLD.buttons.push(text({
+            WORLD.midground.push(text({
                 text: [
                     "This game is work in progress.",
                     "More content is comming in the future!",
@@ -80,6 +78,10 @@ const setupHome = (WORLD) => {
                 color: "white",
             }));
         }
+        //add helpers
+        WORLD.midground.push(helper(vec(0, 420), "Welcome to our home!"));
+        WORLD.midground.push(helper(vec(345, 480), "Can I interest you in my wares?"));
+        WORLD.midground.push(helper(vec(660, 480), "When I'm done I'll get my cash at level 10."));
 
         WORLD.state = updateHome;
     }
@@ -88,10 +90,10 @@ const setupHome = (WORLD) => {
         WORLD.controlPlayerKeys();
         
         WORLD.updateAll(
+            WORLD.background,
+            WORLD.foreground,
             WORLD.player,
-            WORLD.buttons,
-            WORLD.helpers,
-            WORLD.grass,
+            WORLD.midground,
         );
         //play current level
         if(WORLD.player.pos.y > WORLD.height + 50){
@@ -104,13 +106,10 @@ const setupHome = (WORLD) => {
         ctx.scale(WORLD.c.scale, WORLD.c.scale);
         WORLD.drawAll(
             WORLD.walls,
-        )
-        WORLD.drawAll(
             WORLD.obstacles,
-            WORLD.buttons,
-            WORLD.helpers,
+            WORLD.midground,
             WORLD.player,
-            WORLD.grass,
+            WORLD.foreground,
         );
         //draw level switching system
         ctx.drawImage(WORLD.sprites["buttons/empty"], 760, 360, 100, 30);

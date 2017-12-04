@@ -15,12 +15,13 @@ import getClouds                     from "/js/clouds.js";
 
             //make mock world for switching animation
             const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel], 900);
-            WORLD.helper = newLevel.helper;
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
             newLevel.walls.forEach(w => WORLD.walls.push(w));
-            newLevel.grass.forEach(p => WORLD.grass.push(p));
+            newLevel.midground.forEach(p => WORLD.midground.push(p));
+            newLevel.background.forEach(p => WORLD.background.push(p));
+            newLevel.foreground.forEach(p => WORLD.foreground.push(p));
             newLevel.points.forEach(p => WORLD.points.push(p));
-            if(WORLD.settings.cloudsOn) getClouds(15, 900).forEach(c => WORLD.clouds.push(c));
+            if(WORLD.settings.cloudsOn) getClouds(15, 900).forEach(c => WORLD.foreground.push(c));
             WORLD.newSpawn = newLevel.player.pos;
             
             WORLD.state = switchLevel;

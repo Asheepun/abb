@@ -38,10 +38,7 @@ const setupShop = (WORLD) => {
     WORLD.spliceAll(
         WORLD.obstacles,
         WORLD.points,
-        WORLD.grass,
         WORLD.buttons,
-        WORLD.helpers,
-        WORLD.enemies,
     );
 
     //exit shop button

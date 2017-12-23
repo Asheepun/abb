@@ -1,9 +1,8 @@
-import vec, { sub }                         from "/js/engine/factories/vector.js";
+import vec, { sub, align }                  from "/js/engine/factories/vector.js";
 import entity                               from "/js/engine/factories/entity.js";
 import addAnimate                           from "/js/engine/factories/entity.js";
 import { checkCol, checkProx }              from "/js/engine/functions/colission.js";
 import { addHandleColBounce, addHandleCol } from "/js/handleCol.js";
-import addHandleWater                       from "/js/handleWater.js";
 import addMove                              from "/js/move.js";
 import addTalk                              from "/js/talk.js";
 
@@ -33,12 +32,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         speed: 0.1,
         dir: -1,
         gravity: 0.01,
-        oubArea: [0, 0, 900, 600],
-    });
-    addHandleWater(that, {
-        speed: 0.05,
-        jumpSpeed: 0.1,
-        gravity: 0.005,
+        oubArea: [0, 0, 900, 660],
     });
     that.handleOubY = () => {
         if(that.velocity.y < 0){
@@ -74,6 +68,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         if(that.dead){
             that.jumpSpeed = 0;
             that.speed = 0;
+            that.dir = 0;
             that.alpha -= 0.01;
             if(that.alpha < 0) enemies.remove(that);
         }
@@ -97,7 +92,6 @@ export const jumper = (pos) => {
     });
     that.speed = 0;
     that.lines.push("Don't run away!", "Stay there!");
-    addHandleWater(that, {speed: 0});
     
     that.look = ({ player }) => {
         if(player.pos.x > that.center.x){
@@ -116,7 +110,6 @@ export const giantJumper = (pos) => {
     that.size = vec(210, 210);
     that.jumpSpeed = 0.5;
     that.lines.push("I'll crush you!", "I am your biggest nightmare!");
-    addHandleWater(that, {speed: 0,});
 
     return that;
 }
@@ -154,7 +147,6 @@ export const follower = (pos) => {
     });
     that.jumpSpeed = 0.2;
     that.speed = 0.13;
-    addHandleWater(that, {});
     that.lines.push("I see you!", "I know where you are!");
     
     addHandleCol(that);
@@ -180,10 +172,6 @@ export const ghost = (pos) => {
     that.velocity.y = 0.2;
     that.oubArea = [0, 0, 900, 600];
     that.lines = ["BoOOoO!", "Jumpscare!!!", "RAAAAAHH!", "You live and you learn."];
-    addHandleWater(that, {
-        speed: 0,
-        gravity: 0,
-    });
 
     that.handleOubY = () => {
         that.velocity.y *= -1;

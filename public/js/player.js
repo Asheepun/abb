@@ -3,7 +3,6 @@ import entity                                         from "/js/engine/factories
 import addAnimate                                     from "/js/engine/functions/animate.js";
 import { checkCol, checkProx }                        from "/js/engine/functions/colission.js";
 import { addHandleCol }                               from "/js/handleCol.js";
-import addHandleWater                                 from "/js/handleWater.js";
 import addMove                                        from "/js/move.js";
 
 const player = (pos) => {
@@ -20,7 +19,6 @@ const player = (pos) => {
     
     addMove(that, {oubArea: [0, 0, 900, 700]});
     addHandleCol(that);
-    addHandleWater(that, {});
     addAnimate(that, {
         delay: 4,
         handleFrames: ({ JSON, progress }) => {
@@ -55,9 +53,11 @@ const player = (pos) => {
     }
     that.checkHit = ({ enemies }) => {
         for(let i = 0; i < enemies.length; i++){
-            if(sub(that.center, enemies[i].center).mag < that.size.x/4 + enemies[i].size.x/2){
-                that.dead = true;
-            }
+            if(enemies[i].size.x === enemies[i].size.y){
+                if(sub(that.center, enemies[i].center).mag < that.size.x/4 + enemies[i].size.x/2){
+                    that.dead = true;
+                }
+            }else if(checkCol(that, [enemies[i]])) that.dead = true;
         }
     }
     that.rainbow = ({ progress, midground, helpers }) => {
@@ -65,8 +65,14 @@ const player = (pos) => {
             rainbowParticleEffect(midground, that.center.copy(), mul(that.velocity, 0.1));
         }
     }
+    that.checkDead = (WORLD) => {
+        if(that.dead){
+            WORLD.deaths++;
+            WORLD.state = WORLD.states.setup;
+        }
+    }
 
-    that.addUpdateActions("checkHit", "rainbow", "animate");
+    that.addUpdateActions("checkHit", "rainbow", "animate", "checkDead");
 
     return that;
 }

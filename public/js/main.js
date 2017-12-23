@@ -8,6 +8,7 @@ import setupSwitchLevel                                                   from "
 import { setupSettings }                                                  from "/js/states/settings.js";
 import setupStartScreen                                                   from "/js/states/startScreen.js";
 import setupHome                                                          from "/js/states/home.js";
+import setupBossLevel                                                     from "/js/states/bossLevel.js";
 import setupShop, { emptyProgress, updateProgress }                       from "/js/states/shop.js";
 import levelTemplates                                                     from "/js/levelTemplates.js";
 import getClouds                                                          from "/js/clouds.js";
@@ -88,12 +89,14 @@ Promise.all([
         "rare-grass",
         "grass-particle",
         "enemy",
+        "boss",
         "death-counter",
         "rain",
         "door",
         "door-button",
         "rainbow",
         "water",
+        "boulder",
         ...buttonImgs,
         ...obstacleImgs,
         ...wallImgs,
@@ -134,6 +137,7 @@ Promise.all([
         deaths: 0,
         buttons: [],
         states: {
+            setupBossLevel,
             setupHome,
             setupShop,
             setupSettings,
@@ -159,7 +163,7 @@ Promise.all([
     }
     WORLD.progress = JSON.parse(localStorage.progress);
     updateProgress(WORLD.progress);
-    WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);
+    WORLD.currentLevel = 22//JSON.parse(localStorage.furtestLevel);
     WORLD.progress.items.unlocked.push("Rainbow trail");
 
 
@@ -172,11 +176,12 @@ Promise.all([
     audio.setVolume();
     
     WORLD.state = WORLD.states.setupStartScreen;
-WORLD.currentLevel = 9;
+    
     WORLD.states.setup = () => {
 
+        const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel], 0);
+            
         //initialize level
-        const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel]);
         WORLD.background = newLevel.background;
         WORLD.walls = newLevel.walls;
         WORLD.obstacles = newLevel.obstacles;
@@ -187,7 +192,6 @@ WORLD.currentLevel = 9;
         WORLD.player = newLevel.player;
         WORLD.enemies = newLevel.enemies;
         WORLD.foreground = newLevel.foreground;
-        WORLD.water = newLevel.water;
         WORLD.foreground = WORLD.foreground.concat(getClouds());
         if(WORLD.weather === "rain") WORLD.background = WORLD.background.concat(getRain());
         WORLD.deathCounter.deaths = WORLD.deaths;
@@ -223,7 +227,7 @@ WORLD.currentLevel = 9;
         WORLD.nextLevelCounter = undefined;
         WORLD.getHomeCounter = undefined;
         WORLD.offset = vec(0, 0);
-
+        
         WORLD.state = WORLD.states.game;
     }
 
@@ -247,7 +251,6 @@ WORLD.currentLevel = 9;
 
         //update logic
         WORLD.updateAll(
-            WORLD.water,
             WORLD.box,
             WORLD.enemies,
             WORLD.player,
@@ -268,10 +271,6 @@ WORLD.currentLevel = 9;
             WORLD.nextLevelCounter = undefined;
             WORLD.state = WORLD.states.setupSwitchLevel;
         }
-        if(WORLD.player.dead){
-            WORLD.state = WORLD.states.setup;
-            WORLD.deaths++;
-        }
         //go home
         if(keys.h.down || keys.H.down){
             WORLD.goHomeCounter = 3;
@@ -291,10 +290,9 @@ WORLD.currentLevel = 9;
         ctx.save();
         ctx.scale(c.scale, c.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
-        ctx.drawImage(WORLD.sprites["background-" + WORLD.weather], 0, 0, WORLD.width, WORLD.height);
-        ctx.drawImage(WORLD.sprites["background-" + WORLD.weather], 900, 0, WORLD.width, WORLD.height);
-        ctx.fillStyle = "black";
-        ctx.fillRect(0, 600, 900, 600);
+        ctx.drawImage((WORLD.weather === "normal" ? sprites["background-normal"] : sprites["background-rain"]), -WORLD.width - WORLD.offset.x, 0, WORLD.width, WORLD.height);
+        ctx.drawImage((WORLD.weather === "normal" ? sprites["background-normal"] : sprites["background-rain"]), 0 - WORLD.offset.x, 0, WORLD.width, WORLD.height);
+        ctx.drawImage((WORLD.weather === "normal" ? sprites["background-normal"] : sprites["background-rain"]), WORLD.width - WORLD.offset.x, 0, WORLD.width, WORLD.height);
         WORLD.drawAll(
             WORLD.background,
             WORLD.walls,
@@ -306,7 +304,6 @@ WORLD.currentLevel = 9;
             WORLD.player,
             WORLD.enemies,
             WORLD.foreground,
-            WORLD.water,
         );
         //draw nextLevelCounter
         if(WORLD.nextLevelCounter){
@@ -325,7 +322,7 @@ WORLD.currentLevel = 9;
         if(WORLD.startingAlpha > 0){
             ctx.fillStyle = "black";
             ctx.globalAlpha = WORLD.startingAlpha;
-            ctx.fillRect(0, 0, WORLD.width, WORLD.height);
+            ctx.fillRect(-900, 0, WORLD.width*2, WORLD.height);
             ctx.globalAlpha = 1;
             WORLD.startingAlpha -= 0.05;
         }

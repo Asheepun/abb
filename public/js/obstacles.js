@@ -22,26 +22,33 @@ export const box = (pos) => {
         pos, 
         img: "box",
     });
-    that.update = ({ pointer, obstacles, walls, foreground, progress }) => {
+    that.update = ({ pointer, obstacles, walls, foreground, progress, offset }) => {
         if(progress.items.unlocked.find(x => x === "Box of gold")) that.img = "box-of-gold";
-        if(pointer.down && !checkHover(pointer.pos, obstacles)){
-            that.pos.x = align(pointer.pos.x, 30);
-            that.pos.y = align(pointer.pos.y, 30);
-            if(checkHover(pointer.pos, walls)){
+        let offsetPointer = vec(pointer.pos.x - offset.x, pointer.pos.y);
+        if(pointer.down && !checkHover(offsetPointer, obstacles)){
+            that.pos.x = align(offsetPointer.x, 30);
+            that.pos.y = align(offsetPointer.y, 30); 
+            if(checkHover(offsetPointer, walls)){
                 that.pos.set(-30, -30);
-                if(pointer.pressed) confettiParticleEffect(foreground, pointer.pos, 10, 10, 15, that.img + "-particle");
+                if(pointer.pressed) confettiParticleEffect(foreground, offsetPointer, 10, 10, 15, that.img + "-particle");
             }
             that.fixCenter();
         }
     }
+    that.remove = ({ foreground }) => {
+        that.pos.set(-30, -30);
+        confettiParticleEffect(foreground, that.center, 10, 10, 15, that.img + "-particle");
+        that.fixCenter();
+    }
     return that;
 }
 
-export const grass = (pos) => {
+export const grass = (pos, original = true) => {
     const that = entity({
         pos,
         img: "grass",
     });
+    that.original = original;
 
     if(Math.random() < 0.01 
     && Math.random() < 0.01) that.img = "rare-grass";

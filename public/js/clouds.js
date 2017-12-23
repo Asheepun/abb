@@ -33,8 +33,7 @@ const getClouds = (amount = 20, offset = 0) => {
         that.init();
 
         that.handleOubX = () => {
-            if(that.velocity.x > 0) that.pos.x = -60;
-            else that.pos.x = 1860;
+            if(that.velocity.x > 0) that.pos.x = that.oubArea[0];
             that.init();
         }
         that.sineWave = () => {

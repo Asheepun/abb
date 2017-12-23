@@ -1,7 +1,6 @@
 import entity                 from "/js/engine/factories/entity.js";
 import vec, { sub }           from "/js/engine/factories/vector.js";
 import { checkProx }          from "/js/engine/functions/colission.js";
-import addHandleWater         from "/js/handleWater.js";
 import addMove                from "/js/move.js";
 import addTalk                from "/js/talk.js";
 import { addHandleColBounce } from "/js/handleCol.js";
@@ -46,11 +45,6 @@ export const movingPoint = (pos) => {
     });
     addHandleColBounce(that);
     addTalk(that);
-    addHandleWater(that, {
-        speed: 0.02,
-        jumpSpeed: 0.07,
-        gravity: 0.004,
-    });
 
     that.jump = () => {
         if(that.grounded){

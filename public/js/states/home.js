@@ -18,7 +18,6 @@ const setupHome = (WORLD) => {
             WORLD.background,
             WORLD.background,
             WORLD.enemies,
-            WORLD.water,
         );
         WORLD.box.pos.set(-30, -30);
         const newLevel = createLevel({map: homeTemplate});

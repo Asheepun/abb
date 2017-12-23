@@ -30,7 +30,7 @@ const helper = (pos = vec(-30, -30), text = "Hello!") => {
         if(player.pos.x + player.size.x < that.pos.x) that.dir = "left";
     }
 
-    that.addUpdateActions("checkCol", "look", "animate");
+    that.addUpdateActions("checkCol", "look", "animate", "fixCenter");
 
     return that;
 }
@@ -74,13 +74,13 @@ export const converter = (pos) => {
         }else if(that.state !== "talking" && midground.indexOf(btn) !== -1) midground.splice(midground.indexOf(btn), 1);
     }
 
-    that.drawText = (ctx, { progress }) => {
+    that.drawText = (ctx, { progress, offset }) => {
         if(that.state === "talking"){
             ctx.fillStyle = "white";
             ctx.font = "20px game";
-            ctx.fillText("completed", that.pos.x - 39, that.pos.y - 71);
-            ctx.fillText("levels: " + progress.completedLevels, that.pos.x - 41, that.pos.y - 50);
-            ctx.fillText("coins: " + progress.coins, that.pos.x - 30, that.pos.y - 5);
+            ctx.fillText("completed", that.pos.x - 39 - offset.x, that.pos.y - 71);
+            ctx.fillText("levels: " + (progress.completedLevels - offset.x), that.pos.x - 41, that.pos.y - 50);
+            ctx.fillText("coins: " + progress.coins, that.pos.x - 30 - offset.x, that.pos.y - 5);
         }
     }
     that.drawingActions.splice(0, 1);

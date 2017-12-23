@@ -1,11 +1,11 @@
 import vec, { add, half, mul, div, sub, pipe, align }             from "/js/engine/factories/vector.js";
 import entity                                                     from "/js/engine/factories/entity.js";
 import { bouncer, jumper, spawner, giantJumper, follower, ghost } from "/js/enemy.js";
+import boss                                                       from "/js/boss.js";
 import { obstacle,  box, grass }                                  from "/js/obstacles.js";
 import { door, key }                                              from "/js/door.js";
 import helper, { converter }                                      from "/js/helper.js";
 import player                                                     from "/js/player.js";
-import waterStream                                                from "/js/water.js";
 import { point, movingPoint }                                     from "/js/point.js";
 
 const createLevel = ({ map, helps }, offsetX = 0) => {
@@ -20,7 +20,6 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         player: undefined,
         enemies: set(),
         foreground: set(),
-        water: set(),
     }
     let help = 0;
     let pos;
@@ -35,8 +34,6 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "*") that.midground.push(key(pos, 1));
         if(tile === "I") that.obstacles.push(door(pos, 2));
         if(tile === "o") that.midground.push(key(pos, 2));
-        if(tile === "<") that.water.push(waterStream(pos, -1));
-        if(tile === ">") that.water.push(waterStream(pos, 1));
         if(tile === "H"){
             that.midground.push(helper(pos, helps[help]));
             help ++;
@@ -49,6 +46,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "4") that.enemies.push(giantJumper(pos));
         if(tile === "5") that.enemies.push(follower(pos));
         if(tile === "6") that.enemies.push(ghost(pos));
+        if(tile === "¤") that.enemies.push(boss(pos));
         //handle grass
         if(y !== map.length-1
         && map[y+1][x] === "#" 
@@ -65,6 +63,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
     that.obstacles.filter(x => x.mapPos && x.mapPos.y !== 0 && map[x.mapPos.y-1][x.mapPos.x] === "#")
     .forEach(o1 => {
         const arr = that.obstacles.filter(o2 => {
+            if(o1.size.x >= 900) return;
             if(o1.pos.y === o2.pos.y
             && o1 !== o2 
             && o1.pos.x + o1.size.x === o2.pos.x
@@ -82,6 +81,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
     //group walls
     that.walls.forEach(w1 => {
         const arr = that.walls.filter(w2 => {
+            if(w1.size.x >= 900) return;
             if(w1.pos.y === w2.pos.y
             && w1 !== w2 
             && w1.pos.x + w1.size.x === w2.pos.x){
@@ -100,6 +100,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         that.obstacles.filter(x => x.mapPos && x.mapPos.y !== 0 && map[x.mapPos.y-1][x.mapPos.x] !== "#")
         .forEach(o1 => {
             const arr = that.obstacles.filter(o2 => {
+                if(o1.size.x >= 900) return;
                 if(o1.pos.y === o2.pos.y
                 && o1 !== o2 
                 && o1.pos.x + o1.size.x === o2.pos.x

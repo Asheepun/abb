@@ -163,7 +163,7 @@ Promise.all([
     }
     WORLD.progress = JSON.parse(localStorage.progress);
     updateProgress(WORLD.progress);
-    WORLD.currentLevel = 22//JSON.parse(localStorage.furtestLevel);
+    WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);
     WORLD.progress.items.unlocked.push("Rainbow trail");
 
 

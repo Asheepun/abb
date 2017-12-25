@@ -97,6 +97,7 @@ Promise.all([
         "rainbow",
         "water",
         "boulder",
+        "keys",
         ...buttonImgs,
         ...obstacleImgs,
         ...wallImgs,
@@ -164,7 +165,6 @@ Promise.all([
     WORLD.progress = JSON.parse(localStorage.progress);
     updateProgress(WORLD.progress);
     WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);
-    WORLD.progress.items.unlocked.push("Rainbow trail");
 
 
     WORLD.drawAll = makeDrawAll(ctx, WORLD);
@@ -329,13 +329,26 @@ Promise.all([
         //darken on rainy days
         if(WORLD.weather === "rain"){
             ctx.fillStyle = "black";
-            ctx.globalAlpha = 0.5;
+            ctx.globalAlpha = 0.2;
             ctx.fillRect(0, 0, c.width*2, c.height*2);
+            ctx.globalAlpha = 1;
+        }
+        //first level key tut
+        if(WORLD.currentLevel === 0 && keyAlpha > 0.01){
+            keyPosY += keyPosChangeDir;
+            if(keyPosY >= 215 || keyPosY <= 205) keyPosChangeDir *= -1;
+
+            if(keys.w.down || keys.a.down || keys.d.down) keyAlpha -= 0.01;
+            ctx.globalAlpha = keyAlpha;
+            ctx.drawImage(sprites.keys, 30, keyPosY, 94, 62);
             ctx.globalAlpha = 1;
         }
 
         ctx.restore();
     }
+    let keyAlpha = 0.8;
+    let keyPosY = 205;
+    let keyPosChangeDir = 0.1;
 
     let lastTime = 0;
     let accTime = 0;

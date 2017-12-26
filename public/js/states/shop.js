@@ -15,7 +15,7 @@ export const emptyProgress = () => ({
                 price: 6,
             },
             {
-                name: "Rainbow trail",
+                name: "Confetti",
                 price: 8,
             },
         ],

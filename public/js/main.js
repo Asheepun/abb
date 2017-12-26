@@ -8,7 +8,6 @@ import setupSwitchLevel                                                   from "
 import { setupSettings }                                                  from "/js/states/settings.js";
 import setupStartScreen                                                   from "/js/states/startScreen.js";
 import setupHome                                                          from "/js/states/home.js";
-import setupBossLevel                                                     from "/js/states/bossLevel.js";
 import setupShop, { emptyProgress, updateProgress }                       from "/js/states/shop.js";
 import levelTemplates                                                     from "/js/levelTemplates.js";
 import getClouds                                                          from "/js/clouds.js";
@@ -138,7 +137,6 @@ Promise.all([
         deaths: 0,
         buttons: [],
         states: {
-            setupBossLevel,
             setupHome,
             setupShop,
             setupSettings,
@@ -157,14 +155,16 @@ Promise.all([
     };
     
     //handle progress
-    if(localStorage.progress === undefined || localStorage.furtestLevel === undefined){
+    if(localStorage.progress === undefined || localStorage.furtestLevel === undefined || localStorage.deaths === undefined){
         localStorage.clear();
         localStorage.progress = JSON.stringify(emptyProgress());
         localStorage.furtestLevel = 0;
+        localStorage.deaths = 0;
     }
     WORLD.progress = JSON.parse(localStorage.progress);
     updateProgress(WORLD.progress);
     WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);
+    WORLD.deaths = localStorage.deaths;
 
 
     WORLD.drawAll = makeDrawAll(ctx, WORLD);
@@ -290,9 +290,8 @@ Promise.all([
         ctx.save();
         ctx.scale(c.scale, c.scale);
         ctx.translate(WORLD.offset.x, WORLD.offset.y);
-        ctx.drawImage((WORLD.weather === "normal" ? sprites["background-normal"] : sprites["background-rain"]), -WORLD.width - WORLD.offset.x, 0, WORLD.width, WORLD.height);
-        ctx.drawImage((WORLD.weather === "normal" ? sprites["background-normal"] : sprites["background-rain"]), 0 - WORLD.offset.x, 0, WORLD.width, WORLD.height);
-        ctx.drawImage((WORLD.weather === "normal" ? sprites["background-normal"] : sprites["background-rain"]), WORLD.width - WORLD.offset.x, 0, WORLD.width, WORLD.height);
+        ctx.drawImage((WORLD.weather === "normal" ? sprites["background-normal"] : sprites["background-rain"]), 0, 0, WORLD.width, WORLD.height);
+        ctx.drawImage((WORLD.weather === "normal" ? sprites["background-normal"] : sprites["background-rain"]), WORLD.width, 0, WORLD.width, WORLD.height);
         WORLD.drawAll(
             WORLD.background,
             WORLD.walls,
@@ -342,6 +341,16 @@ Promise.all([
             ctx.globalAlpha = keyAlpha;
             ctx.drawImage(sprites.keys, 30, keyPosY, 94, 62);
             ctx.globalAlpha = 1;
+        }
+        //draw last level score
+        if(WORLD.currentLevel === 24 && WORLD.state === WORLD.states.game){
+            ctx.fillStyle = "white";
+            ctx.font = "40px game"
+            ctx.fillText("Victory!", 330, 150);
+            ctx.font = "20px game";
+            if(WORLD.deaths === 0) ctx.fillText("flawless!", 360, 190);
+            else if(WORLD.deaths === 1) ctx.fillText("And you only died once!", 280, 190);
+            else ctx.fillText("And you only died " + WORLD.deaths + " times!", 270, 190);
         }
 
         ctx.restore();

@@ -43,12 +43,11 @@ export const box = (pos) => {
     return that;
 }
 
-export const grass = (pos, original = true) => {
+export const grass = (pos) => {
     const that = entity({
         pos,
         img: "grass",
     });
-    that.original = original;
 
     if(Math.random() < 0.01 
     && Math.random() < 0.01) that.img = "rare-grass";

@@ -23,7 +23,7 @@ export const key = (pos, i) => {
     that.index = i;
     
     let col = false;
-    that.checkCol = ({ enemies, player, obstacles, audio, grass }) => {
+    that.checkCol = ({ enemies, player, obstacles, audio, foreground }) => {
         if(!that.down){
             col = checkCol(that, enemies) || checkCol(that, player);
             if(col && col.velocity.y > 0){
@@ -31,7 +31,7 @@ export const key = (pos, i) => {
                 obstacles.forEach(o => {
                     if(o.index === that.index){
                         obstacles.splice(obstacles.indexOf(o), 1);
-                        confettiParticleEffect(grass, o.center, 10, 60, 40, "door");
+                        confettiParticleEffect(foreground, o.center, 10, 60, 40, "door");
                     }
                 });
                 that.imgPos = [30, 0, 30, 30];

@@ -80,7 +80,7 @@ const setupHome = (WORLD) => {
         //add helpers
         WORLD.midground.push(helper(vec(0, 420), "Welcome to our home!"));
         WORLD.midground.push(helper(vec(345, 480), "Can I interest you in my wares?"));
-        WORLD.midground.push(helper(vec(660, 480), "When I'm done I'll get my cash at level 10."));
+        WORLD.midground.push(helper(vec(660, 480), "When I'm done I'll get my cash at level 11."));
 
         WORLD.state = updateHome;
     }

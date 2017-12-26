@@ -52,22 +52,23 @@ const player = (pos) => {
         that.velocity.y = 0;
     }
     that.checkHit = ({ enemies }) => {
-        for(let i = 0; i < enemies.length; i++){
-            if(enemies[i].size.x === enemies[i].size.y){
-                if(sub(that.center, enemies[i].center).mag < that.size.x/4 + enemies[i].size.x/2){
+        enemies.forEach(enemy => {
+            if(enemy.size.x === enemy.size.y){
+                if(sub(that.center, enemy.center).mag < that.size.x/4 + enemy.size.x/2){
                     that.dead = true;
                 }
-            }else if(checkCol(that, [enemies[i]])) that.dead = true;
-        }
+            }else if(checkCol(that, [enemy])) that.dead = true;
+        });
     }
-    that.rainbow = ({ progress, midground, helpers }) => {
-        if(progress.items.unlocked.find(x => x === "Rainbow trail") && (that.velocity.x !== 0 || that.velocity.y !== 0)){
+    that.rainbow = ({ progress, midground }) => {
+        if(progress.items.unlocked.find(x => x === "Confetti") && (that.velocity.x !== 0 || that.velocity.y !== 0)){
             rainbowParticleEffect(midground, that.center.copy(), mul(that.velocity, 0.1));
         }
     }
     that.checkDead = (WORLD) => {
         if(that.dead){
             WORLD.deaths++;
+            localStorage.deaths = WORLD.deaths;
             WORLD.state = WORLD.states.setup;
         }
     }

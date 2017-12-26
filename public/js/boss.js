@@ -98,7 +98,7 @@ const boss = (pos) => {
                 that.currentAttack(WORLD);
 
                 //check if atttack was completed
-                if(WORLD.points.length === 1){
+                if(createdPoints === 0){
                     that.attacking = false;
                     that.attackingCounter = 0;
                     that.alpha -= 0.2;
@@ -139,13 +139,19 @@ const boss = (pos) => {
 }
 
 const getAttack = (that) => {
-    that.attackingCounter = 3*60;
+    that.attackingCounter = 10*60;
+    createdPoints = 5;
+    let initialized = false;
 
     return ({ points }) => {
 
-        if(that.attackingCounter === 3*60){
-            points.push(point(vec(360, 300)));
-            createdPoints += 1;
+        if(!initialized){
+            for(let i = 0; i < 5; i++){
+                const point = movingPoint(vec(i % 2 === 0 ? 330 : 570, -i*450));
+                point.dir = 0;
+                points.push(point);
+            }
+            initialized = true;
         }
 
     }

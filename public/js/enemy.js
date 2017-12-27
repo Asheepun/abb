@@ -12,6 +12,7 @@ const enemy = ({ pos, size, jumpSpeed = 0.2, img = "enemy", frame1 = [0, 0, 210,
         size,
         imgPos: frame1,
         img,
+        layer: 3,
     });
     that.jumpSpeed = jumpSpeed;
     that.lines = [
@@ -172,6 +173,7 @@ export const ghost = (pos) => {
     that.velocity.y = 0.2;
     that.oubArea = [0, 0, 900, 600];
     that.lines = ["BoOOoO!", "Jumpscare!!!", "RAAAAAHH!", "You live and you learn."];
+    that.layer = 5;
 
     that.handleOubY = () => {
         that.velocity.y *= -1;

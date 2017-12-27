@@ -12,9 +12,9 @@ export const makeDrawAll = (ctx, WORLD) => (...arrs) => {
     for(let i = 0; i < arrs.length; i++){
         if(arrs[i].constructor === Array){
             for(let j = 0; j < arrs[i].length; j++){
-                arrs[i][j].draw(ctx, WORLD);
+                if(arrs[i][j].draw) arrs[i][j].draw(ctx, WORLD);
             }
-        }else arrs[i].draw(ctx, WORLD);
+        }else if(arrs[i].draw) arrs[i].draw(ctx, WORLD);
     }
 }
 

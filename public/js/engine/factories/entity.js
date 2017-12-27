@@ -1,6 +1,6 @@
 import vec from "/js/engine/factories/vector.js";
 
-const entity = ({ pos = vec(0, 0), size = vec(30, 30), img = "obstacle", alpha = 1, imgPos = [0, 0, size.x, size.y], rotation = 0, }) => {
+const entity = ({ pos = vec(0, 0), size = vec(30, 30), img = "obstacle", alpha = 1, imgPos = [0, 0, size.x, size.y], rotation = 0, layer = 0, }) => {
     let that = {
         pos,
         size,
@@ -8,6 +8,7 @@ const entity = ({ pos = vec(0, 0), size = vec(30, 30), img = "obstacle", alpha =
         imgPos,
         alpha,
         rotation,
+        layer,
         drawingActions: [],
         updateActions: [],
     };

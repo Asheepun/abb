@@ -10,6 +10,7 @@ const player = (pos) => {
         pos,
         size: vec(28, 30),
         img: "player",
+        layer: 2,
     });
     that.state = "still";
     that.imgDir = "right";

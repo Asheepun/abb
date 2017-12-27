@@ -7,7 +7,11 @@ const getRain = () => {
 
     for(let i = 0; i < 40; i++){
         //make drop
-        const that = entity({ pos: vec(), size: vec(4, 15), img: "rain" });
+        const that = entity({ 
+            pos: vec(), 
+            size: vec(4, 15), 
+            img: "rain" 
+        });
 
         that.init = () => {
             that.pos.set(Math.random()*900, -Math.random()*50 - 50);

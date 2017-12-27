@@ -340,8 +340,8 @@ Promise.all([
             ctx.font = "40px game"
             ctx.fillText("Victory!", 330, 150);
             ctx.font = "20px game";
-            if(WORLD.deaths === 0) ctx.fillText("flawless!", 360, 190);
-            else if(WORLD.deaths === 1) ctx.fillText("And you only died once!", 280, 190);
+            if(WORLD.deaths === 0 || WORLD.deaths === "0") ctx.fillText("flawless!", 360, 190);
+            else if(WORLD.deaths === 1 || WORLD.deaths === "1") ctx.fillText("And you only died once!", 280, 190);
             else ctx.fillText("And you only died " + WORLD.deaths + " times!", 270, 190);
         }
 

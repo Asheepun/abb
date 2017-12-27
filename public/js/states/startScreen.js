@@ -35,6 +35,7 @@ const setupStartScreen = (WORLD) => {
 const startScreen = (WORLD, ctx) => {
     if(WORLD.pointer.down){
         WORLD.audio.loop("main");
+        WORLD.clouds = undefined;
         WORLD.state = WORLD.states.setup;
         return;
     }

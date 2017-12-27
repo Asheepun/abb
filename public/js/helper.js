@@ -6,7 +6,11 @@ import button                                         from "/js/button.js";
 import addTalk                                        from "/js/talk.js";
 
 const helper = (pos = vec(-30, -30), text = "Hello!") => {
-    const that = entity({ pos, img: "helper" });
+    const that = entity({ 
+        pos, 
+        img: "helper",
+        layer: 1,
+    });
     that.state = "still"
     that.dir = "left";
     that.text = text;

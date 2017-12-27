@@ -17,10 +17,17 @@ import getClouds                     from "/js/clouds.js";
             const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel], 900);
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
             newLevel.walls.forEach(w => WORLD.walls.push(w));
-            newLevel.midground.forEach(p => WORLD.midground.push(p));
+            newLevel.midground.forEach(x => {
+                if(x.update) for(let i = 0; i < 3; i++){
+                    x.update(WORLD);//fix helper sprite
+                }
+                WORLD.midground.push(x)
+            });
             newLevel.background.forEach(p => WORLD.background.push(p));
             newLevel.foreground.forEach(p => WORLD.foreground.push(p));
             newLevel.points.forEach(p => WORLD.points.push(p));
+            WORLD.deathCounter = newLevel.deathCounter;
+            WORLD.deathCounter.deaths = WORLD.deaths;
             if(WORLD.settings.cloudsOn) getClouds(15, 900).forEach(c => WORLD.foreground.push(c));
             WORLD.newSpawn = newLevel.player.pos;
             

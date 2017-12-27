@@ -3,7 +3,8 @@ import entity                     from "/js/engine/factories/entity.js";
 import { checkCol }               from "/js/engine/functions/colission.js";
 import { jumper, spawner}         from "/js/enemy.js";
 import addMove                    from "/js/move.js";
-import { addHandleCol }           from "/js/handleCol.js";
+import addTalk                    from "/js/talk.js";
+import { addHandleColBounce }     from "/js/handleCol.js";
 import { point, movingPoint }     from "/js/point.js";
 
 let createdPoints = 0;
@@ -23,13 +24,28 @@ const boss = (pos) => {
     that.attackingCounter = 0;
     let attackCounter = 0;
     let startCounter = 0;
+    let attackTime = 3;
+
+    that.text = "Come 'ere you!";
+    that.state = "talking";
+    let attackText = ["Are you ready? Ha ha!", "Prepare yourself!", "Watch out for this!"];
+    let chargeText = ["Here I come!", "Incoming!!!", "Run or die!"];
+
+    addTalk(that);
 
     addMove(that, {
         dir: 0,
         speed: 0,
         gravity: 0.005,
     });
-    addHandleCol(that);
+    addHandleColBounce(that);
+    
+    that.handleOubX = () => {
+        that.dir = 0;
+        that.speed = 0;
+        that.pos.x = Math.floor(that.pos.x/30)*30;
+        that.text = attackText[Math.floor(Math.random()*attackText.length)];
+    }
 
     that.jump = () => {
         if(that.grounded){
@@ -72,7 +88,10 @@ const boss = (pos) => {
 
             startCounter += 1;
 
-            if(startCounter > 10) that.started = true;
+            if(startCounter > 10){
+                that.started = true;
+                that.text = attackText[Math.floor(Math.random()*attackText.length)];
+            }
         }
     }
     that.attack = (WORLD) => {
@@ -81,10 +100,12 @@ const boss = (pos) => {
                 attackCounter += 1;
             }
 
-            if(attackCounter % (60*5) === 0 && !that.attacking){
+            if(attackCounter % (60*attackTime) === 0 && !that.attacking){
+                that.text = "";
                 that.velocity.y = -0.2;
                 that.grounded = false;
                 that.loadAttack = true;
+                attackTime = 11;
             }
             if(that.loadAttack && that.grounded){
                 that.loadAttack = false;
@@ -102,20 +123,32 @@ const boss = (pos) => {
                     that.attacking = false;
                     that.attackingCounter = 0;
                     that.alpha -= 0.2;
+                    that.text = "What?";
+                    setTimeout(() => that.text = "...", 3000);
                     return;
                 }
                 //check if player has colected a point
                 if(createdPoints+1 > WORLD.points.length) createdPoints--;
                 
-                //handle attacks time
-                that.attackingCounter--;
+                //tick
+                if(that.attackingCounter === 0) WORLD.audio.play("last-tick");
+                else if(that.attackingCounter % 60 === 0) WORLD.audio.play("tick");
+
+                //end attack
                 if(that.attackingCounter <= 0){
                     that.attacking = false;
                     //clear created entities
                     WORLD.points.splice(1, createdPoints);
+                    that.dir = -1;
+                    that.speed = 0.2;
+                    that.text = chargeText[Math.floor(Math.random()*chargeText.length)];
+                    if(that.alpha < 1) that.alpha += 0.2;
                     //clear arrays
                     createdPoints = 0;
                 }
+
+                //handle attacks time
+                that.attackingCounter--;
             }
         }
     }
@@ -123,9 +156,10 @@ const boss = (pos) => {
         if(that.alpha < 0.2){
             enemies.splice(0, enemies.length);
         }
+        if(that.dir > 0) that.text = "";
     }
     that.drawAttackingCounter = (ctx) => {
-        if(that.attackingCounter !== 0){
+        if(that.attackingCounter > 0){
             ctx.fillStyle = "red";
             ctx.font = "50px game";
             ctx.fillText(Math.floor(that.attackingCounter/60 + 1), that.center.x - 15, that.pos.y - 5);
@@ -139,7 +173,7 @@ const boss = (pos) => {
 }
 
 const getAttack = (that) => {
-    that.attackingCounter = 10*60;
+    that.attackingCounter = 8*60;
     createdPoints = 5;
     let initialized = false;
 

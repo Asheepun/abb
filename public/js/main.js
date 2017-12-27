@@ -96,7 +96,6 @@ Promise.all([
         "rainbow",
         "water",
         "boulder",
-        "keys",
         ...buttonImgs,
         ...obstacleImgs,
         ...wallImgs,
@@ -111,7 +110,8 @@ Promise.all([
         "yes-btn",
         "not-btn",
         "door-btn",
-        "enemy",
+        "tick",
+        "last-tick",
     ),
     loadJSON(
         "playerFrames",
@@ -175,7 +175,7 @@ Promise.all([
     audio.sounds.main.originVolume = 0.5;
     audio.setVolume();
     
-    WORLD.currentLevel = 23;
+    //WORLD.currentLevel = 23;
 
     WORLD.state = WORLD.states.setupStartScreen;
     
@@ -332,16 +332,6 @@ Promise.all([
             ctx.fillStyle = "black";
             ctx.globalAlpha = 0.2;
             ctx.fillRect(0, 0, c.width*2, c.height*2);
-            ctx.globalAlpha = 1;
-        }
-        //first level key tut
-        if(WORLD.currentLevel === 0 && keyAlpha > 0.01){
-            keyPosY += keyPosChangeDir;
-            if(keyPosY >= 215 || keyPosY <= 205) keyPosChangeDir *= -1;
-
-            if(keys.w.down || keys.a.down || keys.d.down) keyAlpha -= 0.01;
-            ctx.globalAlpha = keyAlpha;
-            ctx.drawImage(sprites.keys, 30, keyPosY, 94, 62);
             ctx.globalAlpha = 1;
         }
         //draw last level score

@@ -29,7 +29,6 @@ const boss = (pos) => {
     let attackText = ["Are you ready? Ha ha!", "Prepare yourself!", "Watch out for this!"];
     let chargeText = ["Here I come!", "Incoming!!!", "Run or die!"];
     const attacks = [
-        () => () => "charge!",
         getCollectCoinsAttack, 
         getFallingCoinsAttack,
         getGhostAttack,

@@ -33,6 +33,7 @@ const boss = (pos) => {
         getFallingCoinsAttack,
         getGhostAttack,
     ];
+    let lastAttack = undefined;
 
     addTalk(that);
 
@@ -119,7 +120,11 @@ const boss = (pos) => {
             if(that.loadAttack && that.grounded){
                 that.loadAttack = false;
                 that.attacking = true;
-                that.currentAttack = attacks[Math.floor(Math.random()*attacks.length)](that);
+                that.currentAttack = that.currentAttack = attacks[Math.floor(Math.random()*attacks.length)](that);
+                while(that.currentAttack === lastAttack){
+                    that.currentAttack = attacks[Math.floor(Math.random()*attacks.length)](that);
+                }
+                lastAttack = that.currentAttack;
                 
                 WORLD.startingAlpha = 1;
             }

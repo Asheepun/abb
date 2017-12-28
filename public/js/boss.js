@@ -6,6 +6,7 @@ import addMove                    from "/js/move.js";
 import addTalk                    from "/js/talk.js";
 import { addHandleColBounce }     from "/js/handleCol.js";
 import { point, movingPoint }     from "/js/point.js";
+import { confettiParticleEffect } from "/js/obstacles.js";
 
 let createdPoints = 0;
 
@@ -120,7 +121,7 @@ const boss = (pos) => {
             if(that.loadAttack && that.grounded){
                 that.loadAttack = false;
                 that.attacking = true;
-                that.currentAttack = that.currentAttack = attacks[Math.floor(Math.random()*attacks.length)](that);
+                that.currentAttack = attacks[Math.floor(Math.random()*attacks.length)](that);
                 while(that.currentAttack === lastAttack){
                     that.currentAttack = attacks[Math.floor(Math.random()*attacks.length)](that);
                 }
@@ -169,8 +170,25 @@ const boss = (pos) => {
         that.attackingCounter = 0;
         createdPoints = 0;
     }
-    that.checkDead = ({ enemies }) => {
-        if(that.alpha < 0.2){
+    that.checkDead = ({ enemies, background, midground }) => {
+        if(that.alpha < 0.4){
+            const crown = entity({
+                pos: that.pos.copy(),
+                size: vec(210, 69),
+                img: "crown",
+            });
+            addMove(crown, {
+                dir: 0,
+                speed: 0,
+                gravity: 0.01,
+            });
+            crown.velocity.y = -0.2;
+            addHandleColBounce(crown);
+            background.push(crown);
+            corpseParticleEffect({ 
+                array: midground, 
+                pos: that.center,
+            });
             enemies.splice(0, enemies.length);
         }
         if(that.dir > 0) that.text = "";
@@ -182,11 +200,30 @@ const boss = (pos) => {
             ctx.fillText(Math.floor(that.attackingCounter/60 + 1), that.center.x - 15, that.pos.y - 5);
         }
     }
+    that.drawCrown = (ctx, { sprites }) => {
+        ctx.globalAlpha = 1;
+        ctx.drawImage(sprites.crown, that.pos.x, that.pos.y, 210, 70);
+    }
 
     that.addUpdateActions("jump", "attack", "start", "checkDead");
-    that.addDrawingActions("drawAttackingCounter");
+    that.addDrawingActions("drawAttackingCounter", "drawCrown");
 
     return that;
+}
+
+const getFollowerAttack = (that) => {
+    that.attackingCounter = 10*60;
+    createdPoints = 2;
+    let initialized = false;
+
+    return ({ obstacles, enemies, points }) => {
+        if(!initialized){
+            points.push(point(vec(300, 300)));
+            points.push(point(vec(300, 300)));
+
+            initialized = true;
+        }
+    }
 }
 
 const getGhostAttack = (that) => {
@@ -243,6 +280,40 @@ const getFallingCoinsAttack = (that) => {
             initialized = true;
         }
 
+    }
+}
+
+const corpseParticleEffect = ({ array, pos }) => {
+    for(let i = 0; i < 20; i++){
+        const that = entity({
+            pos: pos.copy().add(Math.random()*170-85, Math.random()*210-105),
+            img: "enemy-piece",
+            size: vec(15 + Math.floor(Math.random()*10), 15 + Math.floor(Math.random()*10)),
+            alpha: 0.4,
+        });
+        that.imgPos = [0, 0, 15, 15];
+
+        addMove(that, {
+            dir: that.pos.x > pos.x ? 1 : -1,
+            speed: (0.1*10/that.size.x),
+        });
+        that.velocity.y = -Math.random()*0.5,
+        addHandleColBounce(that);
+        that.handleColissionY = object => {
+            that.speed = 0;
+            that.alpha -= 0.01*Math.random();
+            if(that.alpha < 0.02) that.alpha = 0;
+            if(that.velocity.y > 0){
+                that.grounded = true;
+                that.pos.y = object.pos.y - that.size.y;
+            }else{
+                that.grounded = false;
+                that.pos.y = object.pos.y + object.size.y;
+            }
+            that.velocity.y = 0;
+        }
+        
+        array.push(that);
     }
 }
 

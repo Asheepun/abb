@@ -55,14 +55,14 @@ export const grass = (pos) => {
     return that;
 }
 
-export const confettiParticleEffect = (array, pos, xSpread = 10, ySpread = 10, amount = 15, img = "box-particle") => {
+export const confettiParticleEffect = (array, pos, xSpread = 10, ySpread = 10, amount = 15, img = "box-particle", size = 5) => {
     //pixel effect
     for(let i = 0; i <   Math.random()*amount; i++){
         const that = entity({
             pos: vec(pos.x + Math.random()*xSpread - xSpread/2, pos.y + Math.random()*ySpread - ySpread/2),
             img,
-            size: vec(5, 5),
-            imgPos: [0, 0, 5, 5],
+            size: vec(size, size),
+            imgPos: [0, 0, size, size],
             rotation: Math.random()*360,
         });
         addMove(that, {

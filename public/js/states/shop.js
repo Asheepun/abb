@@ -8,14 +8,29 @@ export const emptyProgress = () => ({
         locked: [
             {
                 name: "Purple coat",
+                description: [
+                    "A nice purple coat",
+                    "for the most fabulous",
+                    "boys.",
+                ],
                 price: 6,
             },
             {
                 name: "Box of gold",
+                description: [
+                    "A box of solid gold",
+                    "for you to stand",
+                    "and jump on."
+                ],
                 price: 6,
             },
             {
                 name: "Confetti",
+                description: [
+                    "A trail of pink",
+                    "confetti that follows",
+                    "you around.",
+                ],
                 price: 8,
             },
         ],
@@ -31,6 +46,10 @@ export const updateProgress = (progress) => {
         && progress.items.unlocked.find(x => x === item.name) === undefined){
             progress.items.locked.push(item);
         }
+    });
+    progress.items.locked.forEach(item => {
+        const tempItem = template.items.locked.find(x => x.name === item.name);
+        if(item.description !== tempItem.description) item.description = tempItem.description;
     });
 }
 
@@ -61,7 +80,7 @@ const setupShop = (WORLD) => {
                 }else{
                     WORLD.audio.play("not-btn")
                 }
-            }
+            },
         });
         //fix buttons drawing
         btn.draw = (ctx) => {
@@ -71,6 +90,13 @@ const setupShop = (WORLD) => {
             ctx.fillText(item.name, btn.pos.x + 5, btn.pos.y + 22);
             ctx.fillText(item.price, btn.pos.x + 180, btn.pos.y + 22);
             ctx.globalAlpha = 1;
+            if(btn.hovered){
+                item.description.forEach((line, y) => {
+                    ctx.fillStyle = "white";
+                    ctx.font = "20px game";
+                    ctx.fillText(line, 450, 210 + 30*y);
+                });
+            }
         }
         WORLD.buttons.push(btn);
     });

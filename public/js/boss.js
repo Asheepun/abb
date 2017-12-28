@@ -34,7 +34,8 @@ const boss = (pos) => {
         getFallingCoinsAttack,
         getGhostAttack,
     ];
-    let lastAttack = undefined;
+    let currentAttackI = undefined;
+    let lastAttackI = undefined;
 
     addTalk(that);
 
@@ -121,11 +122,13 @@ const boss = (pos) => {
             if(that.loadAttack && that.grounded){
                 that.loadAttack = false;
                 that.attacking = true;
-                that.currentAttack = attacks[Math.floor(Math.random()*attacks.length)](that);
-                while(that.currentAttack === lastAttack){
-                    that.currentAttack = attacks[Math.floor(Math.random()*attacks.length)](that);
+                //make attack not repeat
+                currentAttackI = Math.floor(Math.random()*attacks.length);
+                while(currentAttackI === lastAttackI){
+                    currentAttackI = Math.floor(Math.random()*attacks.length);
                 }
-                lastAttack = that.currentAttack;
+                lastAttackI = currentAttackI;
+                that.currentAttack = attacks[currentAttackI](that);
                 
                 WORLD.startingAlpha = 1;
             }
@@ -273,7 +276,7 @@ const getFallingCoinsAttack = (that) => {
 
         if(!initialized){
             for(let i = 0; i < 5; i++){
-                const point = movingPoint(vec(i % 2 === 0 ? 330 : 570, -i*450));
+                const point = movingPoint(vec(i % 2 === 0 ? 330 : 570, -i*500));
                 point.dir = 0;
                 points.push(point);
             }

@@ -173,7 +173,7 @@ const boss = (pos) => {
         that.attackingCounter = 0;
         createdPoints = 0;
     }
-    that.checkDead = ({ enemies, background, midground }) => {
+    that.checkDead = ({ enemies, background, midground, points }) => {
         if(that.alpha < 0.4){
             const crown = entity({
                 pos: that.pos.copy(),
@@ -193,6 +193,8 @@ const boss = (pos) => {
                 pos: that.center,
             });
             enemies.splice(0, enemies.length);
+            points.splice(0, points.length);
+            points.push(point(vec(785, 305)));
         }
         if(that.dir > 0) that.text = "";
     }

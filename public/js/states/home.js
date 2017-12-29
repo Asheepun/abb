@@ -10,6 +10,10 @@ import { strEach, set }                                                   from "
 let extraPlayerState = undefined;
 
 const setupHome = (WORLD) => {
+
+        WORLD.audio.stop("main");
+        WORLD.audio.loop("home");
+
         WORLD.spliceAll(
             WORLD.obstacles,
             WORLD.points,
@@ -96,6 +100,8 @@ const setupHome = (WORLD) => {
         );
         //play current level
         if(WORLD.player.pos.y > WORLD.height + 50){
+            WORLD.audio.stop("home");
+            WORLD.audio.loop("main");
             extraPlayerState = undefined;
             WORLD.state = WORLD.states.setup;
         }

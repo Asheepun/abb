@@ -107,6 +107,7 @@ Promise.all([
         "talk",
         "point",
         "main",
+        "home",
         "yes-btn",
         "not-btn",
         "door-btn",

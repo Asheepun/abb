@@ -18,6 +18,7 @@ import button                                                             from "
 import createLevel, { strEach, set }                                      from "/js/level.js";
 
 //error message
+document.getElementById("loading").style.display = "none";
 
 const buttonImgs = [
     "arrow-right",
@@ -377,5 +378,4 @@ Promise.all([
     }
     
     loop();
-    document.getElementById("loading").style.display = "none";
 });

@@ -64,7 +64,10 @@ Promise.all([
         "D",
         "h",
         "H",
-        " "
+        " ",
+        "ArrowUp",
+        "ArrowLeft",
+        "ArrowRight",
     ),
     loadSprites(
         "background-normal",
@@ -96,6 +99,7 @@ Promise.all([
         "door",
         "door-button",
         "rainbow",
+        "rock",
         ...buttonImgs,
         ...obstacleImgs,
         ...wallImgs,
@@ -237,15 +241,17 @@ Promise.all([
     //WORLD.state = WORLD.states.setup;
 
     WORLD.controlPlayerKeys = () => {
-        if(keys.a.down || keys.A.down) WORLD.player.dir = -1;
-        if(keys.d.down || keys.D.down) WORLD.player.dir = 1;
+        if(keys.a.down || keys.A.down || keys.ArrowLeft.down) WORLD.player.dir = -1;
+        if(keys.d.down || keys.D.down || keys.ArrowRight.down) WORLD.player.dir = 1;
         if((keys.a.down && keys.d.down
         || !keys.a.down && !keys.d.down)
         && (keys.A.down && keys.D.down
-        || !keys.A.down && !keys.D.down)) WORLD.player.dir = 0;
-        if(keys.w.pressed || keys.W.pressed || keys[" "].pressed){
+        || !keys.A.down && !keys.D.down)
+        && (keys.ArrowLeft.down && keys.ArrowRight.down
+        || !keys.ArrowLeft.down && !keys.ArrowRight.down)) WORLD.player.dir = 0;
+        if(keys.w.pressed || keys.W.pressed || keys[" "].pressed || keys.ArrowUp.pressed){
             WORLD.player.jump(WORLD);
-        }else if((keys.w.upped || keys.W.upped || keys[" "].upped) && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
+        }else if((keys.w.upped || keys.W.upped || keys[" "].upped || keys.ArrowUp.upped) && WORLD.player.velocity.y < 0) WORLD.player.velocity.y = 0;
     }
     
     WORLD.states.game = () => {

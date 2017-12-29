@@ -52,7 +52,7 @@ import getClouds                     from "/js/clouds.js";
     
         if(WORLD.offset.x <= -WORLD.width){
             WORLD.weather = "normal";
-            if(Math.random() < 0.2) WORLD.weather = "rain";
+            if(Math.random() < 0.3) WORLD.weather = "rain";
             WORLD.state = WORLD.states.setup;
         }
     

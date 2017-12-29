@@ -25,6 +25,13 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
     let pos;
     map.forEach((row, y) => strEach(row, (tile, x) => {
         pos = vec(x*30 + offsetX, y*30);
+        //handle grass and stones
+        if(y !== map.length-1
+        && map[y+1][x] === "#" 
+        && tile !== "#"){
+            that.foreground.push(grass(pos));
+        }
+        //handle main entities
         if(tile === "@") that.player = player(pos);
         if(tile === "§") that.deathCounter = deathCounter(pos);
         if(tile === "B") that.box = box(pos);
@@ -47,10 +54,6 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "5") that.enemies.push(follower(pos));
         if(tile === "6") that.enemies.push(ghost(pos));
         if(tile === "¤") that.enemies.push(boss(pos));
-        //handle grass
-        if(y !== map.length-1
-        && map[y+1][x] === "#" 
-        && tile !== "#") that.foreground.push(grass(pos));
         //handle walls
         if((tile === ","
         || (y !== 0 && map[y-1][x] === ",")

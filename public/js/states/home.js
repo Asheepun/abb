@@ -11,8 +11,10 @@ let extraPlayerState = undefined;
 
 const setupHome = (WORLD) => {
 
-        WORLD.audio.stop("main");
-        WORLD.audio.loop("home");
+        if(WORLD.audio.sounds.main.loop){
+            WORLD.audio.stop("main");
+            WORLD.audio.loop("home");
+        }
 
         WORLD.spliceAll(
             WORLD.obstacles,

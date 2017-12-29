@@ -200,7 +200,7 @@ Promise.all([
         WORLD.player = newLevel.player;
         WORLD.enemies = newLevel.enemies;
         WORLD.foreground = newLevel.foreground;
-        WORLD.foreground = WORLD.foreground.concat(getClouds());
+        if(WORLD.settings.cloudsOn) WORLD.foreground = WORLD.foreground.concat(getClouds());
         if(WORLD.weather === "rain") WORLD.background = WORLD.background.concat(getRain());
         WORLD.deathCounter.deaths = WORLD.deaths;
         //add settings button

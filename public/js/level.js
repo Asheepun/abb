@@ -49,7 +49,13 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "p") that.points.push(movingPoint(vec(pos.x + 5, pos.y + 5)));
         if(tile === "1") that.enemies.push(bouncer(pos));
         if(tile === "2") that.enemies.push(jumper(pos));
-        if(tile === "3") that.enemies.push(spawner(pos));
+        if(tile === "3"){
+            that.enemies.push(spawner(pos));
+            that.midground.push(entity({
+                pos: pos.copy().add(vec(30, 30)),
+                img: "rock",
+            }));//respawn point
+        }
         if(tile === "4") that.enemies.push(giantJumper(pos));
         if(tile === "5") that.enemies.push(follower(pos));
         if(tile === "6") that.enemies.push(ghost(pos));

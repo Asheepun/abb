@@ -180,8 +180,6 @@ Promise.all([
     audio.sounds["door-btn"].originVolume = 0.5;
     audio.sounds.main.originVolume = 0.5;
     audio.setVolume();
-    
-    //WORLD.currentLevel = 23;
 
     WORLD.state = WORLD.states.setupStartScreen;
     

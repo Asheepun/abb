@@ -2,6 +2,15 @@
     margin:0px auto;
     padding:0px;
     text-align:center;
+    color:white;
+    text-decoration:none;
+    font-family: game;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 @font-face{
@@ -9,6 +18,28 @@
     src: url("/game.ttf");
 }
 
-p{
-    font-size:20px;
+body{
+    background:#e3e3e3;
+}
+
+li{
+    text-align:left;
+    margin:5px 0px;
+}
+
+a:hover{
+    margin:5px 0px;
+    color: #636363;
+}
+
+canvas{
+    margin-right:10%;
+}
+
+#info{
+    border-bottom-right-radius:5px;
+    float: left;
+    background:black;
+    padding:10px;
+    border:1px solid black;
 }

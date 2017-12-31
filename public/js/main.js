@@ -181,6 +181,8 @@ Promise.all([
     audio.sounds.main.originVolume = 0.5;
     audio.setVolume();
 
+    //WORLD.currentLevel = 9;
+
     WORLD.state = WORLD.states.setupStartScreen;
     
     WORLD.states.setup = () => {

@@ -522,7 +522,7 @@ const levelTemplates = [
             "....#####..#############.#####",
             "....###################..#####",
         ],
-        helps: ["Hey ol' chap!"],
+        helps: ["Think like a turtle."],
     },
     {
         map: [//6
@@ -622,7 +622,11 @@ const levelTemplates = [
             "###......###...............###",
             "###.......##................##",
         ],
-        helps: ["You can drag your mouse to move the box.", "Or click anywhere to teleport it to where your mouse is.", "Mind the gap!"],
+        helps: [
+            "You can drag your mouse to move the box.", 
+            "Or click anywhere to teleport it to where your mouse is.", 
+            "Mind the gap!"
+        ],
     },
     {
         map: [//2

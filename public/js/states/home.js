@@ -40,12 +40,13 @@ const setupHome = (WORLD) => {
             action(){
                 if(WORLD.currentLevel < localStorage.furtestLevel){
                     WORLD.currentLevel++;
-                    WORLD.audio.play("yes-btn")
+                    WORLD.audio.play("yes-btn");
                 }
                 else{
-                    WORLD.audio.play("not-btn")
+                    WORLD.audio.play("not-btn");
                 }
-        } }));
+            } 
+        }));
         WORLD.midground.push(button({ 
             pos: vec(730, 360), 
             img: "buttons/arrow-left", 
@@ -53,12 +54,13 @@ const setupHome = (WORLD) => {
             action(){
                 if(WORLD.currentLevel > 0){
                     WORLD.currentLevel--;
-                    WORLD.audio.play("yes-btn")
+                    WORLD.audio.play("yes-btn");
                 }
                 else{
-                    WORLD.audio.play("not-btn")
+                    WORLD.audio.play("not-btn");
                 }
-        } }));
+            } 
+        }));
         //shop button
         WORLD.midground.push(button({ 
             pos: vec(330, 440), 
@@ -67,7 +69,8 @@ const setupHome = (WORLD) => {
             action(){
                 extraPlayerState = WORLD.player;
                 WORLD.state = WORLD.states.setupShop;
-        } }));
+            } 
+        }));
         //add text credits text
         if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1){
             WORLD.midground.push(text({

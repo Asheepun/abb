@@ -71,6 +71,7 @@ Promise.all([
         "ArrowRight",
     ),
     loadSprites(
+        "shadow-p",
         "background-normal",
         "background-rain",
         "player",
@@ -181,7 +182,7 @@ Promise.all([
     audio.sounds.main.originVolume = 0.5;
     audio.setVolume();
 
-    //WORLD.currentLevel = 9;
+    WORLD.currentLevel = 0;
 
     WORLD.state = WORLD.states.setupStartScreen;
     
@@ -200,6 +201,7 @@ Promise.all([
         WORLD.player = newLevel.player;
         WORLD.enemies = newLevel.enemies;
         WORLD.foreground = newLevel.foreground;
+        WORLD.shadows = newLevel.shadows;
         if(WORLD.settings.cloudsOn) WORLD.foreground = WORLD.foreground.concat(getClouds());
         if(WORLD.weather === "rain") WORLD.background = WORLD.background.concat(getRain());
         WORLD.deathCounter.deaths = WORLD.deaths;
@@ -313,6 +315,7 @@ Promise.all([
             WORLD.player,
             WORLD.enemies,
             WORLD.foreground,
+            WORLD.shadows,
         );
         //draw nextLevelCounter
         if(WORLD.nextLevelCounter){

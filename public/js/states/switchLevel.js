@@ -26,6 +26,7 @@ import getClouds                     from "/js/clouds.js";
             newLevel.background.forEach(p => WORLD.background.push(p));
             newLevel.foreground.forEach(p => WORLD.foreground.push(p));
             newLevel.points.forEach(p => WORLD.points.push(p));
+            newLevel.shadows.forEach(x => WORLD.shadows.push(x));
             WORLD.deathCounter = newLevel.deathCounter;
             WORLD.deathCounter.deaths = WORLD.deaths;
             if(WORLD.settings.cloudsOn) getClouds(15, 900).forEach(c => WORLD.foreground.push(c));

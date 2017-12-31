@@ -9,4 +9,8 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
+app.get("/game", (req, res) => {
+    res.sendFile(__dirname + "/game.html");
+});
+
 app.listen(port, () => console.log("Listening on port: " + port));

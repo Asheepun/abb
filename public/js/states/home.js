@@ -30,6 +30,7 @@ const setupHome = (WORLD) => {
         WORLD.obstacles = newLevel.obstacles;
         WORLD.walls = newLevel.walls;
         WORLD.player = newLevel.player;
+        WORLD.shadows = newLevel.shadows;
         if(extraPlayerState !== undefined) WORLD.player = extraPlayerState;
         WORLD.foreground = newLevel.foreground;
         //switch level buttons
@@ -127,6 +128,7 @@ const setupHome = (WORLD) => {
         if(WORLD.currentLevel == localStorage.furtestLevel) ctx.fillStyle = "#438a1d";
         ctx.font = "20px game";
         ctx.fillText("Level " + (WORLD.currentLevel + 1), 768, 380);
+        WORLD.drawAll(WORLD.shadows);
         ctx.restore();
 
     }

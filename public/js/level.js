@@ -26,66 +26,6 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
     let pos;
     map.forEach((row, y) => strEach(row, (tile, x) => {
         pos = vec(x*30 + offsetX, y*30);
-        //handle shadows
-        const shadow = entity({
-            pos: pos.copy(),
-            alpha: 0,
-        });
-        /*if(tile !== "."){
-            let topLeft = false;
-            let topRight = false;
-            let bottomLeft = false;
-            let bottomRight = false;
-            if(y > 0 && x > 0 && map[y-1][x-1] !== "." || y === 0 && x === 0){
-                topLeft = true;
-            }
-            if(y > 0 && x < map[0].length-1 && map[y-1][x+1] !== "." || y === 0 && x === map[0].length-1){
-                topRight = true;
-            }
-            if(y < map.length-1 && x > 0 && map[y+1][x-1] !== "." || y === map.length-1 && x === 0){
-                bottomLeft = true;
-            }
-            if(y < map.length-1 && x < map[0].length-1 && map[y+1][x+1] !== "." || y === map.length-1 && x === map[0].length-1){
-                bottomRight = true;
-            }
-            if(topLeft && topRight && bottomLeft && bottomRight){
-                shadow.alpha = 1;
-            }
-        }*/
-        if(tile !== "."){
-            if((y !== 0 && map[y-1][x] !== "." || y === 0)
-            && (y !== map.length-1 && map[y+1][x] !== "." || y === map.length-1)
-            && (x !== 0 && map[y][x-1] !== "." || x === 0)
-            && (x !== map[0].length-1 && map[y][x+1] !== "." || x === map[0].length-1)){
-                shadow.alpha += 0.1;
-            }
-            if((y > 1 && map[y-2][x] !== "." || y === 0 || y-1 === 0)
-            && (y < map.length-2 && map[y+2][x] !== "." || y === map.length-1 || y+1 === map.length-1)
-            && (x > 1 && map[y][x-2] !== "." || x === 0|| x-1 === 0)
-            && (x < map[0].length-2 && map[y][x+2] !== "." || x === map[0].length-1 || x+1 === map[0].length-1)){
-                shadow.alpha += 0.1;
-            }
-            if((y > 2 && map[y-3][x] !== "." || y === 0 || y-1 === 0 || y-2 === 0)
-            && (y < map.length-3 && map[y+3][x] !== "." || y === map.length-1 || y+1 === map.length-1 || y+2 === map.length-1)
-            && (x > 2 && map[y][x-3] !== "." || x === 0|| x-1 === 0 || x-2 === 0)
-            && (x < map[0].length-3 && map[y][x+3] !== "." || x === map[0].length-1 || x+1 === map[0].length-1 || x+2 === map[0].length-1)){
-                shadow.alpha += 0.1;
-            }
-            if((y > 3 && map[y-4][x] !== "." || y === 0 || y-1 === 0 || y-2 === 0 || y-3 === 0)
-            && (y < map.length-4 && map[y+4][x] !== "." || y === map.length-1 || y+1 === map.length-1 || y+2 === map.length-1 || y+3 === map.length-1)
-            && (x > 3 && map[y][x-4] !== "." || x === 0|| x-1 === 0 || x-2 === 0 || x-3 === 0)
-            && (x < map[0].length-4 && map[y][x+4] !== "." || x === map[0].length-1 || x+1 === map[0].length-1 || x+2 === map[0].length-1 || x+3 === map[0].length-1)){
-                shadow.alpha += 0.1;
-            }
-        }
-        shadow.draw = (ctx) => {
-            ctx.fillStyle = "black";
-            ctx.globalAlpha = shadow.alpha;
-            ctx.fillRect(shadow.pos.x, shadow.pos.y, 30.05, 30.05);
-            ctx.globalAlpha = 1;
-        }
-        that.shadows.push(shadow);
-
         //handle grass and stones
         if(y !== map.length-1
         && map[y+1][x] === "#" 
@@ -127,6 +67,52 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         || (y !== map.length-1 && map[y+1][x] === ","))
         && tile !== "#"
         && tile !== ".") that.walls.push(entity({pos: pos.copy(), img: "walls/30"}));
+        
+        //handle shadows
+        const shadow = entity({
+            pos: pos.copy(),
+            alpha: 0,
+        });
+        if(tile !== "."){
+            for(let i = 0; i < 4; i++){
+                let topLeft = false;
+                let topRight = false;
+                let bottomLeft = false;
+                let bottomRight = false;
+                if(y > i && x > i && map[y-1-i][x-1-i] !== "."){
+                    topLeft = true;
+                }
+                if(y > i && x < map[0].length-1-i && map[y-1-i][x+1+i] !== "."){
+                    topRight = true;
+                }
+                if(y < map.length-1-i && x > i && map[y+1+i][x-1-i] !== "."){
+                    bottomLeft = true;
+                }
+                if(y < map.length-1-i && x < map[0].length-1-i && map[y+1+i][x+1+i] !== "."){
+                    bottomRight = true;
+                }
+
+                if((topLeft && topRight && y >= map.length-1-i)
+                || (bottomLeft && bottomRight && y <= i)
+                || (topLeft && bottomLeft && x >= map[0].length-1-i)
+                || (topRight && bottomRight && x <= i)
+                || (topLeft && y >= map.length-1-i && x >= map[0].length-1-i)
+                || (topRight && y >= map.length-1-i && x <= i)
+                || (bottomLeft && y <= i && x >= map[0].length-1-i)
+                || (bottomRight && y <= i && x <= i)
+                || (topLeft && topRight && bottomLeft && bottomRight)
+                ){
+                    shadow.alpha += 0.1;
+                }else break;
+            }
+        }
+        shadow.draw = (ctx) => {
+            ctx.fillStyle = "black";
+            ctx.globalAlpha = shadow.alpha;
+            ctx.fillRect(shadow.pos.x, shadow.pos.y, 30.05, 30.05);
+            ctx.globalAlpha = 1;
+        }
+        if(shadow.alpha > 0) that.shadows.push(shadow);
     }));
 
     //group obstacles

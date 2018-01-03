@@ -4,7 +4,7 @@ import text                                                               from "
 import createLevel                                                        from "/js/level.js";
 import button                                                             from "/js/button.js";
 import helper                                                             from "/js/helper.js";
-import levelTeplates                                                      from "/js/levelTemplates.js";
+import levelTeplates, { difficultLevelTemplates }                         from "/js/levelTemplates.js";
 import { strEach, set }                                                   from "/js/level.js";
 
 let extraPlayerState = undefined;
@@ -92,6 +92,37 @@ const setupHome = (WORLD) => {
         WORLD.midground.push(helper(vec(345, 480), "Can I interest you in my wares?"));
         WORLD.midground.push(helper(vec(660, 480), "When I'm done I'll get my cash at level 11."));
 
+        if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1){
+            //WORLD.midground.push(helper(vec(0, 240), "Hardcore level2"));
+            WORLD.midground.push(helper(vec(180, 300), "Big trouble"));
+           /* WORLD.midground.push(button({
+                pos: vec(0, 180),
+                img: "buttons/play",
+                size: vec(60, 30),
+                action(){
+                    WORLD.audio.stop("home");
+                    WORLD.audio.loop("main");
+                    WORLD.difficultLevel = true;
+                    WORLD.levelTemplates = [difficultLevelTemplates[1]];
+                    WORLD.currentLevel = 0;
+                    WORLD.state = WORLD.states.setup;
+                }
+            }));*/
+            WORLD.midground.push(button({
+                pos: vec(180, 240),
+                img: "buttons/play",
+                size: vec(60, 30),
+                action(){
+                    WORLD.audio.stop("home");
+                    WORLD.audio.loop("main");
+                    WORLD.difficultLevel = true;
+                    WORLD.levelTemplates = [difficultLevelTemplates[0]];
+                    WORLD.currentLevel = 0;
+                    WORLD.state = WORLD.states.setup;
+                }
+            }));
+        }
+
         WORLD.state = updateHome;
     }
 
@@ -140,13 +171,13 @@ const homeTemplate = [
     "########,,,,,,,,,,,,,,########",
     "######,,,,,,,,,,,,,,,,,,######",
     "####,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
+    "##,,,,,,,,,,,,,,,,,,,,,,,,@,,,",
     "##,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
-    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
-    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
-    ",,,,,,,,,,,,,,,,,,,,,,,,,,@,,,",
-    ",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,",
-    ",,,,,,,,,,,,,,,,,,,,,,,,######",
-    ",,,,,,,,,,,,,,,,,,,,,,,#######",
+    ",,,,,,##,,,,,,,,,,,,,,,,######",
+    ",,,,,###,,,,,,,,,,,,,,,#######",
     ",,,,,,,,,,,,,,,,,,,,,,,#######",
     ",,,,,,,,,,,,,,,,,,,,,,,,,,,###",
     "###,,,,,,,,,,,,,,,,,,,,,,,,,,#",

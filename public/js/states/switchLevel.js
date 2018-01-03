@@ -15,6 +15,7 @@ import getClouds                     from "/js/clouds.js";
 
             //make mock world for switching animation
             const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel], 900);
+
             newLevel.obstacles.forEach(o => WORLD.obstacles.push(o));
             newLevel.walls.forEach(w => WORLD.walls.push(w));
             newLevel.midground.forEach(x => {
@@ -31,7 +32,13 @@ import getClouds                     from "/js/clouds.js";
             WORLD.deathCounter.deaths = WORLD.deaths;
             if(WORLD.settings.cloudsOn) getClouds(15, 900).forEach(c => WORLD.foreground.push(c));
             WORLD.newSpawn = newLevel.player.pos;
-            
+            const doubleTemplate = {
+                map: WORLD.levelTemplates[WORLD.currentLevel-1].map.map((x, i) => x + WORLD.levelTemplates[WORLD.currentLevel].map[i]),
+                helps: [],
+            }
+            const newShadowLevel = createLevel(doubleTemplate);
+            WORLD.shadows = newShadowLevel.shadows;
+
             WORLD.state = switchLevel;
         }
     }

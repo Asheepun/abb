@@ -216,23 +216,8 @@ const boss = (pos) => {
     return that;
 }
 
-const getFollowerAttack = (that) => {
-    that.attackingCounter = 10*60;
-    createdPoints = 2;
-    let initialized = false;
-
-    return ({ obstacles, enemies, points }) => {
-        if(!initialized){
-            points.push(point(vec(300, 300)));
-            points.push(point(vec(300, 300)));
-
-            initialized = true;
-        }
-    }
-}
-
 const getGhostAttack = (that) => {
-    that.attackingCounter = 5*60;
+    that.attackingCounter = 6*60;
     createdPoints = 2;
     let initialized = false;
 
@@ -253,7 +238,7 @@ const getGhostAttack = (that) => {
 }
 
 const getCollectCoinsAttack = (that) => {
-    that.attackingCounter = 10*60;
+    that.attackingCounter = 8*60;
     createdPoints = 4;
     let initialized = false;
 
@@ -270,7 +255,7 @@ const getCollectCoinsAttack = (that) => {
 }
 
 const getFallingCoinsAttack = (that) => {
-    that.attackingCounter = 8*60;
+    that.attackingCounter = 10*60;
     createdPoints = 5;
     let initialized = false;
 

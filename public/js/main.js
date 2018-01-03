@@ -9,7 +9,7 @@ import { setupSettings }                                                  from "
 import setupStartScreen                                                   from "/js/states/startScreen.js";
 import setupHome                                                          from "/js/states/home.js";
 import setupShop, { emptyProgress, updateProgress }                       from "/js/states/shop.js";
-import levelTemplates                                                     from "/js/levelTemplates.js";
+import levelTemplates, { difficultLevelTemplates }                        from "/js/levelTemplates.js";
 import getClouds                                                          from "/js/clouds.js";
 import getRain                                                            from "/js/rain.js";
 import getMove                                                            from "/js/move.js";
@@ -182,10 +182,10 @@ Promise.all([
     audio.sounds.main.originVolume = 0.5;
     audio.setVolume();
 
-    //WORLD.currentLevel = 0;
+    //WORLD.currentLevel = 19;
 
     WORLD.state = WORLD.states.setupStartScreen;
-    
+
     WORLD.states.setup = () => {
 
         const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel], 0);
@@ -280,8 +280,15 @@ Promise.all([
             WORLD.nextLevelCounter -= WORLD.timeScl/1000;
         }
         if(WORLD.points.length <= 0 && WORLD.nextLevelCounter <= 1){
-            WORLD.nextLevelCounter = undefined;
-            WORLD.state = WORLD.states.setupSwitchLevel;
+            if(!WORLD.difficultLevel){
+                WORLD.nextLevelCounter = undefined;
+                WORLD.state = WORLD.states.setupSwitchLevel;
+            }else{
+                WORLD.difficultLevel = false;
+                WORLD.levelTemplates = levelTemplates;
+                WORLD.currentLevel = levelTemplates.length-1;
+                WORLD.state = WORLD.states.setupHome;
+            }
         }
         //go home
         if(keys.h.down || keys.H.down){
@@ -292,6 +299,11 @@ Promise.all([
         }
         if(WORLD.goHomeCounter < 1){
             WORLD.goHomeCounter = undefined;
+            if(WORLD.difficultLevel){
+                WORLD.difficultLevel = false;
+                WORLD.levelTemplates = levelTemplates;
+                WORLD.currentLevel = levelTemplates.length-1;
+            }
             WORLD.state = WORLD.states.setupHome;
         }
     
@@ -346,7 +358,7 @@ Promise.all([
             ctx.globalAlpha = 1;
         }
         //draw last level score
-        if(WORLD.currentLevel === 24 && WORLD.state === WORLD.states.game){
+        if(WORLD.currentLevel === WORLD.levelTemplates.length-1 && WORLD.state === WORLD.states.game && !WORLD.difficultLevel){
             ctx.fillStyle = "white";
             ctx.font = "40px game"
             ctx.fillText("Victory!", 330, 150);

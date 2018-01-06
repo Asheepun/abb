@@ -182,8 +182,6 @@ Promise.all([
     audio.sounds.main.originVolume = 0.5;
     audio.setVolume();
 
-    //WORLD.currentLevel = 19;
-
     WORLD.state = WORLD.states.setupStartScreen;
 
     WORLD.states.setup = () => {
@@ -241,7 +239,11 @@ Promise.all([
         WORLD.state = WORLD.states.game;
     }
 
-    //WORLD.state = WORLD.states.setup;
+    /*WORLD.currentLevel = 0;
+    WORLD.difficultLevel = true;
+    WORLD.state = WORLD.states.setup;
+    WORLD.levelTemplates = [difficultLevelTemplates[1]];
+    WORLD.state = WORLD.states.setup;*/
 
     WORLD.controlPlayerKeys = () => {
         if(keys.a.down || keys.A.down || keys.ArrowLeft.down) WORLD.player.dir = -1;

@@ -238,7 +238,7 @@ const getGhostAttack = (that) => {
 }
 
 const getCollectCoinsAttack = (that) => {
-    that.attackingCounter = 8*60;
+    that.attackingCounter = 9*60;
     createdPoints = 4;
     let initialized = false;
 
@@ -255,7 +255,7 @@ const getCollectCoinsAttack = (that) => {
 }
 
 const getFallingCoinsAttack = (that) => {
-    that.attackingCounter = 10*60;
+    that.attackingCounter = 9*60;
     createdPoints = 5;
     let initialized = false;
 

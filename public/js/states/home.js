@@ -93,9 +93,9 @@ const setupHome = (WORLD) => {
         WORLD.midground.push(helper(vec(660, 480), "When I'm done I'll get my cash at level 11."));
 
         if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1){
-            //WORLD.midground.push(helper(vec(0, 240), "Hardcore level2"));
+            WORLD.midground.push(helper(vec(0, 240), "Spooky boogie"));
             WORLD.midground.push(helper(vec(180, 300), "Big trouble"));
-           /* WORLD.midground.push(button({
+            WORLD.midground.push(button({
                 pos: vec(0, 180),
                 img: "buttons/play",
                 size: vec(60, 30),
@@ -107,7 +107,7 @@ const setupHome = (WORLD) => {
                     WORLD.currentLevel = 0;
                     WORLD.state = WORLD.states.setup;
                 }
-            }));*/
+            }));
             WORLD.midground.push(button({
                 pos: vec(180, 240),
                 img: "buttons/play",

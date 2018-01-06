@@ -36,6 +36,10 @@ export const emptyProgress = () => ({
         ],
         unlocked: [],
     },
+    difficultLevelTimes: [
+        "00:00",
+        "00:00",
+    ],
 });
 
 export const updateProgress = (progress) => {

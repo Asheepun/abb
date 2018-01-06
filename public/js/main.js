@@ -189,6 +189,7 @@ Promise.all([
         const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel], 0);
             
         //initialize level
+        WORLD.timer = 0;
         WORLD.background = newLevel.background;
         WORLD.walls = newLevel.walls;
         WORLD.obstacles = newLevel.obstacles;
@@ -286,9 +287,11 @@ Promise.all([
                 WORLD.nextLevelCounter = undefined;
                 WORLD.state = WORLD.states.setupSwitchLevel;
             }else{
+                WORLD.progress.difficultLevelTimes[WORLD.currentLevel] = (Math.floor(WORLD.timer/60) < 10 ? "0" : "") + Math.floor(WORLD.timer/60) + ":" + (Math.floor(WORLD.timer%60) < 10 ? "0" : "") + Math.floor(WORLD.timer%60);
                 WORLD.difficultLevel = false;
                 WORLD.levelTemplates = levelTemplates;
                 WORLD.currentLevel = levelTemplates.length-1;
+                WORLD.saveProgress();
                 WORLD.state = WORLD.states.setupHome;
             }
         }
@@ -368,6 +371,13 @@ Promise.all([
             if(WORLD.deaths === 0 || WORLD.deaths === "0") ctx.fillText("flawless!", 360, 190);
             else if(WORLD.deaths === 1 || WORLD.deaths === "1") ctx.fillText("And you only died once!", 280, 190);
             else ctx.fillText("And you only died " + WORLD.deaths + " times!", 270, 190);
+        }
+        //draw timer on difficult levels
+        if(WORLD.difficultLevel){
+            WORLD.timer += 1/60;
+            ctx.fillStyle = "white";
+            ctx.font = "20px game";
+            ctx.fillText((Math.floor(WORLD.timer/60) < 10 ? "0" : "") + Math.floor(WORLD.timer/60) + ":" + (Math.floor(WORLD.timer%60) < 10 ? "0" : "") + Math.floor(WORLD.timer%60), 30, 30);
         }
 
         ctx.restore();

@@ -168,6 +168,7 @@ Promise.all([
         localStorage.furtestLevel = 0;
         localStorage.deaths = 0;
     }
+    if(localStorage.progress.difficultLevelTimes === undefined) localStorage.progress.difficultLevelTimes = ["00:00", "00:00"]; 
     WORLD.progress = JSON.parse(localStorage.progress);
     updateProgress(WORLD.progress);
     WORLD.currentLevel = JSON.parse(localStorage.furtestLevel);

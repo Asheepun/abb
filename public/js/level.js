@@ -4,7 +4,7 @@ import { bouncer, jumper, spawner, giantJumper, follower, ghost } from "/js/enem
 import boss                                                       from "/js/boss.js";
 import { obstacle,  box, grass }                                  from "/js/obstacles.js";
 import { door, key }                                              from "/js/door.js";
-import helper, { converter }                                      from "/js/helper.js";
+import helper, { converter, reseter }                             from "/js/helper.js";
 import player                                                     from "/js/player.js";
 import { point, movingPoint }                                     from "/js/point.js";
 
@@ -37,6 +37,7 @@ const createLevel = ({ map, helps }, offsetX = 0) => {
         if(tile === "§") that.deathCounter = deathCounter(pos);
         if(tile === "B") that.box = box(pos);
         if(tile === "$") that.midground.push(converter(pos));
+        if(tile === "R") that.midground.push(reseter(pos));
         if(tile === "#") that.obstacles.push(obstacle(pos, map, offsetX));
         if(tile === "|") that.obstacles.push(door(pos, 1));
         if(tile === "*") that.midground.push(key(pos, 1));

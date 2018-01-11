@@ -600,7 +600,7 @@ const levelTemplates = [
             "....#####..#############.#####",
             "....###################..#####",
         ],
-        helps: ["Think like a turtle."],
+        helps: ["such skill."],
     },
     {
         map: [//6

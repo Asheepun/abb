@@ -3,7 +3,7 @@ import entity                                                             from "
 import text                                                               from "/js/engine/factories/text.js";
 import createLevel                                                        from "/js/level.js";
 import button                                                             from "/js/button.js";
-import helper                                                             from "/js/helper.js";
+import helper, { reseter }                                                from "/js/helper.js";
 import levelTeplates, { difficultLevelTemplates }                         from "/js/levelTemplates.js";
 import { strEach, set }                                                   from "/js/level.js";
 
@@ -92,6 +92,7 @@ const setupHome = (WORLD) => {
         WORLD.midground.push(helper(vec(345, 480), "Can I interest you in my wares?"));
         WORLD.midground.push(helper(vec(660, 480), "When I'm done I'll get my cash at level 11."));
 
+        //add difficult levels
         if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1){
             WORLD.midground.push(helper(vec(0, 240), "Spooky boogie " + WORLD.progress.difficultLevelTimes[1]));
             WORLD.midground.push(helper(vec(180, 300), "Big trouble " + WORLD.progress.difficultLevelTimes[0]));

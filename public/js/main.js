@@ -238,7 +238,9 @@ Promise.all([
         WORLD.getHomeCounter = undefined;
         WORLD.offset = vec(0, 0);
         
-        WORLD.state = WORLD.states.game;
+        if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1)
+            WORLD.state = WORLD.states.setupHome;
+        else  WORLD.state = WORLD.states.game;
     }
 
     /*WORLD.currentLevel = 0;

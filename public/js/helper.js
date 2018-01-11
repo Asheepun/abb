@@ -95,4 +95,51 @@ export const converter = (pos) => {
     return that;
 }
 
+export const reseter = (pos) => {
+    const that = helper(pos);
+    addAnimate(that, {
+        delay: 3,
+        handleFrames: ({ JSON }) => JSON.helperFrames[that.state][that.dir],
+    });
+
+    const btn = button({
+        pos: vec(that.pos.x - 25, that.pos.y - 45),
+        size: vec(80, 20),
+        img: "buttons/convert",
+        action(){
+            if(WORLD.progress.completedLevels > 0){
+                WORLD.progress.completedLevels--;
+                WORLD.progress.coins++;
+                WORLD.audio.play("yes-btn");
+            }else{
+                WORLD.audio.play("not-btn");
+            }
+        } 
+    });
+    that.addConverterButton = (WORLD) => {
+        btn.action = () => {
+            localStorage.clear();
+            WORLD.state = WORLD.states.setup;
+        } 
+        if(that.state === "talking" && WORLD.midground.indexOf(btn) === -1){
+            WORLD.midground.push(btn);
+        }else if(that.state !== "talking" && WORLD.midground.indexOf(btn) !== -1) WORLD.midground.splice(WORLD.midground.indexOf(btn), 1);
+    }
+
+    that.drawText = (ctx, { progress, offset }) => {
+        if(that.state === "talking"){
+            ctx.fillStyle = "white";
+            ctx.font = "20px game";
+            ctx.fillText("Want to get a", that.pos.x - 39 - offset.x, that.pos.y - 71);
+            ctx.fillText("better score?", that.pos.x - 39 - offset.x, that.pos.y - 46);
+        }
+    }
+    that.drawingActions.splice(0, 1);
+
+    that.addDrawingActions("drawText");
+    that.addUpdateActions("addConverterButton");
+
+    return that;
+}
+
 export default helper;

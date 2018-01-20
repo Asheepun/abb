@@ -185,6 +185,8 @@ Promise.all([
 
     WORLD.state = WORLD.states.setupStartScreen;
 
+    let justStarted = true;
+
     WORLD.states.setup = () => {
 
         const newLevel = createLevel(WORLD.levelTemplates[WORLD.currentLevel], 0);
@@ -238,9 +240,10 @@ Promise.all([
         WORLD.getHomeCounter = undefined;
         WORLD.offset = vec(0, 0);
         
-        if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1)
+        if(JSON.parse(localStorage.furtestLevel) === WORLD.levelTemplates.length-1 && justStarted)
             WORLD.state = WORLD.states.setupHome;
         else  WORLD.state = WORLD.states.game;
+        justStarted = false;
     }
 
     /*WORLD.currentLevel = 0;

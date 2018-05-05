@@ -17,3 +17,7 @@
     font-family: "game";
     src: url("/game.ttf");
 }
+
+body{
+    background: #000000;   
+}

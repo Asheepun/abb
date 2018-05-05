@@ -17,29 +17,3 @@
     font-family: "game";
     src: url("/game.ttf");
 }
-
-body{
-    background:#e3e3e3;
-}
-
-li{
-    text-align:left;
-    margin:5px 0px;
-}
-
-a:hover{
-    margin:5px 0px;
-    color: #636363;
-}
-
-canvas{
-    margin-right:10%;
-}
-
-#info{
-    border-bottom-right-radius:5px;
-    float: left;
-    background:black;
-    padding:10px;
-    border:1px solid black;
-}

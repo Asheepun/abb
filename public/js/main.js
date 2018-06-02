@@ -17,9 +17,6 @@ import player                                                             from "
 import button                                                             from "/js/button.js";
 import createLevel, { strEach, set }                                      from "/js/level.js";
 
-//error message
-document.getElementById("loading").style.display = "none";
-
 const buttonImgs = [
     "arrow-right",
     "arrow-left",

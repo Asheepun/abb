@@ -123,6 +123,8 @@ Promise.all([
         "converterFrames",
     ),
 ]).then(([ { c, ctx, scale, pointer }, keys, sprites, audio, resJSON  ]) => {
+    
+    document.getElementById("loading").display = "none";
 
     //initialize
     const WORLD = {

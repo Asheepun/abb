@@ -1,14 +1,21 @@
 export const loadSprites = (...urls) => new Promise((resolve, reject) => {
+    let loadCounter = 0;
     const sprites = urls.reduce((sprites, url) => {
         const sprite = new Image();
         sprite.src = `/assets/sprites/${url}.png`;
         sprites[url] = sprite;
+        sprite.addEventListener("load", (e) => {
+            loadCounter++;
+            if(loadCounter === sprites.length){
+                resolve(sprites);   
+            }
+        });
         return sprites;
     }, {});
-    resolve(sprites);
 });
 
 export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject) => {
+    let loadCounter = 0;
     const audio = {
         //get audio elements
         sounds: urls.reduce((sounds, url) => {
@@ -16,6 +23,12 @@ export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject
             a.load();
             sounds[url] = a;
             a.originVolume = volume;
+            a.addEventListener("canplay").((e) => {
+                loadCounter++
+                if(loadCounter === sounds.length){
+                    resolve(audio);
+                }
+            });
             return sounds;
         }, {}),
         volume: 100,
@@ -37,7 +50,6 @@ export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject
             audio.sounds[key].volume = audio.sounds[key].originVolume * (volume !== undefined ? volume : audio.volume/100);
         }
     }
-    resolve(audio);
 });
 
 export const loadJSON = (...srcs) => new Promise((resolve, reject) => {

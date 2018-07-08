@@ -6,6 +6,7 @@ export const loadSprites = (...urls) => new Promise((resolve, reject) => {
         sprites[url] = sprite;
         sprite.addEventListener("load", (e) => {
             loadCounter++;
+            console.log(loadCounter);
             if(loadCounter === sprites.length){
                 console.log("loaded sprites");
                 resolve(sprites);   
@@ -26,6 +27,7 @@ export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject
             a.originVolume = volume;
             a.addEventListener("canplay", (e) => {
                 loadCounter++;
+                console.log(loadCounter);
                 if(loadCounter === sounds.length){
                     console.log("loaded audio");
                     resolve(audio);

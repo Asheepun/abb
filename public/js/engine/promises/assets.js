@@ -23,8 +23,8 @@ export const loadAudio = (volume = 0.5, ...urls) => new Promise((resolve, reject
             a.load();
             sounds[url] = a;
             a.originVolume = volume;
-            a.addEventListener("canplay").((e) => {
-                loadCounter++
+            a.addEventListener("canplay", (e) => {
+                loadCounter++;
                 if(loadCounter === sounds.length){
                     resolve(audio);
                 }

@@ -124,7 +124,7 @@ Promise.all([
     ),
 ]).then(([ { c, ctx, scale, pointer }, keys, sprites, audio, resJSON  ]) => {
     
-    document.getElementById("loading").display = "none";
+    document.getElementById("loading").style.display = "none";
 
     //initialize
     const WORLD = {

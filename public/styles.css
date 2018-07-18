@@ -19,6 +19,6 @@
 }
 
 body{
-    overflow-x: none;
-    overflow-y: none;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }

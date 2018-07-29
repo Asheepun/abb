@@ -17,6 +17,9 @@ const createCanvas = (width = 800, height = 600, element = document.body) => new
             c.height = c.width*dif;
         }
         c.scale = c.width/width;
+        ctx.webkitImageSmoothingEnabled = false;
+        ctx.mozImageSmoothingEnabled = false;
+        ctx.imgageSmoothingEnabled = false;
     }
     reSize();
 
